@@ -42,10 +42,8 @@ export async function generateMetadata(): Promise<Metadata> {
       "DevOps",
       "NBN TECH",
     ],
-    icons: {
-      icon: [{ url: "/icon.png", type: "image/png" }],
-      apple: "/apple-icon.png",
-    },
+    // Favicon + apple icon are auto-detected from app/icon.png and
+    // app/apple-icon.png (Next.js file-based metadata).
     openGraph: {
       type: "website",
       siteName: "NBN TECH",
