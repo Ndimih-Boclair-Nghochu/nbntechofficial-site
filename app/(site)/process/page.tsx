@@ -67,7 +67,7 @@ export default async function ProcessPage() {
       </section>
 
       {/* What you get */}
-      <section className="border-y border-ink-line bg-white py-section">
+      <section className="bg-sand py-section">
         <Container>
           <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
             <Reveal>

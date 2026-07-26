@@ -43,7 +43,7 @@ export function Hero({
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[92vh] items-center overflow-hidden bg-navy-950 text-white"
+      className="relative flex min-h-[88vh] items-center overflow-hidden bg-navy-950 text-white"
     >
       {/* Background photo (optional) — kept clearly visible with a directional
           navy scrim that only darkens the text side. */}
@@ -55,10 +55,11 @@ export function Hero({
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center opacity-[0.72]"
+            className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-950/95 via-navy-950/70 to-navy-900/35" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-navy-950/30" />
+          {/* Readable on the left, image stays clearly visible toward the right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/55 to-navy-950/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/75 via-navy-950/5 to-navy-950/20" />
         </>
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-950" />

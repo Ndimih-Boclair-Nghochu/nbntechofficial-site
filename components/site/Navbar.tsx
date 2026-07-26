@@ -34,7 +34,7 @@ export function Navbar() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-cyan-deep/30 bg-cyan shadow-[0_2px_20px_rgba(11,30,60,0.12)]">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-sand-deep/70 bg-canvas/85 backdrop-blur-md shadow-[0_1px_18px_rgba(11,30,60,0.06)]">
       <Container className="flex h-16 items-center justify-between md:h-[72px]">
         <Link href="/" aria-label="NBN TECH — home" className="relative z-10 flex items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -50,8 +50,8 @@ export function Navbar() {
               className={cn(
                 "text-sm font-semibold transition-colors",
                 isActive(l.href)
-                  ? "text-navy-950 underline decoration-navy-950 decoration-2 underline-offset-[6px]"
-                  : "text-navy-900/80 hover:text-navy-950",
+                  ? "text-cyan-deep underline decoration-cyan decoration-2 underline-offset-[6px]"
+                  : "text-ink/75 hover:text-cyan-deep",
               )}
             >
               {l.label}

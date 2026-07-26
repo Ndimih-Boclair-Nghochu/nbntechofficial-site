@@ -32,8 +32,8 @@ export default async function HomePage() {
         photoAlt={content.heroPhotoAlt}
       />
 
-      {/* About preview — blends out of the hero into the light body */}
-      <section className="relative bg-gradient-to-b from-canvas to-white py-section">
+      {/* About preview — ivory, blends out of the hero into the light body */}
+      <section className="relative bg-canvas py-section">
         <SectionDecor grid glow="right" />
         <Container className="relative">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
@@ -62,24 +62,26 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* Expertise pillars */}
-      <section className="relative bg-gradient-to-br from-white via-navy-50/50 to-white py-section">
-        <SectionDecor glow="left" />
+      {/* Expertise pillars — dramatic navy feature band */}
+      <section className="relative overflow-hidden bg-navy-950 py-section text-white">
+        <SectionDecor glow="both" />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-canvas/15 to-transparent" />
         <Container className="relative">
           <SectionHeading
             eyebrow="What I do"
             title="Four disciplines, one engineer."
             intro="Most projects die in the gaps between specialists. I cover the whole path — interface, API, data, and the pipeline that ships it — so nothing falls through the seams."
+            variant="light"
           />
           <div className="mt-12">
-            <Pillars />
+            <Pillars dark />
           </div>
         </Container>
       </section>
 
       {/* Selected work — filterable */}
       {projects.length > 0 && (
-        <section className="relative bg-gradient-to-b from-white to-navy-50/60 py-section">
+        <section className="relative bg-sand py-section">
           <SectionDecor grid glow="both" />
           <Container className="relative">
             <div className="flex flex-wrap items-end justify-between gap-6">
@@ -107,7 +109,7 @@ export default async function HomePage() {
 
       {/* Tech stack — continues the navy-tint so it blends from the projects */}
       {skills.length > 0 && (
-        <section className="relative bg-gradient-to-b from-navy-50/60 to-white py-section">
+        <section className="relative bg-surface py-section">
           <SectionDecor grid glow="right" />
           <Container className="relative">
             <SectionHeading

@@ -75,7 +75,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="border-y border-ink-line bg-white py-section">
+      <section className="bg-sand py-section">
         <Container>
           <SectionHeading
             eyebrow="How I work"

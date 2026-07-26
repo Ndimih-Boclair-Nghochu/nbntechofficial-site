@@ -14,9 +14,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Warm off-white canvas — pure white reserved for cards/surfaces.
-        canvas: "#FAFAFA",
+        // Classic palette: warm ivory canvas + crisp white surfaces + a warm
+        // "sand" tint for section alternation. Pure white reserved for cards.
+        canvas: "#F4F1E9",
         surface: "#FFFFFF",
+        sand: {
+          DEFAULT: "#ECE6D9",
+          soft: "#F0EBDF",
+          deep: "#E4DBC9",
+        },
         navy: {
           DEFAULT: "#0B1E3C",
           50: "#F2F5FA",

@@ -101,7 +101,7 @@ export default async function ReviewsPage() {
       </section>
 
       {/* Submit form */}
-      <section id="write-review" className="scroll-mt-24 border-t border-ink-line bg-white py-section">
+      <section id="write-review" className="scroll-mt-24 bg-sand py-section">
         <Container className="max-w-2xl">
           <Reveal>
             <span className="eyebrow">
