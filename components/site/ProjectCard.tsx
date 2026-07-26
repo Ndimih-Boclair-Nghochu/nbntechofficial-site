@@ -51,7 +51,7 @@ export function ProjectCard({ project, priority = false }: { project: Project; p
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-body">{project.summary}</p>
 
         <div className="mt-5 flex items-center pt-1">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan px-5 py-2.5 text-sm font-semibold text-navy-950 transition-colors group-hover:bg-cyan-soft">
+          <span className="inline-flex items-center gap-1.5 rounded-lg bg-cyan px-5 py-2.5 text-sm font-semibold text-navy-950 transition-colors group-hover:bg-cyan-soft">
             {hasLive ? (
               <>
                 View live <ExternalLink className="h-4 w-4" />
@@ -96,7 +96,7 @@ export function CoverFallback({ title }: { title: string }) {
         className="absolute inset-0 opacity-20"
         style={{
           backgroundImage:
-            "linear-gradient(to right, #4FC3F7 1px, transparent 1px), linear-gradient(to bottom, #4FC3F7 1px, transparent 1px)",
+            "linear-gradient(to right, #2FB49A 1px, transparent 1px), linear-gradient(to bottom, #2FB49A 1px, transparent 1px)",
           backgroundSize: "32px 32px",
         }}
       />

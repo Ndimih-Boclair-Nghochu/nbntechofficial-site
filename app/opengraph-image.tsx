@@ -31,18 +31,18 @@ export default function OG() {
               width: 72,
               height: 84,
               borderRadius: 12,
-              border: "4px solid #4FC3F7",
+              border: "4px solid #2FB49A",
               background: "#0B1E3C",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <div style={{ width: 22, height: 22, borderRadius: 6, background: "#4FC3F7" }} />
+            <div style={{ width: 22, height: 22, borderRadius: 6, background: "#2FB49A" }} />
           </div>
           <div style={{ display: "flex", fontSize: 40, fontWeight: 800, letterSpacing: -1 }}>
             <span style={{ color: "white" }}>NBN</span>
-            <span style={{ color: "#4FC3F7" }}>&nbsp;TECH</span>
+            <span style={{ color: "#2FB49A" }}>&nbsp;TECH</span>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ export default function OG() {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "rgba(79,195,247,0.18)",
+            background: "rgba(47,180,154,0.18)",
           }}
         />
       </div>

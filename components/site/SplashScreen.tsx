@@ -93,7 +93,7 @@ export function SplashScreen() {
             className="pointer-events-none absolute inset-0 opacity-[0.10]"
             style={{
               backgroundImage:
-                "linear-gradient(to right, #4FC3F7 1px, transparent 1px), linear-gradient(to bottom, #4FC3F7 1px, transparent 1px)",
+                "linear-gradient(to right, #2FB49A 1px, transparent 1px), linear-gradient(to bottom, #2FB49A 1px, transparent 1px)",
               backgroundSize: "56px 56px",
               maskImage: "radial-gradient(ellipse 70% 60% at 50% 45%, black, transparent)",
               WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 45%, black, transparent)",

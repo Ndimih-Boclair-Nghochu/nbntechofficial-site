@@ -54,7 +54,7 @@ export function WorkGrid({ projects }: { projects: Project[] }) {
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-all",
                 active === f.key
-                  ? "border-cyan bg-cyan text-navy-950 shadow-[0_6px_18px_rgba(79,195,247,0.3)]"
+                  ? "border-cyan bg-cyan text-navy-950 shadow-[0_6px_18px_rgba(47,180,154,0.3)]"
                   : "border-ink-line bg-white text-ink-body hover:border-cyan hover:text-cyan-deep",
               )}
             >

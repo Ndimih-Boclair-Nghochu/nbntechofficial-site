@@ -14,39 +14,48 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Classic palette: warm ivory canvas + crisp white surfaces + a warm
-        // "sand" tint for section alternation. Pure white reserved for cards.
-        canvas: "#F4F1E9",
+        // Palette modelled on hooyia.net: deep indigo-navy + teal accent +
+        // cool near-white sections. `navy` = indigo-navy, `cyan` = teal (kept
+        // the token names so usage across the codebase is unchanged).
+        canvas: "#FBFBFF",
         surface: "#FFFFFF",
         sand: {
-          DEFAULT: "#ECE6D9",
-          soft: "#F0EBDF",
-          deep: "#E4DBC9",
+          // cool light tint for section alternation
+          DEFAULT: "#F1F4FB",
+          soft: "#F6F8FC",
+          deep: "#E7EDF8",
         },
         navy: {
-          DEFAULT: "#0B1E3C",
-          50: "#F2F5FA",
-          100: "#E2E9F3",
-          700: "#12305C",
-          800: "#0E2749",
-          900: "#0B1E3C",
-          950: "#07142A",
+          DEFAULT: "#04045E",
+          50: "#EEEFFB",
+          100: "#D9DBF4",
+          700: "#0A0A85",
+          800: "#050572",
+          900: "#04045E",
+          950: "#030A3B",
         },
+        // teal accent (#52CDB5)
         cyan: {
-          DEFAULT: "#4FC3F7",
-          soft: "#8AD7FB",
-          deep: "#1E9FE0",
+          DEFAULT: "#2FB49A",
+          soft: "#6FD8C3",
+          deep: "#1F8E7A",
+        },
+        // indigo accent used for some CTAs on hooyia
+        iris: {
+          DEFAULT: "#4F46E5",
+          deep: "#4338CA",
         },
         ink: {
-          DEFAULT: "#0F172A", // headings / near-black
-          body: "#475569", // body text
-          muted: "#64748B",
-          line: "#E2E8F0",
+          DEFAULT: "#111633", // headings — deep indigo-ink
+          body: "#464B63", // body text (grey like hooyia)
+          muted: "#6B7192",
+          line: "#E4E7F2",
         },
       },
       fontFamily: {
-        // Wired to next/font CSS variables in app/layout.tsx
-        serif: ["var(--font-fraunces)", "Georgia", "serif"],
+        // Wired to next/font CSS variables in app/layout.tsx. Headings use
+        // Poppins (like hooyia); body uses Inter.
+        serif: ["var(--font-poppins)", "system-ui", "sans-serif"],
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
       fontSize: {
@@ -66,7 +75,7 @@ const config: Config = {
       boxShadow: {
         card: "0 1px 2px rgba(11,30,60,0.04), 0 8px 30px rgba(11,30,60,0.06)",
         "card-hover": "0 2px 4px rgba(11,30,60,0.06), 0 18px 50px rgba(11,30,60,0.12)",
-        glow: "0 0 0 1px rgba(79,195,247,0.35), 0 8px 30px rgba(79,195,247,0.18)",
+        glow: "0 0 0 1px rgba(47,180,154,0.35), 0 8px 30px rgba(47,180,154,0.20)",
       },
       keyframes: {
         "fade-up": {

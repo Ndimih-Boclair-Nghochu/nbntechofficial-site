@@ -35,7 +35,7 @@ export default async function ReviewsPage() {
         <div className="mt-7 flex flex-wrap items-center gap-4">
           <Link
             href="#write-review"
-            className="inline-flex items-center gap-2 rounded-full bg-cyan px-6 py-3 text-sm font-semibold text-navy-950 shadow-[0_8px_30px_rgba(79,195,247,0.35)] transition-colors hover:bg-cyan-soft"
+            className="inline-flex items-center gap-2 rounded-full bg-cyan px-6 py-3 text-sm font-semibold text-navy-950 shadow-[0_8px_30px_rgba(47,180,154,0.35)] transition-colors hover:bg-cyan-soft"
           >
             <PenLine className="h-4 w-4" /> Write a review
           </Link>

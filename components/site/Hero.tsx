@@ -109,14 +109,14 @@ export function Hero({
           >
             <Link
               href="/work"
-              className="group inline-flex items-center gap-2 rounded-full bg-cyan px-7 py-3.5 text-base font-semibold text-navy-950 transition-colors hover:bg-cyan-soft"
+              className="group inline-flex items-center gap-2 rounded-lg bg-cyan px-7 py-3.5 text-base font-semibold text-navy-950 transition-colors hover:bg-cyan-soft"
             >
               View my work
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-base font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
+              className="group inline-flex items-center gap-2 rounded-lg border border-white/20 px-7 py-3.5 text-base font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
             >
               Get in touch
               <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

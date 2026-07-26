@@ -59,7 +59,7 @@ export function useToast() {
     <div
       role="status"
       className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-card-hover"
-      style={{ borderColor: toast.type === "success" ? "#4FC3F7" : "#fca5a5" }}
+      style={{ borderColor: toast.type === "success" ? "#2FB49A" : "#fca5a5" }}
     >
       {toast.type === "success" ? (
         <CheckCircle2 className="h-5 w-5 text-cyan-deep" />

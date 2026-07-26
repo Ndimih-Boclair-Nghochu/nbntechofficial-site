@@ -9,7 +9,7 @@ export default function NotFound() {
         className="pointer-events-none fixed inset-0 opacity-[0.07]"
         style={{
           backgroundImage:
-            "linear-gradient(to right, #4FC3F7 1px, transparent 1px), linear-gradient(to bottom, #4FC3F7 1px, transparent 1px)",
+            "linear-gradient(to right, #2FB49A 1px, transparent 1px), linear-gradient(to bottom, #2FB49A 1px, transparent 1px)",
           backgroundSize: "56px 56px",
         }}
       />

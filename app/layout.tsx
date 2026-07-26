@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 import { getSiteContent } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 import "./globals.css";
@@ -10,11 +10,11 @@ const inter = Inter({
   display: "swap",
 });
 
-const fraunces = Fraunces({
+const poppins = Poppins({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-poppins",
+  weight: ["500", "600", "700", "800"],
   display: "swap",
-  axes: ["opsz"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -62,7 +62,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body>
         <a
           href="#main"

@@ -21,7 +21,7 @@ export function CtaBand({
             className="pointer-events-none absolute inset-0 opacity-20"
             style={{
               backgroundImage:
-                "radial-gradient(circle at 20% 20%, rgba(79,195,247,0.5), transparent 40%), radial-gradient(circle at 80% 80%, rgba(79,195,247,0.35), transparent 40%)",
+                "radial-gradient(circle at 20% 20%, rgba(47,180,154,0.5), transparent 40%), radial-gradient(circle at 80% 80%, rgba(47,180,154,0.35), transparent 40%)",
             }}
           />
           <div className="relative mx-auto max-w-2xl">

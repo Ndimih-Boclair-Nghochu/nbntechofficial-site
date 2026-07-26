@@ -62,7 +62,7 @@ export function Navbar() {
         <div className="hidden md:block">
           <Link
             href="/contact"
-            className="group inline-flex items-center gap-1.5 rounded-full bg-navy-950 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-navy-800"
+            className="group inline-flex items-center gap-1.5 rounded-lg bg-navy-950 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-navy-800"
           >
             Get in touch
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -107,7 +107,7 @@ export function Navbar() {
             className="pointer-events-none absolute inset-0 opacity-[0.08]"
             style={{
               backgroundImage:
-                "linear-gradient(to right, #4FC3F7 1px, transparent 1px), linear-gradient(to bottom, #4FC3F7 1px, transparent 1px)",
+                "linear-gradient(to right, #2FB49A 1px, transparent 1px), linear-gradient(to bottom, #2FB49A 1px, transparent 1px)",
               backgroundSize: "44px 44px",
             }}
           />
@@ -146,7 +146,7 @@ export function Navbar() {
           <div className="relative mt-auto px-5 pb-8 pt-6">
             <Link
               href="/contact"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cyan px-6 py-4 text-base font-semibold text-navy-950 shadow-[0_8px_30px_rgba(79,195,247,0.35)]"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cyan px-6 py-4 text-base font-semibold text-navy-950 shadow-[0_8px_30px_rgba(47,180,154,0.35)]"
             >
               Get in touch
               <ArrowUpRight className="h-5 w-5" />
