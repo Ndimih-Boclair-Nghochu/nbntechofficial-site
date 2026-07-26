@@ -43,8 +43,8 @@ export async function generateMetadata(): Promise<Metadata> {
       "NBN TECH",
     ],
     icons: {
-      icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-      apple: "/favicon.svg",
+      icon: [{ url: "/icon.png", type: "image/png" }],
+      apple: "/apple-icon.png",
     },
     openGraph: {
       type: "website",

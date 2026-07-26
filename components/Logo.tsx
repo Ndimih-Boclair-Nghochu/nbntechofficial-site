@@ -6,9 +6,8 @@ import { cn } from "@/lib/utils";
  * The artwork (navy shield, cyan border, person-at-laptop, data blocks and the
  * "NBN TECH" wordmark) already contains the wordmark, so it renders on its own.
  *
- * Currently points at /public/logo.svg (a crisp vector of the mark). To use the
- * exact supplied raster instead, drop it at /public/logo.png and change the
- * `src` below to "/logo.png" — nothing else needs to change.
+ * Uses the supplied artwork at /public/logo.png (whitespace-trimmed). It sits on
+ * a white chip everywhere it appears, so its light background blends in.
  */
 export function Logo({
   className,
@@ -22,7 +21,7 @@ export function Logo({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/logo.svg"
+      src="/logo.png"
       alt="NBN TECH"
       height={height}
       style={{ height }}
