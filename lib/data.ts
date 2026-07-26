@@ -129,9 +129,12 @@ export async function getAdjacentProjects(slug: string): Promise<{
   }
 }
 
-export async function getTestimonials(): Promise<Testimonial[]> {
+export async function getTestimonials(opts?: {
+  approvedOnly?: boolean;
+}): Promise<Testimonial[]> {
   try {
     return await prisma.testimonial.findMany({
+      where: opts?.approvedOnly ? { approved: true } : undefined,
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
   } catch (err) {
@@ -140,18 +143,48 @@ export async function getTestimonials(): Promise<Testimonial[]> {
   }
 }
 
+export async function getContactMessages() {
+  try {
+    return await prisma.contactMessage.findMany({
+      orderBy: [{ createdAt: "desc" }],
+    });
+  } catch (err) {
+    logDbIssue("getContactMessages", err);
+    return [];
+  }
+}
+
 /** Counts for the admin dashboard. */
 export async function getAdminCounts() {
   try {
-    const [projects, featured, skills, testimonials] = await Promise.all([
-      prisma.project.count(),
-      prisma.project.count({ where: { featured: true } }),
-      prisma.skill.count(),
-      prisma.testimonial.count(),
-    ]);
-    return { projects, featured, skills, testimonials, ok: true as const };
+    const [projects, featured, skills, testimonials, pendingReviews, unreadMessages] =
+      await Promise.all([
+        prisma.project.count(),
+        prisma.project.count({ where: { featured: true } }),
+        prisma.skill.count(),
+        prisma.testimonial.count({ where: { approved: true } }),
+        prisma.testimonial.count({ where: { approved: false } }),
+        prisma.contactMessage.count({ where: { read: false } }),
+      ]);
+    return {
+      projects,
+      featured,
+      skills,
+      testimonials,
+      pendingReviews,
+      unreadMessages,
+      ok: true as const,
+    };
   } catch (err) {
     logDbIssue("getAdminCounts", err);
-    return { projects: 0, featured: 0, skills: 0, testimonials: 0, ok: false as const };
+    return {
+      projects: 0,
+      featured: 0,
+      skills: 0,
+      testimonials: 0,
+      pendingReviews: 0,
+      unreadMessages: 0,
+      ok: false as const,
+    };
   }
 }

@@ -9,8 +9,8 @@ export default async function AdminTestimonialsPage() {
   return (
     <div>
       <AdminHeader
-        title="Testimonials"
-        description="Client quotes shown on the home page. The whole section is hidden automatically when there are none."
+        title="Reviews"
+        description="Approve visitor-submitted reviews and manage your own. Pending reviews are highlighted and stay hidden until you approve them."
       />
       <TestimonialsManager initial={items} />
     </div>

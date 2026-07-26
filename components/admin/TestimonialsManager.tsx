@@ -6,17 +6,29 @@ import { Loader2, Plus, Pencil } from "lucide-react";
 import type { Testimonial } from "@prisma/client";
 import { Card, Field, DeleteButton, useToast } from "@/components/admin/AdminUI";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { StarInput, Stars } from "@/components/site/StarRating";
 import { testimonialSchema } from "@/lib/validations";
+import { cn } from "@/lib/utils";
 
 type FormState = {
   name: string;
   role: string;
   quote: string;
   avatarUrl: string;
+  rating: number;
+  approved: boolean;
   order: string;
 };
 
-const empty: FormState = { name: "", role: "", quote: "", avatarUrl: "", order: "0" };
+const empty: FormState = {
+  name: "",
+  role: "",
+  quote: "",
+  avatarUrl: "",
+  rating: 5,
+  approved: true,
+  order: "0",
+};
 
 export function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
   const [items, setItems] = useState<Testimonial[]>(initial);
@@ -39,6 +51,8 @@ export function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
       role: t.role ?? "",
       quote: t.quote,
       avatarUrl: t.avatarUrl ?? "",
+      rating: t.rating,
+      approved: t.approved,
       order: t.order.toString(),
     });
     setErrors({});
@@ -53,6 +67,8 @@ export function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
       role: form.role,
       quote: form.quote,
       avatarUrl: form.avatarUrl,
+      rating: form.rating,
+      approved: form.approved,
       order: Number(form.order) || 0,
     };
     const parsed = testimonialSchema.safeParse(payload);
@@ -99,7 +115,21 @@ export function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
     }
   }
 
-  const sorted = [...items].sort((a, b) => a.order - b.order);
+  async function toggleApproved(id: string, approved: boolean) {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, approved } : i)));
+    const res = await fetch(`/api/testimonials/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ approved }),
+    });
+    if (res.ok) show(approved ? "Review approved — now live." : "Review hidden.");
+    else show("Could not update.", "error");
+  }
+
+  // Pending (unapproved) first, then by order.
+  const sorted = [...items].sort(
+    (a, b) => Number(a.approved) - Number(b.approved) || a.order - b.order,
+  );
 
   return (
     <div className="grid gap-8 lg:grid-cols-[380px_1fr] lg:items-start">
@@ -143,15 +173,32 @@ export function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
             folder="avatars"
             aspect="aspect-square max-w-[120px]"
           />
-          <Field label="Order" error={errors.order}>
-            <input
-              type="number"
-              min={0}
-              className="nbn-input"
-              value={form.order}
-              onChange={(e) => setForm({ ...form, order: e.target.value })}
-            />
-          </Field>
+          <div>
+            <span className="nbn-label">Rating</span>
+            <StarInput value={form.rating} onChange={(rating) => setForm({ ...form, rating })} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Order" error={errors.order}>
+              <input
+                type="number"
+                min={0}
+                className="nbn-input"
+                value={form.order}
+                onChange={(e) => setForm({ ...form, order: e.target.value })}
+              />
+            </Field>
+            <div className="flex items-end">
+              <label className="inline-flex cursor-pointer items-center gap-2 pb-2.5">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-cyan-deep"
+                  checked={form.approved}
+                  onChange={(e) => setForm({ ...form, approved: e.target.checked })}
+                />
+                <span className="text-sm font-medium text-ink">Approved (visible)</span>
+              </label>
+            </div>
+          </div>
 
           <div className="flex items-center gap-2 pt-1">
             <button
@@ -188,7 +235,13 @@ export function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
         ) : (
           <ul className="space-y-3">
             {sorted.map((t) => (
-              <li key={t.id} className="rounded-xl border border-ink-line bg-surface p-5 shadow-sm">
+              <li
+                key={t.id}
+                className={cn(
+                  "rounded-xl border bg-surface p-5 shadow-sm",
+                  t.approved ? "border-ink-line" : "border-amber-300 bg-amber-50/40",
+                )}
+              >
                 <div className="flex items-start gap-3">
                   {t.avatarUrl ? (
                     <Image
@@ -204,18 +257,39 @@ export function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
                     </span>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-ink">{t.name}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-semibold text-ink">{t.name}</p>
+                      <Stars value={t.rating} />
+                      {!t.approved && (
+                        <span className="rounded-full bg-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                          Pending
+                        </span>
+                      )}
+                    </div>
                     {t.role && <p className="text-xs text-ink-muted">{t.role}</p>}
                     <p className="mt-2 text-sm text-ink-body">&ldquo;{t.quote}&rdquo;</p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-1">
+                  <div className="flex shrink-0 flex-col items-end gap-1">
                     <button
-                      onClick={() => startEdit(t)}
-                      className="rounded-md px-2.5 py-1.5 text-xs font-medium text-ink-body hover:bg-canvas hover:text-cyan-deep"
+                      onClick={() => toggleApproved(t.id, !t.approved)}
+                      className={cn(
+                        "rounded-md px-2.5 py-1.5 text-xs font-semibold",
+                        t.approved
+                          ? "text-ink-muted hover:bg-canvas"
+                          : "bg-cyan text-navy-950 hover:bg-cyan-soft",
+                      )}
                     >
-                      Edit
+                      {t.approved ? "Hide" : "Approve"}
                     </button>
-                    <DeleteButton onConfirm={() => remove(t.id)} itemName={t.name} />
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => startEdit(t)}
+                        className="rounded-md px-2.5 py-1.5 text-xs font-medium text-ink-body hover:bg-canvas hover:text-cyan-deep"
+                      >
+                        Edit
+                      </button>
+                      <DeleteButton onConfirm={() => remove(t.id)} itemName={t.name} />
+                    </div>
                   </div>
                 </div>
               </li>

@@ -61,7 +61,7 @@ export default async function ProjectDetailPage({
         <div
           aria-hidden
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/hero/work.png')" }}
+          style={{ backgroundImage: "url('/photos/work.jpg')" }}
         />
         <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-canvas via-canvas/90 to-canvas/45" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-canvas" />

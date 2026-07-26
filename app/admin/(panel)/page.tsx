@@ -2,8 +2,8 @@ import Link from "next/link";
 import {
   FolderKanban,
   Wrench,
-  MessageSquareQuote,
   Star,
+  Inbox,
   ArrowRight,
   AlertTriangle,
 } from "lucide-react";
@@ -18,15 +18,27 @@ export default async function AdminDashboard() {
 
   const stats = [
     { label: "Projects", value: counts.projects, href: "/admin/projects", icon: FolderKanban },
-    { label: "Featured", value: counts.featured, href: "/admin/projects", icon: Star },
     { label: "Skills", value: counts.skills, href: "/admin/skills", icon: Wrench },
-    { label: "Testimonials", value: counts.testimonials, href: "/admin/testimonials", icon: MessageSquareQuote },
+    {
+      label: counts.pendingReviews > 0 ? "Reviews · pending" : "Reviews",
+      value: counts.pendingReviews > 0 ? counts.pendingReviews : counts.testimonials,
+      href: "/admin/testimonials",
+      icon: Star,
+      highlight: counts.pendingReviews > 0,
+    },
+    {
+      label: "Unread messages",
+      value: counts.unreadMessages,
+      href: "/admin/messages",
+      icon: Inbox,
+      highlight: counts.unreadMessages > 0,
+    },
   ];
 
   const quickLinks = [
     { label: "Add a project", href: "/admin/projects", desc: "Publish a new case study with images." },
-    { label: "Edit site content", href: "/admin/content", desc: "Hero, about, contact and SEO copy." },
-    { label: "Manage skills", href: "/admin/skills", desc: "Your tech stack, grouped by category." },
+    { label: "Approve reviews", href: "/admin/testimonials", desc: "Review and publish visitor submissions." },
+    { label: "Read messages", href: "/admin/messages", desc: "Enquiries from the contact form." },
   ];
 
   return (

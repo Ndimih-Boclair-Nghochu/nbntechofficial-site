@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { jsonError, jsonOk, zodFieldErrors } from "@/lib/api";
 import { contactSchema } from "@/lib/validations";
 import { getSiteContent } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,16 @@ export async function POST(req: NextRequest) {
 
     // Honeypot: bots fill hidden fields. Pretend success, drop silently.
     if (data.company) return jsonOk({ delivered: false });
+
+    // Always store the message so it lands in the admin inbox, even if email
+    // delivery isn't configured.
+    try {
+      await prisma.contactMessage.create({
+        data: { name: data.name, email: data.email, message: data.message },
+      });
+    } catch (e) {
+      console.error("[contact] could not store message:", (e as Error).message);
+    }
 
     const content = await getSiteContent();
     const to = content.contactEmail || process.env.ADMIN_EMAIL || "";

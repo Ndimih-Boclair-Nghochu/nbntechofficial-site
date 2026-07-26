@@ -89,6 +89,20 @@
   }
 }
 
+/* Continuous review marquee (left → right), pauses on hover. */
+@keyframes nbn-marquee {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.nbn-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: nbn-marquee var(--marquee-duration, 46s) linear infinite;
+}
+.nbn-marquee:hover .nbn-marquee-track {
+  animation-play-state: paused;
+}
+
 /* Respect reduced-motion preferences. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

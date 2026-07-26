@@ -91,9 +91,22 @@ export const testimonialSchema = z.object({
   role: z.string().trim().max(160).optional().or(z.literal("")),
   quote: z.string().trim().min(1, "Quote is required").max(600),
   avatarUrl: optionalUrl,
+  rating: z.coerce.number().int().min(1).max(5).default(5),
+  approved: z.coerce.boolean().default(true),
   order: z.coerce.number().int().min(0).default(0),
 });
 export type TestimonialInput = z.infer<typeof testimonialSchema>;
+
+/** Public review submission (from the /reviews page). Always starts unapproved. */
+export const reviewSubmitSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your name").max(120),
+  role: z.string().trim().max(160).optional().or(z.literal("")),
+  quote: z.string().trim().min(12, "A little more detail, please").max(600),
+  rating: z.coerce.number().int().min(1).max(5).default(5),
+  // Honeypot — must stay empty.
+  website: z.string().max(0).optional(),
+});
+export type ReviewSubmitInput = z.infer<typeof reviewSubmitSchema>;
 
 export const loginSchema = z.object({
   email: z.string().trim().email("Enter a valid email"),

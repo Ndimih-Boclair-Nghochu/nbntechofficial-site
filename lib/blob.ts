@@ -33,7 +33,17 @@ export async function uploadImage(file: File, folder = "uploads"): Promise<Uploa
     });
     return { ok: true, url: blob.url };
   } catch (err) {
-    return { ok: false, error: (err as Error).message || "Upload failed." };
+    const msg = (err as Error).message || "Upload failed.";
+    // The most common misconfiguration: the Blob store only allows private
+    // access, but a public portfolio needs public images.
+    if (/private/i.test(msg)) {
+      return {
+        ok: false,
+        error:
+          "Your Vercel Blob store is set to private-only. Public site images need a public store — create a Blob store with public access (or paste an image URL instead).",
+      };
+    }
+    return { ok: false, error: msg };
   }
 }
 

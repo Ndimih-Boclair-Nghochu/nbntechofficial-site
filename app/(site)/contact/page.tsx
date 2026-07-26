@@ -24,7 +24,7 @@ export default async function ContactPage() {
         eyebrow="Contact"
         title={content.contactHeadline}
         intro={content.contactBody}
-        background="/hero/contact.png"
+        background="/photos/contact.jpg"
       />
 
       <section className="bg-canvas py-section">

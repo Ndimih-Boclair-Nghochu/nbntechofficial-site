@@ -188,6 +188,8 @@ async function seedTestimonials() {
       quote:
         "NBN TECH shipped what two previous teams couldn't. Careful, communicative, and the code still runs clean a year later.",
       avatarUrl: null,
+      rating: 5,
+      approved: true,
       order: 1,
     },
     {
@@ -196,6 +198,8 @@ async function seedTestimonials() {
       quote:
         "The rare engineer who thinks about the second release, not just the demo. Our launch was genuinely uneventful — exactly as promised.",
       avatarUrl: null,
+      rating: 5,
+      approved: true,
       order: 2,
     },
   ];

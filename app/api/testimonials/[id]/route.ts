@@ -19,12 +19,30 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         role: data.role || null,
         quote: data.quote,
         avatarUrl: data.avatarUrl || null,
+        rating: data.rating,
+        approved: data.approved,
         order: data.order,
       },
     });
     return jsonOk(item);
   } catch (err) {
     if (err instanceof ZodError) return jsonError("Validation failed", 422, zodFieldErrors(err));
+    return jsonError("Could not update testimonial", 500);
+  }
+}
+
+/** Lightweight approve/unapprove toggle. */
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const { deny } = await requireAdminApi();
+  if (deny) return deny;
+  try {
+    const { approved } = await req.json();
+    const item = await prisma.testimonial.update({
+      where: { id: params.id },
+      data: { approved: Boolean(approved) },
+    });
+    return jsonOk(item);
+  } catch {
     return jsonError("Could not update testimonial", 500);
   }
 }

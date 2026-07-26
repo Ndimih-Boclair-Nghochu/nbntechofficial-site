@@ -27,6 +27,8 @@ export async function POST(req: NextRequest) {
         role: data.role || null,
         quote: data.quote,
         avatarUrl: data.avatarUrl || null,
+        rating: data.rating,
+        approved: data.approved,
         order: data.order,
       },
     });

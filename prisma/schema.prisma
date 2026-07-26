@@ -109,9 +109,24 @@ model Testimonial {
   role      String?
   quote     String
   avatarUrl String?
+  rating    Int      @default(5)
+  /// Visitor-submitted reviews start unapproved; admin approves before display.
+  approved  Boolean  @default(false)
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([order])
+  @@index([approved, order])
+}
+
+/// Messages sent from the public contact form — an admin inbox.
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([read, createdAt])
 }

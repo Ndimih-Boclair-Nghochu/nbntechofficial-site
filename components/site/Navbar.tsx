@@ -13,6 +13,7 @@ const links = [
   { href: "/about", label: "About" },
   { href: "/work", label: "Work" },
   { href: "/process", label: "Process" },
+  { href: "/reviews", label: "Reviews" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -51,7 +52,7 @@ export function Navbar() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         solid
-          ? "border-b border-ink-line/70 bg-canvas/85 backdrop-blur-md"
+          ? "border-b border-cyan/20 bg-canvas/90 shadow-[0_1px_20px_rgba(11,30,60,0.06)] backdrop-blur-md"
           : "border-b border-transparent bg-transparent",
       )}
     >
@@ -91,12 +92,7 @@ export function Navbar() {
         <div className="hidden md:block">
           <Link
             href="/contact"
-            className={cn(
-              "group inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-medium transition-all",
-              solid
-                ? "bg-navy text-white hover:bg-navy-700"
-                : "bg-cyan text-navy-950 font-semibold hover:bg-cyan-soft",
-            )}
+            className="group inline-flex items-center gap-1.5 rounded-full bg-cyan px-5 py-2.5 text-sm font-semibold text-navy-950 shadow-[0_6px_20px_rgba(79,195,247,0.35)] transition-all hover:bg-cyan-soft hover:shadow-[0_8px_26px_rgba(79,195,247,0.45)]"
           >
             Get in touch
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -122,32 +118,59 @@ export function Navbar() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "fixed inset-0 z-0 flex flex-col bg-navy-950 px-6 pb-10 pt-24 transition-all duration-300 md:hidden",
+          "fixed inset-0 z-0 flex flex-col overflow-y-auto bg-navy-950 px-6 pb-10 pt-24 transition-all duration-300 md:hidden",
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
         )}
       >
-        <nav className="flex flex-col gap-1">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.08]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #4FC3F7 1px, transparent 1px), linear-gradient(to bottom, #4FC3F7 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 top-24 h-56 w-56 rounded-full bg-cyan/10 blur-3xl"
+        />
+        <p className="relative mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-cyan/80">
+          Menu
+        </p>
+        <nav className="relative flex flex-col">
           {links.map((l, i) => (
             <Link
               key={l.href}
               href={l.href}
               className={cn(
-                "border-b border-white/10 py-4 font-serif text-3xl transition-colors",
-                isActive(l.href) ? "text-cyan" : "text-white hover:text-cyan-soft",
+                "group flex items-center justify-between border-b border-white/10 py-4 font-serif text-3xl transition-all",
+                isActive(l.href) ? "text-cyan" : "text-white hover:text-cyan-soft hover:pl-1.5",
               )}
               style={{ transitionDelay: open ? `${i * 40}ms` : "0ms" }}
             >
               {l.label}
+              <ArrowUpRight
+                className={cn(
+                  "h-5 w-5 transition-all",
+                  isActive(l.href)
+                    ? "text-cyan opacity-100"
+                    : "text-white/30 opacity-0 group-hover:opacity-100",
+                )}
+              />
             </Link>
           ))}
         </nav>
         <Link
           href="/contact"
-          className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-cyan px-6 py-4 text-base font-semibold text-navy-950"
+          className="relative mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-cyan px-6 py-4 text-base font-semibold text-navy-950 shadow-[0_8px_30px_rgba(79,195,247,0.35)]"
         >
           Get in touch
           <ArrowUpRight className="h-5 w-5" />
         </Link>
+        <p className="relative mt-auto pt-8 text-xs text-white/40">
+          © {new Date().getFullYear()} NBN TECH · Web · Mobile · Cloud · DevOps
+        </p>
       </div>
     </header>
   );

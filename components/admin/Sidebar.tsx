@@ -9,7 +9,8 @@ import {
   FolderKanban,
   Wrench,
   FileText,
-  MessageSquareQuote,
+  Star,
+  Inbox,
   LogOut,
   ExternalLink,
   Menu,
@@ -18,17 +19,26 @@ import {
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
-const nav = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/projects", label: "Projects", icon: FolderKanban },
-  { href: "/admin/skills", label: "Skills", icon: Wrench },
-  { href: "/admin/content", label: "Site content", icon: FileText },
-  { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
-];
-
-export function Sidebar({ email }: { email?: string | null }) {
+export function Sidebar({
+  email,
+  pendingReviews = 0,
+  unreadMessages = 0,
+}: {
+  email?: string | null;
+  pendingReviews?: number;
+  unreadMessages?: number;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  const nav = [
+    { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true, badge: 0 },
+    { href: "/admin/projects", label: "Projects", icon: FolderKanban, badge: 0 },
+    { href: "/admin/skills", label: "Skills", icon: Wrench, badge: 0 },
+    { href: "/admin/content", label: "Site content", icon: FileText, badge: 0 },
+    { href: "/admin/testimonials", label: "Reviews", icon: Star, badge: pendingReviews },
+    { href: "/admin/messages", label: "Messages", icon: Inbox, badge: unreadMessages },
+  ];
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
@@ -52,6 +62,11 @@ export function Sidebar({ email }: { email?: string | null }) {
           >
             <Icon className="h-[18px] w-[18px]" />
             {item.label}
+            {item.badge > 0 && (
+              <span className="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-cyan px-1.5 text-xs font-bold text-navy-950">
+                {item.badge}
+              </span>
+            )}
           </Link>
         );
       })}

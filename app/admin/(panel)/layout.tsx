@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { Sidebar } from "@/components/admin/Sidebar";
+import { getAdminCounts } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -17,9 +18,15 @@ export default async function AdminPanelLayout({
   const session = await auth();
   if (!session?.user) redirect("/admin/login");
 
+  const counts = await getAdminCounts();
+
   return (
     <div className="min-h-screen bg-canvas">
-      <Sidebar email={session.user.email} />
+      <Sidebar
+        email={session.user.email}
+        pendingReviews={counts.pendingReviews}
+        unreadMessages={counts.unreadMessages}
+      />
       <div className="lg:pl-64">
         <div className="mx-auto max-w-5xl px-5 py-8 sm:px-8 sm:py-12">{children}</div>
       </div>
