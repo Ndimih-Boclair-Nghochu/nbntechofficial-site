@@ -32,6 +32,7 @@ export default async function ProcessPage() {
         eyebrow="Process"
         title="Launch day should be boring."
         intro="Good engineering is mostly the removal of surprises. Here's the path every engagement follows — visible, incremental, and calm by design."
+        background="/hero/process.png"
       />
 
       {/* Timeline */}

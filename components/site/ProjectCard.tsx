@@ -8,8 +8,13 @@ export function ProjectCard({ project, priority = false }: { project: Project; p
   return (
     <Link
       href={`/work/${project.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-xl2 border border-ink-line bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-cyan/40 hover:shadow-card-hover"
+      className="group relative flex flex-col overflow-hidden rounded-xl2 border border-ink-line bg-gradient-to-b from-white to-navy-50/40 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan/40 hover:shadow-card-hover"
     >
+      {/* top accent line grows on hover */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 z-10 h-[3px] origin-left scale-x-0 bg-gradient-to-r from-cyan-deep to-cyan transition-transform duration-300 group-hover:scale-x-100"
+      />
       <div className="relative aspect-[16/10] overflow-hidden bg-navy-50">
         {project.coverImageUrl ? (
           <Image

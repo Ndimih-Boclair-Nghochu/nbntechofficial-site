@@ -57,8 +57,15 @@ export default async function ProjectDetailPage({
   return (
     <>
       {/* Header */}
-      <header className="border-b border-ink-line bg-white pt-28 pb-12 sm:pt-32">
-        <Container>
+      <header className="relative overflow-hidden border-b border-ink-line bg-canvas pt-28 pb-14 sm:pt-32">
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/hero/work.png')" }}
+        />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-canvas via-canvas/90 to-canvas/45" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-canvas" />
+        <Container className="relative">
           <Reveal className="max-w-3xl">
             <Link
               href="/work"

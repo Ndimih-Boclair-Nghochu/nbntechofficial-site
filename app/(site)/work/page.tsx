@@ -22,6 +22,7 @@ export default async function WorkPage() {
         eyebrow="Work"
         title="Selected projects."
         intro="A cross-section of engagements — web platforms, mobile apps, and the cloud infrastructure underneath them. Filter by discipline below."
+        background="/hero/work.png"
       />
 
       <section className="bg-canvas py-section">

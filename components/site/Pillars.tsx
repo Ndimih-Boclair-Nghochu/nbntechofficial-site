@@ -10,9 +10,14 @@ export function Pillars() {
         <RevealItem
           key={p.key}
           as="article"
-          className="group relative flex flex-col rounded-xl2 border border-ink-line bg-surface p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-cyan/40 hover:shadow-card-hover"
+          className="group relative flex flex-col overflow-hidden rounded-xl2 border border-ink-line bg-gradient-to-b from-white to-navy-50/50 p-6 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan/40 hover:shadow-card-hover"
         >
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-navy/5 text-navy transition-colors group-hover:bg-cyan/10 group-hover:text-cyan-deep">
+          {/* soft corner glow on hover */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-cyan/0 blur-2xl transition-colors duration-300 group-hover:bg-cyan/20"
+          />
+          <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-navy text-cyan shadow-sm transition-transform duration-300 group-hover:scale-105">
             <Icon name={p.icon} className="h-6 w-6" />
           </span>
           <h3 className="mt-5 text-lg font-semibold text-ink">{p.title}</h3>

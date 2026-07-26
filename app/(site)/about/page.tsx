@@ -42,7 +42,7 @@ export default async function AboutPage() {
 
   return (
     <>
-      <PageHeader eyebrow="About" title={content.aboutTitle} />
+      <PageHeader eyebrow="About" title={content.aboutTitle} background="/hero/about.png" />
 
       {/* Bio + photo */}
       <section className="bg-canvas py-section">

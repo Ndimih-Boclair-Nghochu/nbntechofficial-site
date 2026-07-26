@@ -8,6 +8,7 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import { SkillGrid } from "@/components/site/SkillGrid";
 import { Testimonials } from "@/components/site/Testimonials";
 import { CtaBand } from "@/components/site/CtaBand";
+import { SectionDecor } from "@/components/site/SectionDecor";
 import { Reveal } from "@/components/site/Reveal";
 import {
   getSiteContent,
@@ -37,8 +38,9 @@ export default async function HomePage() {
       />
 
       {/* About preview */}
-      <section className="bg-canvas py-section">
-        <Container>
+      <section className="relative bg-gradient-to-b from-canvas to-white py-section">
+        <SectionDecor grid glow="right" />
+        <Container className="relative">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
             <Reveal>
               <span className="eyebrow">
@@ -66,8 +68,9 @@ export default async function HomePage() {
       </section>
 
       {/* Expertise pillars */}
-      <section className="border-y border-ink-line bg-white py-section">
-        <Container>
+      <section className="relative border-y border-ink-line bg-gradient-to-br from-white via-navy-50/40 to-white py-section">
+        <SectionDecor glow="left" />
+        <Container className="relative">
           <SectionHeading
             eyebrow="What I do"
             title="Four disciplines, one engineer."
@@ -81,8 +84,9 @@ export default async function HomePage() {
 
       {/* Featured projects */}
       {featured.length > 0 && (
-        <section className="bg-canvas py-section">
-          <Container>
+        <section className="relative bg-gradient-to-b from-white to-navy-50/50 py-section">
+          <SectionDecor grid glow="both" />
+          <Container className="relative">
             <div className="flex flex-wrap items-end justify-between gap-6">
               <SectionHeading
                 eyebrow="Selected work"
@@ -110,8 +114,9 @@ export default async function HomePage() {
 
       {/* Tech stack */}
       {skills.length > 0 && (
-        <section className="border-y border-ink-line bg-white py-section">
-          <Container>
+        <section className="relative border-y border-ink-line bg-white py-section">
+          <SectionDecor grid glow="right" />
+          <Container className="relative">
             <SectionHeading
               eyebrow="Tech stack"
               title="Tools I reach for."
