@@ -1,0 +1,117 @@
+// NBN TECH — Prisma schema
+// Postgres (Neon serverless). Prisma Client is generated for the Neon adapter,
+// which is wired up in lib/prisma.ts for Vercel's serverless runtime.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// The single administrator. Only one row ever exists (created by the seed
+/// script from ADMIN_EMAIL / ADMIN_PASSWORD_HASH). There is no public signup.
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum SkillCategory {
+  Frontend
+  Backend
+  Mobile
+  CloudDevOps
+  Other
+}
+
+model Skill {
+  id          String        @id @default(cuid())
+  name        String
+  category    SkillCategory @default(Other)
+  /// 1–100; optional visual proficiency meter.
+  proficiency Int?
+  /// A lucide-react icon name (e.g. "Cloud") OR an uploaded image URL.
+  icon        String?
+  order       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([category, order])
+}
+
+enum ProjectCategory {
+  Web
+  Mobile
+  CloudDevOps
+  Other
+}
+
+model Project {
+  id            String          @id @default(cuid())
+  title         String
+  slug          String          @unique
+  /// Short one/two-line summary for cards.
+  summary       String
+  /// Long-form case study body (Markdown supported).
+  description   String
+  role          String?
+  techStack     String[]        @default([])
+  coverImageUrl String?
+  coverImageAlt String?
+  gallery       String[]        @default([])
+  liveUrl       String?
+  githubUrl     String?
+  featured      Boolean         @default(false)
+  order         Int             @default(0)
+  category      ProjectCategory @default(Web)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([category, order])
+  @@index([featured])
+}
+
+/// Singleton (single row, id = "singleton") holding all editable site-wide copy.
+/// Lets the owner update hero/about/contact/SEO text from the admin without a
+/// redeploy. Social links are stored as JSON.
+model SiteContent {
+  id                  String   @id @default("singleton")
+  heroHeadline        String   @default("")
+  heroSubheadline     String   @default("")
+  heroPhotoUrl        String?
+  heroPhotoAlt        String?
+  positioningStatement String  @default("")
+  aboutTitle          String   @default("")
+  aboutText           String   @default("")
+  aboutPhotoUrl       String?
+  aboutPhotoAlt       String?
+  contactEmail        String   @default("")
+  contactHeadline     String   @default("")
+  contactBody         String   @default("")
+  /// { "linkedin": "...", "github": "...", "x": "...", "website": "..." }
+  socialLinks         Json     @default("{}")
+  metaTitle           String   @default("")
+  metaDescription     String   @default("")
+  updatedAt           DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String?
+  quote     String
+  avatarUrl String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}

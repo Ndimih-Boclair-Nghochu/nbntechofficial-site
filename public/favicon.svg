@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NBN TECH">
+  <path d="M32 3 56 11V31C56 46 45.5 55.5 32 61 18.5 55.5 8 46 8 31V11L32 3Z" fill="#0B1E3C" stroke="#4FC3F7" stroke-width="3"/>
+  <!-- data blocks -->
+  <rect x="17" y="18" width="5" height="5" rx="1" fill="#4FC3F7"/>
+  <rect x="24" y="18" width="5" height="5" rx="1" fill="#4FC3F7" opacity="0.55"/>
+  <rect x="42" y="18" width="5" height="5" rx="1" fill="#4FC3F7" opacity="0.55"/>
+  <!-- head -->
+  <circle cx="32" cy="30" r="5" fill="#FFFFFF"/>
+  <!-- shoulders -->
+  <path d="M22 44c0-6 4.5-10 10-10s10 4 10 10v2H22v-2Z" fill="#FFFFFF"/>
+  <!-- laptop -->
+  <rect x="24" y="45" width="16" height="3" rx="1" fill="#4FC3F7"/>
+</svg>

@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: "Inter", system-ui, sans-serif;
+    --font-fraunces: "Fraunces", Georgia, serif;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-canvas text-ink-body font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif text-ink;
+    text-wrap: balance;
+  }
+
+  /* Visible, on-brand focus rings for keyboard users. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-cyan ring-offset-2 ring-offset-canvas;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: rgba(79, 195, 247, 0.28);
+    color: #07142a;
+  }
+}
+
+@layer components {
+  /* Fine cyan underline that grows on hover — used on inline nav/text links. */
+  .link-underline {
+    @apply relative inline-block;
+  }
+  .link-underline::after {
+    content: "";
+    @apply absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-0 bg-cyan transition-transform duration-300 ease-out;
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    @apply scale-x-100;
+  }
+
+  .tag {
+    @apply inline-flex items-center rounded-full border border-cyan/30 bg-cyan/5 px-2.5 py-0.5 text-xs font-medium tracking-wide text-cyan-deep;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-deep;
+  }
+
+  /* Shared form control — contact form and admin panel. */
+  .nbn-input {
+    @apply block w-full rounded-lg border border-ink-line bg-white px-4 py-2.5 text-sm text-ink shadow-sm transition-colors placeholder:text-ink-muted/70 focus:border-cyan focus:outline-none focus:ring-2 focus:ring-cyan/30;
+  }
+  .nbn-label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+
+  /* Prose styling for markdown case studies. */
+  .prose-nbn {
+    @apply text-ink-body leading-relaxed;
+  }
+  .prose-nbn h2 {
+    @apply mt-10 mb-3 text-2xl font-semibold text-ink;
+  }
+  .prose-nbn h3 {
+    @apply mt-8 mb-2 text-xl font-semibold text-ink;
+  }
+  .prose-nbn p {
+    @apply my-4 max-w-prose;
+  }
+  .prose-nbn ul {
+    @apply my-4 max-w-prose list-disc space-y-1.5 pl-5 marker:text-cyan;
+  }
+  .prose-nbn strong {
+    @apply font-semibold text-ink;
+  }
+  .prose-nbn a {
+    @apply text-cyan-deep underline underline-offset-2;
+  }
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Thin, brand-tinted scrollbar. */
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border: 3px solid transparent;
+  border-radius: 9999px;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; background-clip: content-box; }
