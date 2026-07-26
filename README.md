@@ -110,18 +110,30 @@ cp .env.example .env
 | `DATABASE_URL`          | Neon **pooled** connection string (host has `-pooler`)           |
 | `DIRECT_URL`            | Neon **direct** string for migrations (optional)                 |
 | `AUTH_SECRET`           | Random secret — `openssl rand -base64 32`                        |
-| `ADMIN_EMAIL`           | The single admin's email                                         |
+| `ADMIN_EMAIL`           | The single admin's email (yours — set it to anything)            |
 | `ADMIN_NAME`            | Display name                                                     |
-| `ADMIN_PASSWORD_HASH`   | bcrypt hash of the admin password (see below)                    |
+| `ADMIN_PASSWORD`        | Your admin password in plaintext (hashed for you at seed time)   |
+| `ADMIN_PASSWORD_HASH`   | *(alternative)* a pre-computed bcrypt hash — see below           |
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (for image uploads)                            |
 | `NEXT_PUBLIC_SITE_URL`  | Production URL, e.g. `https://nbntech.dev`                       |
 
-Generate the password hash:
+### Setting your admin email & password
 
-```bash
-npm run hash -- "your-strong-password"
-# → prints ADMIN_PASSWORD_HASH="$2a$12$…"  — paste it into .env
-```
+You own these values — set them yourself in env vars. Pick **one** password option:
+
+- **Simplest —** set `ADMIN_EMAIL` and `ADMIN_PASSWORD` (plaintext). The seed
+  script bcrypt-hashes the password before storing it; you log in with that
+  password. Nothing else to do.
+- **Most secure —** leave `ADMIN_PASSWORD` blank and instead pre-compute a hash
+  so the plaintext never lives in env:
+
+  ```bash
+  npm run hash -- "your-strong-password"
+  # → prints ADMIN_PASSWORD_HASH="$2a$12$…"  — paste that into ADMIN_PASSWORD_HASH
+  ```
+
+If both are set, `ADMIN_PASSWORD_HASH` takes precedence. After changing either,
+re-run `npm run db:seed` to update the stored admin.
 
 ### 3. Database — migrate & seed
 

@@ -26,13 +26,24 @@ const prisma = new PrismaClient({ adapter });
 async function seedAdmin() {
   const email = (process.env.ADMIN_EMAIL || "admin@nbntech.dev").toLowerCase();
   const name = process.env.ADMIN_NAME || "NBN TECH Admin";
-  let passwordHash = process.env.ADMIN_PASSWORD_HASH;
 
-  if (!passwordHash) {
+  // Password precedence:
+  //  1. ADMIN_PASSWORD_HASH — a pre-computed bcrypt hash (most secure; the
+  //     plaintext never lives in env). Generate with: npm run hash -- "pw"
+  //  2. ADMIN_PASSWORD — your plaintext password; hashed here at seed time so
+  //     you can set email + password directly in env with no extra step.
+  //  3. Fallback temporary password (local dev only).
+  let passwordHash: string;
+  if (process.env.ADMIN_PASSWORD_HASH) {
+    passwordHash = process.env.ADMIN_PASSWORD_HASH;
+  } else if (process.env.ADMIN_PASSWORD) {
+    passwordHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD, 12);
+    console.log("✔ Hashed ADMIN_PASSWORD from env.");
+  } else {
     // Fallback for first-run local dev only — CHANGE THIS in production.
     passwordHash = bcrypt.hashSync("changeme-please", 12);
     console.warn(
-      "⚠  ADMIN_PASSWORD_HASH not set — seeded a temporary password 'changeme-please'. Set a real hash before deploying.",
+      "⚠  Neither ADMIN_PASSWORD_HASH nor ADMIN_PASSWORD set — seeded a temporary password 'changeme-please'. Set one before deploying.",
     );
   }
 
