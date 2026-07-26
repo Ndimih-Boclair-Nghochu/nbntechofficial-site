@@ -10,6 +10,7 @@ const filters = [
   { key: "all", label: "All" },
   { key: "Web", label: "Web" },
   { key: "Mobile", label: "Mobile" },
+  { key: "Desktop", label: "Desktop" },
   { key: "CloudDevOps", label: "Cloud & DevOps" },
   { key: "Other", label: "Other" },
 ] as const;

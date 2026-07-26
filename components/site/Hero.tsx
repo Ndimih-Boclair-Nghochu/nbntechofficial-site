@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
 const pillars = ["Web", "Mobile", "Cloud", "DevOps"];
@@ -46,7 +45,8 @@ export function Hero({
       ref={ref}
       className="relative flex min-h-[92vh] items-center overflow-hidden bg-navy-950 text-white"
     >
-      {/* Background photo (optional) with navy duotone overlay */}
+      {/* Background photo (optional) — kept clearly visible with a directional
+          navy scrim that only darkens the text side. */}
       {photoUrl ? (
         <>
           <Image
@@ -55,15 +55,16 @@ export function Hero({
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center opacity-40 mix-blend-luminosity"
+            className="object-cover object-center opacity-[0.72]"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-950/85 to-navy-900/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-950/95 via-navy-950/70 to-navy-900/35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-navy-950/30" />
         </>
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-950" />
       )}
 
-      {/* Decorative animated grid + glow (signature moment) */}
+      {/* Soft glow accents (no grid / squares) */}
       <HeroDecor parallax={parallax} reduce={!!reduce} />
 
       <Container className="relative z-10 py-28">
@@ -164,62 +165,17 @@ function HeroDecor({
 
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
-      {/* grid */}
-      <div
-        className="absolute inset-0 opacity-[0.12]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #4FC3F7 1px, transparent 1px), linear-gradient(to bottom, #4FC3F7 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage: "radial-gradient(ellipse 80% 60% at 70% 40%, black, transparent)",
-          WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 70% 40%, black, transparent)",
-        }}
-      />
-      {/* glowing orbs */}
+      {/* soft glow accents only — no grid, no squares */}
       <motion.div
         animate={shift(-30)}
         transition={{ type: "spring", stiffness: 40, damping: 20 }}
-        className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-cyan/20 blur-3xl"
+        className="absolute right-[6%] top-[16%] h-80 w-80 rounded-full bg-cyan/20 blur-3xl"
       />
       <motion.div
         animate={shift(20)}
         transition={{ type: "spring", stiffness: 40, damping: 20 }}
-        className="absolute right-[28%] bottom-[12%] h-56 w-56 rounded-full bg-cyan-deep/20 blur-3xl"
+        className="absolute right-[26%] bottom-[10%] h-56 w-56 rounded-full bg-cyan-deep/15 blur-3xl"
       />
-
-      {/* floating data blocks — echoes the logo motif */}
-      {!reduce && (
-        <motion.div
-          animate={shift(-16)}
-          transition={{ type: "spring", stiffness: 40, damping: 20 }}
-          className="absolute right-[10%] top-1/2 hidden -translate-y-1/2 lg:block"
-        >
-          <div className="relative h-64 w-64">
-            {[
-              { d: 0, cls: "left-0 top-4 h-14 w-14" },
-              { d: 1, cls: "left-16 top-0 h-10 w-10 opacity-70" },
-              { d: 2, cls: "right-6 top-10 h-12 w-12 opacity-60" },
-              { d: 3, cls: "left-8 bottom-8 h-16 w-16 opacity-80" },
-              { d: 4, cls: "right-0 bottom-0 h-10 w-10 opacity-50" },
-            ].map((b) => (
-              <motion.span
-                key={b.d}
-                animate={{ y: [0, -10, 0] }}
-                transition={{
-                  duration: 3 + b.d * 0.4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: b.d * 0.3,
-                }}
-                className={cn(
-                  "absolute rounded-lg border border-cyan/40 bg-cyan/10 backdrop-blur-sm",
-                  b.cls,
-                )}
-              />
-            ))}
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 }

@@ -63,7 +63,7 @@ export default async function AboutPage() {
                     alt={content.aboutPhotoAlt || "The engineer behind NBN TECH"}
                     fill
                     sizes="(max-width: 1024px) 100vw, 40vw"
-                    className="object-cover"
+                    className="object-cover object-center"
                   />
                 ) : (
                   <CoverFallback title="NBN TECH" />

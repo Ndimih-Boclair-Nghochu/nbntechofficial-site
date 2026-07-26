@@ -48,21 +48,34 @@ export function SplashScreen() {
     const total = reduce ? 900 : BRAND.length * TYPE_SPEED + 900;
     const start = performance.now();
     let raf = 0;
+    let done = false;
+
+    const dismiss = () => {
+      if (done) return;
+      done = true;
+      sessionStorage.setItem("nbn_splash_seen", "1");
+      document.body.style.overflow = "";
+      setShow(false);
+    };
+
     const tick = (now: number) => {
       const p = Math.min(100, ((now - start) / total) * 100);
       setProgress(p);
-      if (p < 100) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        setTimeout(() => {
-          sessionStorage.setItem("nbn_splash_seen", "1");
-          document.body.style.overflow = "";
-          setShow(false);
-        }, HOLD_AFTER);
-      }
+      if (p < 100) raf = requestAnimationFrame(tick);
+      else setTimeout(dismiss, HOLD_AFTER);
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+
+    // Safety net: always dismiss even if rAF is throttled (e.g. background tab).
+    const hardStop = setTimeout(() => {
+      setProgress(100);
+      dismiss();
+    }, total + HOLD_AFTER + 1500);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(hardStop);
+    };
   }, [show, reduce]);
 
   return (

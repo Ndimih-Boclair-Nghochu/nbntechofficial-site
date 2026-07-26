@@ -50,6 +50,7 @@ model Skill {
 enum ProjectCategory {
   Web
   Mobile
+  Desktop
   CloudDevOps
   Other
 }

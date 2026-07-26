@@ -26,6 +26,8 @@ export function categoryLabel(value: string): string {
       return "Web";
     case "Mobile":
       return "Mobile";
+    case "Desktop":
+      return "Desktop";
     case "Frontend":
       return "Frontend";
     case "Backend":

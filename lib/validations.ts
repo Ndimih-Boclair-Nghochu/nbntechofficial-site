@@ -13,7 +13,7 @@ export const skillCategories = [
   "Other",
 ] as const;
 
-export const projectCategories = ["Web", "Mobile", "CloudDevOps", "Other"] as const;
+export const projectCategories = ["Web", "Mobile", "Desktop", "CloudDevOps", "Other"] as const;
 
 const optionalUrl = z
   .string()
