@@ -1,27 +1,31 @@
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
-import ws from "ws";
 
 /**
- * Prisma client wired to the Neon serverless driver.
+ * Prisma client using the native connection (Rust query engine over TCP+SSL).
  *
- * The Neon adapter uses WebSockets, which is what lets Prisma work inside
- * Vercel's serverless / edge-adjacent runtime without exhausting connections.
- * In Node (local dev, migrations) we hand Neon the `ws` polyfill.
+ * We previously used the Neon WebSocket serverless adapter, but it failed on
+ * Vercel with "Connection terminated unexpectedly" against the pooled endpoint.
+ * The native connection is more reliable here. For Neon's pooled (PgBouncer)
+ * endpoint we append `pgbouncer=true` so Prisma disables prepared statements,
+ * which PgBouncer's transaction pooling doesn't support.
  */
-neonConfig.webSocketConstructor = ws;
-
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+function resolveDatasourceUrl(): string | undefined {
+  let url = process.env.DATABASE_URL;
+  if (!url) return undefined;
+  const isPooled = url.includes("-pooler");
+  if (isPooled && !/[?&]pgbouncer=/.test(url)) {
+    url += (url.includes("?") ? "&" : "?") + "pgbouncer=true";
+  }
+  return url;
+}
+
 function createPrismaClient(): PrismaClient {
-  const connectionString = process.env.DATABASE_URL;
-  const pool = new Pool({ connectionString });
-  const adapter = new PrismaNeon(pool);
   return new PrismaClient({
-    adapter,
+    datasourceUrl: resolveDatasourceUrl(),
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 }
