@@ -32,17 +32,17 @@ export default async function ReviewsPage() {
         intro="Real words from clients and collaborators. Worked with me before? Add yours below — it appears once approved."
         background="/photos/contact.jpg"
       >
-        <div className="mt-7 flex flex-wrap items-center gap-4">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
           <Link
             href="#write-review"
-            className="inline-flex items-center gap-2 rounded-full bg-cyan px-6 py-3 text-sm font-semibold text-navy-950 shadow-[0_8px_30px_rgba(47,180,154,0.35)] transition-colors hover:bg-cyan-soft"
+            className="inline-flex items-center gap-2 rounded-lg bg-cyan px-6 py-3 text-sm font-semibold text-navy-950 shadow-[0_8px_30px_rgba(47,180,154,0.35)] transition-colors hover:bg-cyan-soft"
           >
             <PenLine className="h-4 w-4" /> Write a review
           </Link>
           {avg && (
-            <span className="inline-flex items-center gap-2 text-sm text-ink-body">
+            <span className="inline-flex items-center gap-2 text-sm text-white/75">
               <Stars value={Math.round(Number(avg))} />
-              <strong className="text-ink">{avg}</strong> · {reviews.length} review
+              <strong className="text-white">{avg}</strong> · {reviews.length} review
               {reviews.length === 1 ? "" : "s"}
             </span>
           )}

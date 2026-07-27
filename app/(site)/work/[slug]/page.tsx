@@ -56,36 +56,39 @@ export default async function ProjectDetailPage({
 
   return (
     <>
-      {/* Header */}
-      <header className="relative overflow-hidden border-b border-ink-line bg-canvas pt-28 pb-14 sm:pt-32">
+      {/* Header — dark indigo overlay, matching the home hero */}
+      <header className="relative overflow-hidden bg-navy-950 pt-28 pb-14 text-white sm:pt-32">
         <div
           aria-hidden
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/photos/work.jpg')" }}
         />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-canvas via-canvas/90 to-canvas/45" />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-navy-950/92 via-navy-950/70 to-navy-950/40" />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/20 to-navy-950/50" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-canvas" />
         <Container className="relative">
           <Reveal className="max-w-3xl">
             <Link
               href="/work"
-              className="group inline-flex items-center gap-2 text-sm font-medium text-ink-muted hover:text-cyan-deep"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-cyan"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
               All work
             </Link>
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <span className="tag">{categoryLabel(project.category)}</span>
+              <span className="inline-flex items-center rounded-full border border-cyan/40 bg-cyan/10 px-2.5 py-0.5 text-xs font-medium tracking-wide text-cyan">
+                {categoryLabel(project.category)}
+              </span>
               {project.featured && (
-                <span className="text-xs font-medium uppercase tracking-wider text-cyan-deep">
+                <span className="text-xs font-medium uppercase tracking-wider text-cyan">
                   Featured
                 </span>
               )}
             </div>
-            <h1 className="mt-4 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+            <h1 className="mt-4 text-[2rem] font-bold leading-tight tracking-tight text-white sm:text-5xl">
               {project.title}
             </h1>
-            <p className="mt-5 text-lg leading-relaxed text-ink-body">{project.summary}</p>
+            <p className="mt-5 text-lg leading-relaxed text-white/75">{project.summary}</p>
 
             <div className="mt-7 flex flex-wrap gap-3">
               {project.liveUrl && (
@@ -93,7 +96,7 @@ export default async function ProjectDetailPage({
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-navy-700"
+                  className="inline-flex items-center gap-2 rounded-lg bg-cyan px-5 py-2.5 text-sm font-semibold text-navy-950 transition-colors hover:bg-cyan-soft"
                 >
                   Visit live site
                   <ExternalLink className="h-4 w-4" />
@@ -104,7 +107,7 @@ export default async function ProjectDetailPage({
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-ink-line bg-white px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-cyan hover:text-cyan-deep"
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/25 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
                 >
                   <Github className="h-4 w-4" />
                   Source
