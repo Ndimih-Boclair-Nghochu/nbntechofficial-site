@@ -112,11 +112,12 @@ export function Navbar() {
             }}
           />
           <div className="relative flex items-center justify-between border-b border-white/10 px-5 py-4">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan">Menu</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-mark.png" alt="NBN TECH" className="h-9 w-auto" />
             <button
               onClick={() => setOpen(false)}
               aria-label="Close menu"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/10 hover:text-white"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             >
               <X className="h-5 w-5" />
             </button>
@@ -146,7 +147,7 @@ export function Navbar() {
           <div className="relative mt-auto px-5 pb-8 pt-6">
             <Link
               href="/contact"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cyan px-6 py-4 text-base font-semibold text-navy-950 shadow-[0_8px_30px_rgba(47,180,154,0.35)]"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cyan px-6 py-4 text-base font-semibold text-navy-950 shadow-[0_8px_30px_rgba(47,180,154,0.35)]"
             >
               Get in touch
               <ArrowUpRight className="h-5 w-5" />

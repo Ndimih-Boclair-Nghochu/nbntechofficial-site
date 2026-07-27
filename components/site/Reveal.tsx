@@ -22,11 +22,11 @@ export function Reveal({
   const MotionTag = motion[as];
 
   const variants: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : 18 },
+    hidden: { opacity: 0, y: reduce ? 0 : 34 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay },
+      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
     },
   };
 
@@ -35,7 +35,7 @@ export function Reveal({
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-70px" }}
       variants={variants}
     >
       {children}
@@ -84,8 +84,13 @@ export function RevealItem({
     <MotionTag
       className={className}
       variants={{
-        hidden: { opacity: 0, y: reduce ? 0 : 16 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+        hidden: { opacity: 0, y: reduce ? 0 : 26, scale: reduce ? 1 : 0.97 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+        },
       }}
     >
       {children}

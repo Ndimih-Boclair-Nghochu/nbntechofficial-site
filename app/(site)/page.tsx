@@ -7,7 +7,7 @@ import { Pillars } from "@/components/site/Pillars";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { FeaturedProjects } from "@/components/site/FeaturedProjects";
 import { SkillGrid } from "@/components/site/SkillGrid";
-import { ReviewsMarquee } from "@/components/site/ReviewsMarquee";
+import { ReviewsMarquee, REVIEWS_BAND } from "@/components/site/ReviewsMarquee";
 import { ValuesMarquee } from "@/components/site/ValuesMarquee";
 import { Faq } from "@/components/site/Faq";
 import { CtaBand } from "@/components/site/CtaBand";
@@ -67,18 +67,18 @@ export default async function HomePage() {
             </Reveal>
 
             {/* narrative */}
-            <Reveal delay={0.1} className="order-1 lg:order-2">
-              <span className="eyebrow">
+            <Reveal delay={0.1} className="order-1 text-center lg:order-2 lg:text-left">
+              <span className="eyebrow justify-center lg:justify-start">
                 <span className="h-px w-6 bg-current opacity-60" />
                 About
               </span>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+              <h2 className="mt-4 text-[1.7rem] font-bold leading-tight tracking-tight text-ink sm:text-3xl lg:text-4xl">
                 {content.aboutTitle}
               </h2>
-              <p className="mt-5 text-lg leading-relaxed text-ink-body">
+              <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-body sm:text-lg lg:mx-0">
                 {content.aboutText.split("\n\n")[0]}
               </p>
-              <ul className="mt-7 grid gap-3 sm:grid-cols-3">
+              <ul className="mt-7 grid gap-3 text-left sm:grid-cols-3">
                 {["End-to-end ownership", "Production-grade code", "Calm, boring launches"].map((h) => (
                   <li
                     key={h}
@@ -161,24 +161,21 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Reviews — rotating marquee on navy */}
+      {/* Reviews — rotating marquee on a light-blue band */}
       {reviews.length > 0 && (
-        <section className="relative overflow-hidden bg-navy-950 py-section text-white">
-          {/* top fade blends from the light section above */}
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/10 to-transparent" />
+        <section className="relative overflow-hidden py-section" style={{ backgroundColor: REVIEWS_BAND }}>
           <Container className="relative">
-            <div className="flex flex-wrap items-end justify-between gap-6">
+            <div className="flex flex-col items-center gap-6 text-center lg:flex-row lg:items-end lg:justify-between lg:text-left">
               <SectionHeading
                 eyebrow="Reviews"
                 title="Words from the people I've built for."
-                variant="light"
               />
               <Reveal delay={0.1}>
                 <Link
                   href="/reviews"
-                  className="group inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
+                  className="group inline-flex items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-700"
                 >
-                  <PenLine className="h-4 w-4" /> Read all & add yours
+                  <PenLine className="h-4 w-4" /> Read all &amp; add yours
                 </Link>
               </Reveal>
             </div>
@@ -187,8 +184,8 @@ export default async function HomePage() {
             <ReviewsMarquee items={reviews} />
           </div>
           <Container className="relative mt-10 flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70">
-              <Star className="h-4 w-4 fill-cyan text-cyan" /> Trusted by founders & product teams
+            <span className="inline-flex items-center gap-2 rounded-full border border-navy/10 bg-white/70 px-4 py-2 text-sm font-medium text-navy">
+              <Star className="h-4 w-4 fill-cyan text-cyan" /> Trusted by founders &amp; product teams
             </span>
           </Container>
         </section>

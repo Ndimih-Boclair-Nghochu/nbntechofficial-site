@@ -3,17 +3,20 @@ import { Quote } from "lucide-react";
 import type { Testimonial } from "@prisma/client";
 import { Stars } from "@/components/site/StarRating";
 
+/** Background colour of the reviews band — used for the marquee edge fades too. */
+export const REVIEWS_BAND = "#BCD2EF";
+
 function ReviewCard({ t }: { t: Testimonial }) {
   return (
-    <figure className="flex w-[340px] shrink-0 flex-col rounded-xl2 border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm sm:w-[380px]">
+    <figure className="flex w-[320px] shrink-0 flex-col rounded-xl2 border border-white/70 bg-white p-6 shadow-card sm:w-[380px]">
       <div className="flex items-center justify-between">
         <Quote className="h-7 w-7 text-cyan/50" aria-hidden />
         <Stars value={t.rating} />
       </div>
-      <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-white/90">
+      <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-ink-body">
         &ldquo;{t.quote}&rdquo;
       </blockquote>
-      <figcaption className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+      <figcaption className="mt-5 flex items-center gap-3 border-t border-ink-line pt-4">
         {t.avatarUrl ? (
           <Image
             src={t.avatarUrl}
@@ -23,13 +26,13 @@ function ReviewCard({ t }: { t: Testimonial }) {
             className="h-10 w-10 rounded-full object-cover"
           />
         ) : (
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-cyan/15 font-serif font-semibold text-cyan">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-cyan/15 font-semibold text-cyan-deep">
             {t.name.charAt(0)}
           </span>
         )}
         <div>
-          <p className="text-sm font-semibold text-white">{t.name}</p>
-          {t.role && <p className="text-xs text-white/55">{t.role}</p>}
+          <p className="text-sm font-semibold text-ink">{t.name}</p>
+          {t.role && <p className="text-xs text-ink-muted">{t.role}</p>}
         </div>
       </figcaption>
     </figure>
@@ -37,23 +40,26 @@ function ReviewCard({ t }: { t: Testimonial }) {
 }
 
 /**
- * Continuously scrolling reviews (left → right), seamless via a duplicated
- * track. Pauses on hover. Edges fade out. Falls back to a static row when there
- * are only a couple of reviews.
+ * Continuously scrolling reviews, seamless via a duplicated track. Edges fade
+ * into the light-blue band.
  */
 export function ReviewsMarquee({ items }: { items: Testimonial[] }) {
   if (!items.length) return null;
 
-  // Duplicate for a seamless loop; ensure enough cards to fill wide screens.
   const base = items.length < 4 ? [...items, ...items, ...items] : items;
   const track = [...base, ...base];
   const duration = Math.max(28, base.length * 7);
 
   return (
     <div className="nbn-marquee relative overflow-hidden">
-      {/* edge fades */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-navy-950 to-transparent sm:w-28" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-navy-950 to-transparent sm:w-28" />
+      <div
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 sm:w-28"
+        style={{ background: `linear-gradient(to right, ${REVIEWS_BAND}, transparent)` }}
+      />
+      <div
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 sm:w-28"
+        style={{ background: `linear-gradient(to left, ${REVIEWS_BAND}, transparent)` }}
+      />
       <div className="nbn-marquee-track gap-5 py-1" style={{ ["--marquee-duration" as string]: `${duration}s` }}>
         {track.map((t, i) => (
           <ReviewCard key={`${t.id}-${i}`} t={t} />

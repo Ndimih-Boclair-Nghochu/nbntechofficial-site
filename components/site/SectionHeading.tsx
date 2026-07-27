@@ -17,23 +17,31 @@ export function SectionHeading({
   variant?: "dark" | "light";
   className?: string;
 }) {
+  // Headings/eyebrows center on mobile, left-align from lg up (unless forced center).
+  const centered = align === "center";
   return (
     <Reveal
       className={cn(
         "max-w-2xl",
-        align === "center" && "mx-auto text-center",
+        centered ? "mx-auto text-center" : "mx-auto text-center lg:mx-0 lg:text-left",
         className,
       )}
     >
       {eyebrow && (
-        <span className={cn("eyebrow", variant === "light" && "text-cyan")}>
+        <span
+          className={cn(
+            "eyebrow justify-center lg:justify-start",
+            centered && "justify-center",
+            variant === "light" && "text-cyan",
+          )}
+        >
           <span className="h-px w-6 bg-current opacity-60" />
           {eyebrow}
         </span>
       )}
       <h2
         className={cn(
-          "mt-4 text-3xl font-semibold tracking-tight sm:text-4xl",
+          "mt-4 text-[1.7rem] font-bold leading-tight tracking-tight sm:text-3xl lg:text-4xl",
           variant === "light" ? "text-white" : "text-ink",
         )}
       >
@@ -42,7 +50,7 @@ export function SectionHeading({
       {intro && (
         <p
           className={cn(
-            "mt-4 text-lg leading-relaxed",
+            "mt-4 text-base leading-relaxed sm:text-lg",
             variant === "light" ? "text-white/70" : "text-ink-body",
           )}
         >
