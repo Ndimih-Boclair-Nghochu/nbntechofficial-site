@@ -3,11 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { useEffect, useRef, useState } from "react";
 
 const pillars = ["Web", "Mobile", "Cloud", "DevOps"];
+const floatChips = [
+  { label: "React · Next.js", cls: "left-2 top-10" },
+  { label: "AWS · DevOps", cls: "right-0 top-1/3" },
+  { label: "React Native", cls: "left-0 bottom-16" },
+];
 
 export function Hero({
   headline,
@@ -23,121 +27,65 @@ export function Hero({
   photoAlt?: string;
 }) {
   const reduce = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-  const [parallax, setParallax] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    if (reduce) return;
-    const el = ref.current;
-    if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
-      setParallax({ x: px, y: py });
-    };
-    el.addEventListener("mousemove", onMove);
-    return () => el.removeEventListener("mousemove", onMove);
-  }, [reduce]);
+  const fade = (delay: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 20 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const },
+        };
 
   return (
-    <section
-      ref={ref}
-      className="relative flex min-h-[88vh] items-center overflow-hidden bg-navy-950 text-white"
-    >
-      {/* Background photo (optional) — kept clearly visible with a directional
-          navy scrim that only darkens the text side. */}
-      {photoUrl ? (
-        <>
-          <Image
-            src={photoUrl}
-            alt={photoAlt || ""}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-          {/* Readable on the left, image stays clearly visible toward the right */}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-950/55 to-navy-950/10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/75 via-navy-950/5 to-navy-950/20" />
-        </>
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-950" />
-      )}
+    <section className="relative overflow-hidden bg-navy-950 text-white">
+      {/* hooyia-style indigo gradient + radial glows */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 18% 20%, rgba(255,255,255,0.06), transparent 30%), radial-gradient(circle at 82% 15%, rgba(47,180,154,0.20), transparent 32%), linear-gradient(135deg, #04045E 0%, #050572 55%, #062F6F 100%)",
+        }}
+      />
+      <div aria-hidden className="absolute right-[-6%] bottom-[-10%] h-96 w-96 rounded-full bg-cyan/15 blur-3xl" />
 
-      {/* Soft glow accents (no grid / squares) */}
-      <HeroDecor parallax={parallax} reduce={!!reduce} />
-
-      <Container className="relative z-10 py-28">
-        <div className="max-w-3xl">
+      <Container className="relative z-10 grid items-center gap-12 pb-20 pt-32 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:pb-28 lg:pt-40">
+        {/* Left: copy */}
+        <div className="max-w-xl">
           <motion.span
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium tracking-wide text-cyan-soft backdrop-blur-sm"
+            {...fade(0)}
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-soft backdrop-blur-sm"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
-            </span>
+            <Sparkles className="h-3.5 w-3.5" />
             Available for new engagements
           </motion.span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.08 }}
-            className="mt-6 text-hero font-semibold text-white"
-          >
+          <motion.h1 {...fade(0.08)} className="mt-6 text-hero font-bold text-white">
             {headline}
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.16 }}
-            className="mt-6 max-w-xl text-lg leading-relaxed text-white/70"
-          >
+          <motion.p {...fade(0.16)} className="mt-6 text-lg leading-relaxed text-white/70">
             {subheadline}
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.24 }}
-            className="mt-9 flex flex-wrap items-center gap-3"
-          >
+          <motion.div {...fade(0.24)} className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               href="/work"
-              className="group inline-flex items-center gap-2 rounded-lg bg-cyan px-7 py-3.5 text-base font-semibold text-navy-950 transition-colors hover:bg-cyan-soft"
+              className="group inline-flex items-center gap-2 rounded-lg bg-cyan px-7 py-3.5 text-base font-semibold text-navy-950 shadow-glow transition-colors hover:bg-cyan-soft"
             >
               View my work
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-2 rounded-lg border border-white/20 px-7 py-3.5 text-base font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
+              className="group inline-flex items-center gap-2 rounded-lg border border-white/25 px-7 py-3.5 text-base font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
             >
               Get in touch
               <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-12 text-sm text-white/50"
-          >
-            {positioning}
-          </motion.p>
-
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-4 flex flex-wrap gap-x-6 gap-y-2"
-          >
+          <motion.ul {...fade(0.36)} className="mt-10 flex flex-wrap gap-x-6 gap-y-2">
             {pillars.map((p) => (
               <li key={p} className="flex items-center gap-2 text-sm font-medium text-white/80">
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan" />
@@ -146,37 +94,47 @@ export function Hero({
             ))}
           </motion.ul>
         </div>
+
+        {/* Right: framed portrait so the face is always fully visible */}
+        <motion.div
+          initial={reduce ? undefined : { opacity: 0, scale: 0.96 }}
+          animate={reduce ? undefined : { opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto w-full max-w-md lg:max-w-none"
+        >
+          {/* glow ring */}
+          <div aria-hidden className="absolute -inset-4 rounded-[2rem] bg-gradient-to-tr from-cyan/25 to-iris/25 blur-2xl" />
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/5 shadow-2xl">
+            <Image
+              src={photoUrl || "/photos/hero.jpg"}
+              alt={photoAlt || "Portrait of the founder of NBN TECH"}
+              fill
+              priority
+              sizes="(max-width: 1024px) 90vw, 45vw"
+              className="object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy-950/40 via-transparent to-transparent" />
+          </div>
+
+          {/* floating tech chips (hooyia-style dynamism) */}
+          {!reduce &&
+            floatChips.map((c, i) => (
+              <motion.span
+                key={c.label}
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3.4 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
+                className={`absolute ${c.cls} hidden rounded-lg border border-white/15 bg-navy-900/80 px-3 py-1.5 text-xs font-medium text-cyan-soft shadow-lg backdrop-blur-sm sm:inline-flex`}
+              >
+                {c.label}
+              </motion.span>
+            ))}
+
+          {/* positioning statement card */}
+          <div className="absolute -bottom-5 left-1/2 w-[86%] -translate-x-1/2 rounded-xl border border-white/10 bg-navy-900/90 px-5 py-3 text-center text-sm text-white/75 shadow-xl backdrop-blur-sm">
+            {positioning}
+          </div>
+        </motion.div>
       </Container>
-
-      {/* bottom fade into the light body */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-canvas/0" />
     </section>
-  );
-}
-
-function HeroDecor({
-  parallax,
-  reduce,
-}: {
-  parallax: { x: number; y: number };
-  reduce: boolean;
-}) {
-  const shift = (depth: number) =>
-    reduce ? {} : { x: parallax.x * depth, y: parallax.y * depth };
-
-  return (
-    <div aria-hidden className="absolute inset-0 overflow-hidden">
-      {/* soft glow accents only — no grid, no squares */}
-      <motion.div
-        animate={shift(-30)}
-        transition={{ type: "spring", stiffness: 40, damping: 20 }}
-        className="absolute right-[6%] top-[16%] h-80 w-80 rounded-full bg-cyan/20 blur-3xl"
-      />
-      <motion.div
-        animate={shift(20)}
-        transition={{ type: "spring", stiffness: 40, damping: 20 }}
-        className="absolute right-[26%] bottom-[10%] h-56 w-56 rounded-full bg-cyan-deep/15 blur-3xl"
-      />
-    </div>
   );
 }
