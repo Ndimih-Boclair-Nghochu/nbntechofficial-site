@@ -45,15 +45,19 @@ export function formatDate(date: Date | string): string {
   });
 }
 
+/** The site's canonical production domain. */
+export const SITE_DOMAIN = "https://www.ndimihboclair.com";
+
 /** Absolute site origin, safe on server and client. Prefers an explicit
- *  NEXT_PUBLIC_SITE_URL, then Vercel's stable production domain, then the
- *  per-deployment URL, so canonical/OG URLs stay consistent for SEO. */
+ *  NEXT_PUBLIC_SITE_URL; on Vercel production it uses the canonical custom
+ *  domain; preview deployments use their per-deployment URL; else localhost.
+ *  Keeps canonical/OG/sitemap/JSON-LD URLs consistent for SEO. */
 export function siteUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   }
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (process.env.VERCEL_ENV === "production") {
+    return SITE_DOMAIN;
   }
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
