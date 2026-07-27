@@ -45,10 +45,15 @@ export function formatDate(date: Date | string): string {
   });
 }
 
-/** Absolute site origin, safe on server and client. */
+/** Absolute site origin, safe on server and client. Prefers an explicit
+ *  NEXT_PUBLIC_SITE_URL, then Vercel's stable production domain, then the
+ *  per-deployment URL, so canonical/OG URLs stay consistent for SEO. */
 export function siteUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
   }
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;

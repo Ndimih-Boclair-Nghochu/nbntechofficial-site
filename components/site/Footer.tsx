@@ -78,8 +78,8 @@ export function Footer({ content }: { content: ResolvedSiteContent }) {
         </div>
 
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:items-center">
-          <p>© {year} NBN TECH. All rights reserved.</p>
-          <p>Web · Mobile · Cloud · DevOps</p>
+          <p>© {year} NBN TECH — Ndimih Boclair Nghochu. All rights reserved.</p>
+          <p>Software Engineer · Web · Mobile · Cloud · DevOps</p>
         </div>
       </Container>
     </footer>
