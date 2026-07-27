@@ -59,9 +59,9 @@ export default async function HomePage() {
                     className="object-cover object-top"
                   />
                 </div>
-                <div className="absolute -right-3 bottom-8 hidden rounded-xl border border-ink-line bg-white px-5 py-3 shadow-card sm:block">
-                  <p className="text-xl font-bold text-navy">Full-stack</p>
-                  <p className="text-xs text-ink-muted">web · mobile · cloud · devops</p>
+                <div className="absolute bottom-4 right-2 rounded-xl border border-ink-line bg-white px-4 py-2.5 shadow-card sm:-right-3 sm:bottom-8 sm:px-5 sm:py-3">
+                  <p className="text-lg font-bold text-navy sm:text-xl">Full-stack</p>
+                  <p className="text-[11px] text-ink-muted sm:text-xs">web · mobile · cloud · devops</p>
                 </div>
               </div>
             </Reveal>
@@ -72,7 +72,7 @@ export default async function HomePage() {
                 <span className="h-px w-6 bg-current opacity-60" />
                 About
               </span>
-              <h2 className="mt-4 text-[1.7rem] font-bold leading-tight tracking-tight text-ink sm:text-3xl lg:text-4xl">
+              <h2 className="mt-4 whitespace-nowrap text-[clamp(1.15rem,5.6vw,2.5rem)] font-bold leading-tight tracking-tight text-ink">
                 {content.aboutTitle}
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-body sm:text-lg lg:mx-0">

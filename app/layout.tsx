@@ -39,6 +39,9 @@ export async function generateMetadata(): Promise<Metadata> {
     publisher: OWNER.brand,
     keywords: seoKeywords(),
     alternates: { canonical: url },
+    verification: {
+      google: "4T3wr-CcOy_a12yG0pPccDCUhszu5kXZGHuq9_KpddI",
+    },
     // Favicon + apple icon are auto-detected from app/icon.png and
     // app/apple-icon.png (Next.js file-based metadata).
     openGraph: {

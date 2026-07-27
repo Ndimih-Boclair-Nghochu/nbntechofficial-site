@@ -34,7 +34,8 @@ export function Navbar() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-sand-deep/70 bg-canvas/85 backdrop-blur-md shadow-[0_1px_18px_rgba(11,30,60,0.06)]">
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-sand-deep/70 bg-canvas/85 backdrop-blur-md shadow-[0_1px_18px_rgba(11,30,60,0.06)]">
       <Container className="flex h-16 items-center justify-between md:h-[72px]">
         <Link href="/" aria-label="NBN TECH — home" className="relative z-10 flex items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -80,14 +81,17 @@ export function Navbar() {
           <Menu className="h-6 w-6" />
         </button>
       </Container>
+      </header>
 
-      {/* Mobile side drawer */}
+      {/* Mobile side drawer — rendered OUTSIDE the backdrop-blurred header so
+          its fixed positioning is relative to the viewport (a filter/blur
+          ancestor would otherwise trap fixed children inside it). */}
       <div className="md:hidden">
         {/* overlay */}
         <div
           onClick={() => setOpen(false)}
           className={cn(
-            "fixed inset-0 z-40 bg-navy-950/60 backdrop-blur-sm transition-opacity duration-300",
+            "fixed inset-0 z-[55] bg-navy-950/60 backdrop-blur-sm transition-opacity duration-300",
             open ? "opacity-100" : "pointer-events-none opacity-0",
           )}
           aria-hidden
@@ -95,7 +99,7 @@ export function Navbar() {
         {/* panel — slides in from the right */}
         <aside
           className={cn(
-            "fixed inset-y-0 right-0 z-50 flex w-[82%] max-w-sm flex-col overflow-y-auto bg-navy-950 shadow-2xl transition-transform duration-300 ease-out",
+            "fixed inset-y-0 right-0 z-[60] flex w-[82%] max-w-sm flex-col overflow-y-auto bg-navy-950 shadow-2xl transition-transform duration-300 ease-out",
             open ? "translate-x-0" : "translate-x-full",
           )}
           role="dialog"
@@ -158,6 +162,6 @@ export function Navbar() {
           </div>
         </aside>
       </div>
-    </header>
+    </>
   );
 }
