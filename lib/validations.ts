@@ -22,6 +22,14 @@ const optionalUrl = z
   .optional()
   .or(z.literal(""));
 
+/** Accepts an absolute URL OR a root-relative path like /projects/x.png. */
+const imageRef = z
+  .string()
+  .trim()
+  .refine((v) => v === "" || /^(https?:\/\/|\/)/.test(v), "Must be a URL or a /path")
+  .optional()
+  .or(z.literal(""));
+
 export const skillSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(60),
   category: z.enum(skillCategories),
@@ -49,9 +57,9 @@ export const projectSchema = z.object({
   description: z.string().trim().min(1, "Description is required"),
   role: z.string().trim().max(120).optional().or(z.literal("")),
   techStack: z.array(z.string().trim().min(1)).default([]),
-  coverImageUrl: optionalUrl,
+  coverImageUrl: imageRef,
   coverImageAlt: z.string().trim().max(200).optional().or(z.literal("")),
-  gallery: z.array(z.string().trim().url()).default([]),
+  gallery: z.array(z.string().trim()).default([]),
   liveUrl: optionalUrl,
   githubUrl: optionalUrl,
   featured: z.coerce.boolean().default(false),
