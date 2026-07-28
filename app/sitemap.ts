@@ -6,12 +6,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
   const now = new Date();
 
-  const staticRoutes = ["", "/about", "/work", "/process", "/contact"].map((path) => ({
-    url: `${base}${path}`,
-    lastModified: now,
-    changeFrequency: "monthly" as const,
-    priority: path === "" ? 1 : 0.8,
-  }));
+  const staticRoutes = ["", "/about", "/work", "/gallery", "/reviews", "/process", "/contact"].map(
+    (path) => ({
+      url: `${base}${path}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: path === "" ? 1 : 0.8,
+    }),
+  );
 
   const slugs = await getAllProjectSlugs();
   const projectRoutes = slugs.map((slug) => ({

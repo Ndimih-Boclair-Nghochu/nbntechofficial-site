@@ -62,12 +62,15 @@ export function seoDescription(fallback?: string): string {
  * JSON-LD graph: Person (the owner, with name aliases + services), the brand as
  * a ProfessionalService, and the WebSite. Emitted in the document head.
  */
-export function buildJsonLd(content: ResolvedSiteContent, url: string) {
+export function buildJsonLd(content: ResolvedSiteContent, url: string, galleryUrls: string[] = []) {
   const sameAs = Object.values(content.socialLinks || {}).filter(
     (v): v is string => typeof v === "string" && v.length > 0,
   );
   const email = content.contactEmail || undefined;
-  const image = `${url}/icon.png`;
+  const icon = `${url}/icon.png`;
+  const abs = (r: string) => (r.startsWith("http") ? r : `${url}${r}`);
+  // Person image(s): the brand mark plus any gallery photos (helps image search).
+  const image = [icon, ...galleryUrls.map(abs)];
 
   const person = {
     "@type": "Person",
@@ -90,8 +93,8 @@ export function buildJsonLd(content: ResolvedSiteContent, url: string) {
     name: OWNER.brand,
     alternateName: `${OWNER.brand} — ${OWNER.name}`,
     url,
-    image,
-    logo: image,
+    image: icon,
+    logo: icon,
     email,
     founder: { "@id": `${url}/#person` },
     description: seoDescription(content.metaDescription),

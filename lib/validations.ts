@@ -116,6 +116,19 @@ export const reviewSubmitSchema = z.object({
 });
 export type ReviewSubmitInput = z.infer<typeof reviewSubmitSchema>;
 
+export const galleryImageSchema = z.object({
+  url: z
+    .string()
+    .trim()
+    .min(1, "An image is required")
+    .refine((v) => /^(https?:\/\/|\/)/.test(v), "Must be a URL or a /path"),
+  alt: z.string().trim().min(1, "Alt text is required (helps image search)").max(200),
+  caption: z.string().trim().max(200).optional().or(z.literal("")),
+  featured: z.coerce.boolean().default(false),
+  order: z.coerce.number().int().min(0).default(0),
+});
+export type GalleryImageInput = z.infer<typeof galleryImageSchema>;
+
 export const loginSchema = z.object({
   email: z.string().trim().email("Enter a valid email"),
   password: z.string().min(1, "Password is required"),

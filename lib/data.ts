@@ -143,6 +143,19 @@ export async function getTestimonials(opts?: {
   }
 }
 
+export async function getGalleryImages(opts?: { featured?: boolean; take?: number }) {
+  try {
+    return await prisma.galleryImage.findMany({
+      where: opts?.featured ? { featured: true } : undefined,
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+      take: opts?.take,
+    });
+  } catch (err) {
+    logDbIssue("getGalleryImages", err);
+    return [];
+  }
+}
+
 export async function getContactMessages() {
   try {
     return await prisma.contactMessage.findMany({

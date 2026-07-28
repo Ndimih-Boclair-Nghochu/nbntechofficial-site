@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Inter } from "next/font/google";
-import { getSiteContent } from "@/lib/data";
+import { getSiteContent, getGalleryImages } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 import { OWNER, seoKeywords, seoDescription, buildJsonLd } from "@/lib/seo";
 import "./globals.css";
@@ -72,8 +72,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const content = await getSiteContent();
-  const jsonLd = buildJsonLd(content, siteUrl());
+  const [content, gallery] = await Promise.all([getSiteContent(), getGalleryImages({ take: 12 })]);
+  const jsonLd = buildJsonLd(content, siteUrl(), gallery.map((g) => g.url));
 
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>

@@ -131,3 +131,17 @@ model ContactMessage {
 
   @@index([read, createdAt])
 }
+
+/// Photos shown on the public gallery page + home gallery section.
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String
+  caption   String?
+  featured  Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}

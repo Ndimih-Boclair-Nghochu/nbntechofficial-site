@@ -9,20 +9,22 @@ import { FeaturedProjects } from "@/components/site/FeaturedProjects";
 import { SkillGrid } from "@/components/site/SkillGrid";
 import { ReviewsMarquee, REVIEWS_BAND } from "@/components/site/ReviewsMarquee";
 import { ValuesMarquee } from "@/components/site/ValuesMarquee";
+import { GalleryGrid } from "@/components/site/GalleryGrid";
 import { Faq } from "@/components/site/Faq";
 import { CtaBand } from "@/components/site/CtaBand";
 import { SectionDecor } from "@/components/site/SectionDecor";
 import { Reveal } from "@/components/site/Reveal";
-import { getSiteContent, getProjects, getSkills, getTestimonials } from "@/lib/data";
+import { getSiteContent, getProjects, getSkills, getTestimonials, getGalleryImages } from "@/lib/data";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [content, projects, skills, reviews] = await Promise.all([
+  const [content, projects, skills, reviews, gallery] = await Promise.all([
     getSiteContent(),
     getProjects(),
     getSkills(),
     getTestimonials({ approvedOnly: true }),
+    getGalleryImages({ featured: true, take: 8 }),
   ]);
 
   return (
@@ -187,6 +189,34 @@ export default async function HomePage() {
             <span className="inline-flex items-center gap-2 rounded-full border border-navy/10 bg-white/70 px-4 py-2 text-sm font-medium text-navy">
               <Star className="h-4 w-4 fill-cyan text-cyan" /> Trusted by founders &amp; product teams
             </span>
+          </Container>
+        </section>
+      )}
+
+      {/* Gallery — featured photos */}
+      {gallery.length > 0 && (
+        <section className="relative bg-surface py-section">
+          <SectionDecor glow="left" />
+          <Container className="relative">
+            <div className="flex flex-col items-center gap-6 text-center lg:flex-row lg:items-end lg:justify-between lg:text-left">
+              <SectionHeading
+                eyebrow="Gallery"
+                title="In pictures."
+                intro="Talks, teams and moments from the work behind NBN TECH."
+              />
+              <Reveal delay={0.1}>
+                <Link
+                  href="/gallery"
+                  className="group inline-flex items-center gap-2 font-medium text-cyan-deep"
+                >
+                  View full gallery
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Reveal>
+            </div>
+            <div className="mt-12">
+              <GalleryGrid images={gallery} />
+            </div>
           </Container>
         </section>
       )}
