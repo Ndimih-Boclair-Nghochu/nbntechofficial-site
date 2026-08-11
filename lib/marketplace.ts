@@ -339,9 +339,8 @@ export const AVAILABILITY_LABEL: Record<AvailabilityStatus, string> = {
 export function ctaLabel(a: ResolvedAvailability): string {
   const platform = a.platform || "the store";
   if (!a.hasLink) return "";
-  if (a.status === "AVAILABLE") return `Buy on ${platform}`;
   if (a.status === "UNAVAILABLE") return `Search ${platform}`;
-  return a.hasDirectUrl ? `View on ${platform}` : `Check price on ${platform}`;
+  return `Buy on ${platform}`;
 }
 
 const STATUS_RANK: Record<AvailabilityStatus, number> = {
