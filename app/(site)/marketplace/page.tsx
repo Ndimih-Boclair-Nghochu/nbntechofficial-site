@@ -7,7 +7,7 @@ import { ProductGrid } from "@/components/marketplace/ProductCard";
 import { JsonLd } from "@/components/marketplace/JsonLd";
 import { getProducts } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { BRAND, TAGLINE, marketplaceUrl } from "@/lib/marketplace";
+import { BRAND, TAGLINE, marketplaceUrl, sortByAvailability } from "@/lib/marketplace";
 import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -46,11 +46,15 @@ function Panel({ title, href, children }: { title: string; href?: string; childr
 
 export default async function MarketplaceHome() {
   const country = getRequestCountry();
-  const [featured, trending, latest] = await Promise.all([
+  const [featuredRaw, trendingRaw, latestRaw] = await Promise.all([
     getProducts({ featured: true, take: 10 }),
     getProducts({ trending: true, take: 10 }),
     getProducts({ take: 10 }),
   ]);
+  // Products available in the shopper's country surface first.
+  const featured = sortByAvailability(featuredRaw, country);
+  const trending = sortByAvailability(trendingRaw, country);
+  const latest = sortByAvailability(latestRaw, country);
 
   const websiteJsonLd = {
     "@context": "https://schema.org",

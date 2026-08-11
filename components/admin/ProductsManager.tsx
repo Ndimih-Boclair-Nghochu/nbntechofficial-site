@@ -6,9 +6,9 @@ import type { MarketProduct } from "@prisma/client";
 import { Card, Field, DeleteButton, useToast } from "@/components/admin/AdminUI";
 import { marketProductSchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
-import { CATEGORIES, COUNTRIES } from "@/lib/marketplace";
+import { CATEGORIES, COUNTRIES, countriesByRegion } from "@/lib/marketplace";
 
-type Avail = { status: string; url: string; price: string };
+type Avail = { status: string; platform: string; url: string; price: string };
 type FormState = {
   name: string;
   slug: string;
@@ -40,7 +40,12 @@ type FormState = {
 };
 
 const emptyAvail = (): Record<string, Avail> =>
-  Object.fromEntries(COUNTRIES.map((c) => [c.code, { status: "AVAILABILITY_UNKNOWN", url: "", price: "" }]));
+  Object.fromEntries(
+    COUNTRIES.map((c) => [
+      c.code,
+      { status: "AVAILABILITY_UNKNOWN", platform: c.amazon ? "Amazon" : "", url: "", price: "" },
+    ]),
+  );
 
 const empty: FormState = {
   name: "", slug: "", brand: "", category: "", price: "", currency: "EUR", rating: "", reviewCount: "",
@@ -127,10 +132,10 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
       featured: p.featured, trending: p.trending, published: p.published,
     });
     const av = emptyAvail();
-    const stored = (p.amazonAvailability && typeof p.amazonAvailability === "object" ? p.amazonAvailability : {}) as Record<string, { status?: string; url?: string; price?: number }>;
+    const stored = (p.amazonAvailability && typeof p.amazonAvailability === "object" ? p.amazonAvailability : {}) as Record<string, { status?: string; platform?: string; url?: string; price?: number }>;
     for (const c of COUNTRIES) {
       const d = stored[c.code];
-      if (d) av[c.code] = { status: d.status || "AVAILABILITY_UNKNOWN", url: d.url || "", price: d.price != null ? String(d.price) : "" };
+      if (d) av[c.code] = { status: d.status || "AVAILABILITY_UNKNOWN", platform: d.platform || (c.amazon ? "Amazon" : ""), url: d.url || "", price: d.price != null ? String(d.price) : "" };
     }
     setAvail(av);
     setErrors({});
@@ -141,10 +146,11 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
     e.preventDefault();
     setErrors({});
 
-    const amazonAvailability: Record<string, { status: string; url?: string; price?: number; currency?: string }> = {};
+    const amazonAvailability: Record<string, { status: string; platform?: string; url?: string; price?: number; currency?: string }> = {};
     for (const c of COUNTRIES) {
       const a = avail[c.code];
-      const entry: { status: string; url?: string; price?: number; currency?: string } = { status: a.status };
+      const entry: { status: string; platform?: string; url?: string; price?: number; currency?: string } = { status: a.status };
+      if (a.platform.trim()) entry.platform = a.platform.trim();
       if (a.url.trim()) entry.url = a.url.trim();
       if (a.price.trim() && !Number.isNaN(Number(a.price))) { entry.price = Number(a.price); entry.currency = c.currency; }
       amazonAvailability[c.code] = entry;
@@ -310,35 +316,51 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
 
           {/* Availability */}
           <fieldset className="rounded-lg border border-ink-line p-3">
-            <legend className="px-1.5 text-sm font-medium text-ink">Amazon availability by country</legend>
-            <p className="mb-2 text-xs text-ink-muted">Leave as “Not verified” unless you have real data.</p>
-            <div className="space-y-2">
-              {COUNTRIES.map((c) => (
-                <div key={c.code} className="grid grid-cols-[92px_1fr] items-center gap-2">
-                  <span className="text-xs">{c.flag} {c.code}</span>
-                  <div className="flex gap-1.5">
-                    <select
-                      aria-label={`${c.name} availability`}
-                      className="nbn-input !py-1.5 !text-xs"
-                      value={avail[c.code].status}
-                      onChange={(e) => setAvail((a) => ({ ...a, [c.code]: { ...a[c.code], status: e.target.value } }))}
-                    >
-                      <option value="AVAILABILITY_UNKNOWN">Not verified</option>
-                      <option value="AVAILABLE">Available</option>
-                      <option value="UNAVAILABLE">Not available</option>
-                    </select>
-                    <input
-                      aria-label={`${c.name} Amazon URL`}
-                      className="nbn-input !py-1.5 !text-xs" placeholder="amazon URL"
-                      value={avail[c.code].url}
-                      onChange={(e) => setAvail((a) => ({ ...a, [c.code]: { ...a[c.code], url: e.target.value } }))}
-                    />
-                    <input
-                      aria-label={`${c.name} price`}
-                      type="number" step="0.01" className="nbn-input w-20 !py-1.5 !text-xs" placeholder="price"
-                      value={avail[c.code].price}
-                      onChange={(e) => setAvail((a) => ({ ...a, [c.code]: { ...a[c.code], price: e.target.value } }))}
-                    />
+            <legend className="px-1.5 text-sm font-medium text-ink">Availability by country &amp; platform</legend>
+            <p className="mb-2 text-xs text-ink-muted">
+              Leave as “Not verified” unless you have real data. Platform can be Amazon, Selar, Jumia,
+              eBay, etc. Add the direct product URL to send buyers straight to it.
+            </p>
+            <div className="max-h-80 space-y-3 overflow-y-auto pr-1">
+              {countriesByRegion().map((group) => (
+                <div key={group.region}>
+                  <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-muted">{group.region}</p>
+                  <div className="space-y-1.5">
+                    {group.countries.map((c) => (
+                      <div key={c.code} className="grid grid-cols-[70px_1fr] items-start gap-2">
+                        <span className="pt-2 text-xs">{c.flag} {c.code}</span>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <select
+                            aria-label={`${c.name} availability`}
+                            className="nbn-input !py-1.5 !text-xs"
+                            value={avail[c.code].status}
+                            onChange={(e) => setAvail((a) => ({ ...a, [c.code]: { ...a[c.code], status: e.target.value } }))}
+                          >
+                            <option value="AVAILABILITY_UNKNOWN">Not verified</option>
+                            <option value="AVAILABLE">Available</option>
+                            <option value="UNAVAILABLE">Not available</option>
+                          </select>
+                          <input
+                            aria-label={`${c.name} platform`}
+                            className="nbn-input !py-1.5 !text-xs" placeholder="platform"
+                            value={avail[c.code].platform}
+                            onChange={(e) => setAvail((a) => ({ ...a, [c.code]: { ...a[c.code], platform: e.target.value } }))}
+                          />
+                          <input
+                            aria-label={`${c.name} product URL`}
+                            className="nbn-input col-span-2 !py-1.5 !text-xs" placeholder="direct product URL"
+                            value={avail[c.code].url}
+                            onChange={(e) => setAvail((a) => ({ ...a, [c.code]: { ...a[c.code], url: e.target.value } }))}
+                          />
+                          <input
+                            aria-label={`${c.name} price`}
+                            type="number" step="0.01" className="nbn-input !py-1.5 !text-xs" placeholder={`price (${c.currency})`}
+                            value={avail[c.code].price}
+                            onChange={(e) => setAvail((a) => ({ ...a, [c.code]: { ...a[c.code], price: e.target.value } }))}
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}

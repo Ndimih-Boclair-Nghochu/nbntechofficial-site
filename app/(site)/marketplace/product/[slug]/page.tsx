@@ -8,9 +8,10 @@ import { JsonLd } from "@/components/marketplace/JsonLd";
 import { PageView } from "@/components/marketplace/PageView";
 import { AvailabilityPanel, type AvailabilityEntry, AvailabilityBadge } from "@/components/marketplace/AvailabilityPanel";
 import { AmazonLink } from "@/components/marketplace/AmazonLink";
+import { ProductGallery } from "@/components/marketplace/ProductGallery";
 import { getProductBySlug, getRelatedProducts } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { availabilityFor, CATEGORY_MAP, COUNTRIES, money } from "@/lib/marketplace";
+import { availabilityFor, ctaLabel, sortByAvailability, CATEGORY_MAP, COUNTRIES, money } from "@/lib/marketplace";
 import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -54,7 +55,8 @@ export default async function ProductPage({ params }: Params) {
 
   const country = getRequestCountry();
   const cat = product.category ? CATEGORY_MAP[product.category] : undefined;
-  const related = await getRelatedProducts(product);
+  const related = sortByAvailability(await getRelatedProducts(product), country);
+  const galleryImages = [product.imageUrl, ...(product.gallery || [])].filter(Boolean) as string[];
 
   const specs: Spec[] = Array.isArray(product.specs) ? (product.specs as unknown as Spec[]) : [];
   const faqs: Faq[] = Array.isArray(product.faqs)
@@ -65,8 +67,10 @@ export default async function ProductPage({ params }: Params) {
   for (const c of COUNTRIES) {
     const a = availabilityFor(product, c.code);
     availData[c.code] = {
-      status: a.status, url: a.url, hasDirectUrl: a.hasDirectUrl,
+      status: a.status, platform: a.platform, url: a.url,
+      hasLink: a.hasLink, hasDirectUrl: a.hasDirectUrl,
       priceLabel: a.priceLabel, countryName: c.name, flag: c.flag,
+      cta: ctaLabel(a),
     };
   }
 
@@ -124,28 +128,8 @@ export default async function ProductPage({ params }: Params) {
 
         {/* Buy-box layout: image · details · availability */}
         <div className="grid gap-6 rounded-lg border border-ink-line bg-surface p-4 sm:p-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_minmax(0,2fr)]">
-          {/* Image */}
-          <div>
-            <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={product.imageUrl || "/logo-mark.png"}
-                alt={product.imageAlt || product.name}
-                width={600}
-                height={600}
-                className="h-full w-full object-contain p-4"
-              />
-            </div>
-            {product.gallery.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {product.gallery.slice(0, 6).map((g, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={i} src={g} alt={`${product.name} — view ${i + 1}`} loading="lazy" width={64} height={64}
-                    className="h-16 w-16 rounded-md border border-ink-line bg-white object-contain p-1" />
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Image gallery */}
+          <ProductGallery images={galleryImages} alt={product.imageAlt || product.name} />
 
           {/* Details */}
           <div className="min-w-0">
@@ -207,10 +191,11 @@ export default async function ProductPage({ params }: Params) {
 
         <Section title="Availability by country">
           <div className="overflow-x-auto">
-            <table className="w-full max-w-2xl text-sm">
+            <table className="w-full max-w-3xl text-sm">
               <thead>
                 <tr className="border-b border-ink-line text-left text-xs uppercase tracking-wide text-ink-muted">
                   <th className="py-2 pr-4">Country</th>
+                  <th className="py-2 pr-4">Platform</th>
                   <th className="py-2 pr-4">Status</th>
                   <th className="py-2 pr-4">Price</th>
                   <th className="py-2" />
@@ -222,12 +207,17 @@ export default async function ProductPage({ params }: Params) {
                   return (
                     <tr key={c.code} className="border-b border-ink-line">
                       <td className="py-2 pr-4 text-ink">{c.flag} {c.name}</td>
+                      <td className="py-2 pr-4 text-ink-muted">{a.platform || "—"}</td>
                       <td className="py-2 pr-4"><AvailabilityBadge status={a.status} /></td>
                       <td className="py-2 pr-4 text-ink">{a.price != null ? money(a.price, a.currency) : "—"}</td>
                       <td className="py-2">
-                        <AmazonLink href={a.url} productSlug={product.slug} country={c.code} className="font-medium text-cyan-deep hover:underline">
-                          {a.hasDirectUrl ? "View" : "Search"} ›
-                        </AmazonLink>
+                        {a.hasLink ? (
+                          <AmazonLink href={a.url} productSlug={product.slug} country={c.code} platform={a.platform} className="font-medium text-cyan-deep hover:underline">
+                            {a.hasDirectUrl ? "View" : "Search"} ›
+                          </AmazonLink>
+                        ) : (
+                          <span className="text-ink-muted">—</span>
+                        )}
                       </td>
                     </tr>
                   );
@@ -236,7 +226,7 @@ export default async function ProductPage({ params }: Params) {
             </table>
           </div>
           <p className="mt-2 text-xs text-ink-muted">
-            “Availability not verified” means we do not currently hold reliable data for that marketplace — it does not mean the product is unavailable.
+            “Availability not verified” means we do not currently hold reliable data for that market — it does not mean the product is unavailable. NBN MARKET links to Amazon and other platforms depending on the country.
           </p>
         </Section>
 

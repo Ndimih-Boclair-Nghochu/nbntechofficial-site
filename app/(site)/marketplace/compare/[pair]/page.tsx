@@ -10,7 +10,7 @@ import { PageView } from "@/components/marketplace/PageView";
 import { AmazonLink } from "@/components/marketplace/AmazonLink";
 import { getProductBySlug } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { availabilityFor, BRAND, money } from "@/lib/marketplace";
+import { availabilityFor, ctaLabel, BRAND, money } from "@/lib/marketplace";
 
 export const dynamic = "force-dynamic";
 
@@ -74,9 +74,15 @@ export default async function ComparePage({ params }: Params) {
           <Link href={`/marketplace/product/${p.slug}`} className="hover:text-cyan-deep">{p.name}</Link>
         </h2>
         {p.price != null && <p className="mt-1 text-xl font-bold text-ink">{money(p.price, p.currency)}</p>}
-        <AmazonLink href={av.url} productSlug={p.slug} country={country} className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-[#ff9900] px-4 py-2.5 text-sm font-bold text-[#231a00] hover:brightness-105">
-          View on Amazon
-        </AmazonLink>
+        {av.hasLink ? (
+          <AmazonLink href={av.url} productSlug={p.slug} country={country} platform={av.platform} className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-[#ff9900] px-4 py-2.5 text-sm font-bold text-[#231a00] hover:brightness-105">
+            {ctaLabel(av) || "Buy now"}
+          </AmazonLink>
+        ) : (
+          <Link href={`/marketplace/product/${p.slug}`} className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-ink-line px-4 py-2.5 text-sm font-semibold text-ink hover:border-cyan hover:text-cyan-deep">
+            View details
+          </Link>
+        )}
       </div>
     );
   };

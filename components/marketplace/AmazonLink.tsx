@@ -4,19 +4,22 @@ import { cn } from "@/lib/utils";
 import { track } from "./track";
 
 /**
- * Outbound Amazon link. Always rel="nofollow sponsored" (affiliate best
- * practice) and fires the `amazon_click` conversion event.
+ * Outbound purchase link to a selling platform (Amazon, Selar, Jumia, …).
+ * Always rel="nofollow sponsored" (affiliate best practice) and fires the
+ * `buy_click` conversion event (the most important marketplace event).
  */
 export function AmazonLink({
   href,
   productSlug,
   country,
+  platform,
   className,
   children,
 }: {
   href: string;
   productSlug?: string;
   country?: string;
+  platform?: string;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -26,7 +29,7 @@ export function AmazonLink({
       target="_blank"
       rel="nofollow sponsored noopener noreferrer"
       className={cn(className)}
-      onClick={() => track("amazon_click", { product: productSlug, country, url: href })}
+      onClick={() => track("buy_click", { product: productSlug, country, platform, url: href })}
     >
       {children}
     </a>

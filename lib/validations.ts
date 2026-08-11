@@ -139,12 +139,13 @@ export const availabilityStatuses = [
   "AVAILABILITY_UNKNOWN",
 ] as const;
 
-/** Per-country Amazon availability for one marketplace. */
+/** Per-country availability for one marketplace/platform. */
 export const countryAvailabilitySchema = z.object({
   status: z.enum(availabilityStatuses).default("AVAILABILITY_UNKNOWN"),
+  platform: z.string().trim().max(40).optional().or(z.literal("")),
   url: z.string().trim().url("Must be a valid URL").optional().or(z.literal("")),
   price: z.coerce.number().nonnegative().optional().or(z.nan().transform(() => undefined)),
-  currency: z.string().trim().max(4).optional().or(z.literal("")),
+  currency: z.string().trim().max(6).optional().or(z.literal("")),
 });
 
 const specRow = z.object({

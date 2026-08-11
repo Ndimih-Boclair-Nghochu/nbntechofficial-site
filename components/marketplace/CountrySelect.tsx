@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin, ChevronDown } from "lucide-react";
-import { COUNTRIES } from "@/lib/marketplace";
+import { countriesByRegion } from "@/lib/marketplace";
 import { cn } from "@/lib/utils";
 import { useCountry } from "./CountryProvider";
 import { track } from "./track";
@@ -48,10 +48,14 @@ export function CountrySelect({ variant = "dark" }: { variant?: "dark" | "light"
         }}
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       >
-        {COUNTRIES.map((c) => (
-          <option key={c.code} value={c.code}>
-            {c.flag} {c.name}
-          </option>
+        {countriesByRegion().map((group) => (
+          <optgroup key={group.region} label={group.region}>
+            {group.countries.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.flag} {c.name}
+              </option>
+            ))}
+          </optgroup>
         ))}
       </select>
     </div>

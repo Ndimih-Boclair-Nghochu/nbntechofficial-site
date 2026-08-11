@@ -5,7 +5,7 @@ import { ProductGrid } from "@/components/marketplace/ProductCard";
 import { PageView } from "@/components/marketplace/PageView";
 import { searchProducts } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { BRAND } from "@/lib/marketplace";
+import { BRAND, sortByAvailability } from "@/lib/marketplace";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
   const country = getRequestCountry();
   const q = (searchParams.q || "").trim();
-  const results = q ? await searchProducts(q) : [];
+  const results = q ? sortByAvailability(await searchProducts(q), country) : [];
 
   return (
     <>

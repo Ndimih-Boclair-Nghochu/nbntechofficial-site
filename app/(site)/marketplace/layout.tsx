@@ -23,11 +23,12 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
         <div className="mt-8 border-t border-ink-line bg-surface">
           <Container className="flex flex-col items-center gap-3 py-6 text-center text-xs text-ink-muted sm:flex-row sm:justify-between sm:text-left">
             <p className="max-w-xl">
-              As an Amazon Associate we may earn from qualifying purchases at no extra cost to you.{" "}
+              We may earn a commission from qualifying purchases on Amazon and other platforms, at no
+              extra cost to you.{" "}
               <Link href="/marketplace/disclosure" className="text-cyan-deep hover:underline">
                 Affiliate disclosure
               </Link>
-              . Independent platform — not affiliated with Amazon.
+              . Independent platform.
             </p>
             <nav className="flex gap-4">
               <Link href="/marketplace/about" className="hover:text-cyan-deep">About</Link>

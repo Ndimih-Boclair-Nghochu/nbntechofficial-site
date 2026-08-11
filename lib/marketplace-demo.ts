@@ -28,6 +28,7 @@ export type DemoProduct = {
   currency?: string;
   imageUrl: string;
   imageAlt: string;
+  gallery?: string[];
   shortDescription: string;
   description: string;
   features: string[];
@@ -50,6 +51,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
     price: 999,
     imageUrl: img("1496181133206-80ce9b88a853"),
     imageAlt: "14-inch laptop for programming on a desk",
+    gallery: [img("1541807084-5c52b6b3adef"), img("1517336714731-489689fd1ca8"), img("1588872657578-7efd1f1555ed")],
     shortDescription: "A portable 14-inch laptop with 16GB RAM and a fast 512GB SSD — enough headroom to run an IDE, browser and containers at once.",
     description: "The machine we point most developers toward: genuinely portable, 16GB of memory so you are not closing tabs to free up RAM, and a fast NVMe SSD that keeps builds and project switches snappy.",
     features: ["16GB RAM for multitasking and containers", "512GB NVMe SSD for fast builds", "14-inch IPS display — portable yet readable", "All-day battery for untethered work"],
@@ -123,6 +125,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
     price: 279,
     imageUrl: img("1527443224154-c4a3942d3acf"),
     imageAlt: "27-inch 1440p monitor on a desk",
+    gallery: [img("1543512214-318c7553f230"), img("1587202372775-e229f172b9d7")],
     shortDescription: "A 27-inch 1440p IPS monitor that fits far more code on screen — one of the best value productivity upgrades for developers.",
     description: "More screen real estate means more code and context in front of you at once. A 27-inch 1440p IPS panel is the classic developer choice: sharp text, accurate colour and room for a split-screen editor and browser.",
     features: ["27-inch 1440p resolution", "IPS panel for consistent colour", "Height-adjustable stand", "Flicker-free backlight"],
@@ -206,6 +209,7 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
     price: 199,
     imageUrl: img("1505740420928-5e560c06d30e"),
     imageAlt: "Over-ear noise-cancelling headphones",
+    gallery: [img("1484704849700-f032a568e944"), img("1583394838336-acd977736f90")],
     shortDescription: "Comfortable over-ear headphones with active noise cancelling to help you focus in busy or shared spaces.",
     description: "Deep work needs quiet. Active noise cancelling takes the edge off open offices, cafés and shared homes so you can concentrate.",
     features: ["Active noise cancellation", "Long battery life", "Comfortable over-ear fit", "Clear call quality"],
@@ -262,7 +266,7 @@ export function demoToData(p: DemoProduct): Prisma.MarketProductUncheckedCreateI
     currency: p.currency || "EUR",
     imageUrl: p.imageUrl,
     imageAlt: p.imageAlt,
-    gallery: [],
+    gallery: p.gallery ?? [],
     shortDescription: p.shortDescription,
     description: p.description,
     features: p.features,

@@ -9,7 +9,7 @@ import { JsonLd } from "@/components/marketplace/JsonLd";
 import { PageView } from "@/components/marketplace/PageView";
 import { getProductsForGuide } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { BRAND, GUIDE_MAP, GUIDES, marketplaceUrl } from "@/lib/marketplace";
+import { BRAND, GUIDE_MAP, GUIDES, marketplaceUrl, sortByAvailability } from "@/lib/marketplace";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +35,7 @@ export default async function GuidePage({ params }: Params) {
   if (!guide) notFound();
 
   const country = getRequestCountry();
-  const products = await getProductsForGuide(guide);
+  const products = sortByAvailability(await getProductsForGuide(guide), country);
 
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },

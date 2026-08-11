@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { siteUrl } from "@/lib/utils";
+import { BackButton } from "./BackButton";
 
 export type Crumb = { name: string; url: string };
 
-/** Visual breadcrumb trail. Pair with breadcrumbJsonLd() for structured data. */
+/** Visual breadcrumb trail with a back arrow. Pair with breadcrumbJsonLd(). */
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="py-4">
+    <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-3 py-4">
+      <BackButton />
       <ol className="flex flex-wrap items-center gap-1.5 text-sm text-ink-muted">
         {items.map((c, i) => {
           const last = i === items.length - 1;

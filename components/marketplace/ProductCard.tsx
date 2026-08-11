@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { MarketProduct } from "@prisma/client";
-import { availabilityFor, money } from "@/lib/marketplace";
+import { availabilityFor, ctaLabel, money } from "@/lib/marketplace";
+import { AmazonLink } from "./AmazonLink";
 
-/** Compact star rating (Amazon-style). */
 function Stars({ rating }: { rating: number }) {
   const full = Math.round(rating);
   return (
@@ -14,41 +14,43 @@ function Stars({ rating }: { rating: number }) {
 }
 
 /**
- * Product card — a single crawlable <Link> (Google discovers product URLs
- * through it). Clean, product-first, no marketing clutter.
+ * Product card — image + title link to the product page (crawlable), plus a Buy
+ * button that goes straight to the seller for the shopper's country.
  */
 export function ProductCard({ product, country }: { product: MarketProduct; country: string }) {
   const av = availabilityFor(product, country);
+  const href = `/marketplace/product/${product.slug}`;
   const showRating = product.rating != null && product.reviewCount;
 
   return (
-    <Link
-      href={`/marketplace/product/${product.slug}`}
-      className="group flex flex-col rounded-lg border border-ink-line bg-surface p-3 transition-shadow hover:shadow-card-hover"
-    >
-      <div className="mb-3 flex aspect-square items-center justify-center overflow-hidden rounded-md bg-white">
+    <article className="group flex flex-col rounded-lg border border-ink-line bg-surface p-3 transition-shadow hover:shadow-card-hover">
+      <Link href={href} aria-label={product.name} className="mb-3 block aspect-square overflow-hidden rounded-md bg-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={product.imageUrl || "/logo-mark.png"}
           alt={product.imageAlt || product.name}
           loading="lazy"
-          width={280}
-          height={280}
-          className="h-full w-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+          width={320}
+          height={320}
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-      </div>
-      <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium text-ink group-hover:text-cyan-deep">
-        {product.name}
+      </Link>
+
+      <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium text-ink">
+        <Link href={href} className="hover:text-cyan-deep">{product.name}</Link>
       </h3>
+
       {showRating && (
         <span className="mt-1 flex items-center gap-1.5">
           <Stars rating={Number(product.rating)} />
           <span className="text-xs text-ink-muted">{product.reviewCount}</span>
         </span>
       )}
+
       {product.price != null && (
         <span className="mt-1.5 text-lg font-bold text-ink">{money(product.price, product.currency)}</span>
       )}
+
       <span
         className={`mt-1 text-xs font-medium ${
           av.status === "AVAILABLE"
@@ -59,12 +61,33 @@ export function ProductCard({ product, country }: { product: MarketProduct; coun
         }`}
       >
         {av.status === "AVAILABLE"
-          ? `In stock · Amazon ${av.country.name}`
+          ? `In stock${av.platform ? ` · ${av.platform}` : ""}`
           : av.status === "UNAVAILABLE"
             ? "Currently unavailable"
             : "Check availability"}
       </span>
-    </Link>
+
+      <div className="mt-3">
+        {av.hasLink ? (
+          <AmazonLink
+            href={av.url}
+            productSlug={product.slug}
+            country={country}
+            platform={av.platform}
+            className="flex w-full items-center justify-center rounded-lg bg-[#ff9900] px-3 py-2 text-sm font-bold text-[#231a00] transition hover:brightness-105"
+          >
+            {ctaLabel(av) || "Buy now"}
+          </AmazonLink>
+        ) : (
+          <Link
+            href={href}
+            className="flex w-full items-center justify-center rounded-lg border border-ink-line px-3 py-2 text-sm font-semibold text-ink transition hover:border-cyan hover:text-cyan-deep"
+          >
+            View details
+          </Link>
+        )}
+      </div>
+    </article>
   );
 }
 

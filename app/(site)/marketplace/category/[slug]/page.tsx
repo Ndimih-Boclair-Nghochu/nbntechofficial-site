@@ -9,7 +9,7 @@ import { PageView } from "@/components/marketplace/PageView";
 import { SortSelect } from "@/components/marketplace/SortSelect";
 import { getProducts } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { BRAND, CATEGORY_MAP } from "@/lib/marketplace";
+import { BRAND, CATEGORY_MAP, sortByAvailability } from "@/lib/marketplace";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +38,7 @@ export default async function CategoryPage({ params, searchParams }: Params) {
   if (sort === "price-asc") products = [...products].sort((a, b) => (a.price ?? 1e9) - (b.price ?? 1e9));
   else if (sort === "price-desc") products = [...products].sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
   else if (sort === "rating") products = [...products].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  else products = sortByAvailability(products, country); // default: available-in-country first
 
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },

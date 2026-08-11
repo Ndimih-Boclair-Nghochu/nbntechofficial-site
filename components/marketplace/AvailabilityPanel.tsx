@@ -1,19 +1,21 @@
 "use client";
 
-import { AVAILABILITY_LABEL, type AvailabilityStatus, COUNTRIES } from "@/lib/marketplace";
+import { AVAILABILITY_LABEL, type AvailabilityStatus } from "@/lib/marketplace";
 import { cn } from "@/lib/utils";
 import { useCountry } from "./CountryProvider";
 import { AmazonLink } from "./AmazonLink";
-import { track } from "./track";
 
-/** Serializable availability entry (from availabilityByCountry). */
+/** Serializable availability entry (built server-side per country). */
 export type AvailabilityEntry = {
   status: AvailabilityStatus;
+  platform: string;
   url: string;
+  hasLink: boolean;
   hasDirectUrl: boolean;
   priceLabel: string;
   countryName: string;
   flag: string;
+  cta: string;
 };
 
 const badgeClasses: Record<AvailabilityStatus, string> = {
@@ -36,9 +38,9 @@ export function AvailabilityBadge({ status }: { status: AvailabilityStatus }) {
 }
 
 /**
- * Interactive "Check availability in your country" panel. All countries are
- * rendered server-side in the availability table (crawlable); this panel simply
- * reflects the currently-selected country and gives a clear Amazon CTA.
+ * "Availability in your country" buy box. Reflects the country chosen in the
+ * header ("Deliver to"). All countries are also rendered in the availability
+ * table below, so everything stays crawlable.
  */
 export function AvailabilityPanel({
   productSlug,
@@ -49,79 +51,47 @@ export function AvailabilityPanel({
   productName: string;
   data: Record<string, AvailabilityEntry>;
 }) {
-  const { code, setCode } = useCountry();
-  const info = data[code] || data.DE;
+  const { code } = useCountry();
+  const info = data[code] || data.DE || Object.values(data)[0];
   if (!info) return null;
-
-  const ctaLabel =
-    info.status === "AVAILABLE"
-      ? "View on Amazon"
-      : info.status === "UNAVAILABLE"
-        ? `Search alternatives on Amazon ${info.countryName}`
-        : `Check price on Amazon ${info.countryName}`;
 
   const note =
     info.status === "UNAVAILABLE"
-      ? "This product is not currently listed for this Amazon marketplace. The related products below may be available where you shop."
+      ? "Not currently listed for this market. The related products below may be available where you shop."
       : info.status === "AVAILABILITY_UNKNOWN"
-        ? `We do not currently hold verified availability data for this marketplace. The link opens Amazon ${info.countryName} so you can check the latest price and stock yourself.`
+        ? info.hasLink
+          ? `We don't hold verified stock data for this market yet — the button opens ${info.platform} so you can check the latest price.`
+          : "We don't have a verified listing for this country yet. Try changing your country, or check the related products below."
         : "";
 
   return (
     <div className="rounded-xl2 border border-ink-line bg-sand-soft p-5">
-      <p className="mb-2 text-sm font-semibold text-ink">Where are you shopping from?</p>
-      <div className="mb-4 flex flex-wrap gap-2">
-        {COUNTRIES.map((c) => {
-          const active = c.code === code;
-          return (
-            <button
-              key={c.code}
-              type="button"
-              aria-pressed={active}
-              onClick={() => {
-                setCode(c.code);
-                track("country_selected", { country: c.code, product: productSlug });
-              }}
-              className={cn(
-                "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
-                active
-                  ? "border-navy bg-navy text-white"
-                  : "border-ink-line bg-white text-ink hover:border-cyan",
-              )}
-            >
-              {c.flag} {c.name}
-            </button>
-          );
-        })}
-      </div>
+      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+        Availability in {info.flag} {info.countryName}
+      </p>
 
-      <div aria-live="polite" className="rounded-xl border border-ink-line bg-white p-4">
+      <div aria-live="polite" className="mt-2 rounded-xl border border-ink-line bg-white p-4">
         <div className="mb-3 flex flex-wrap items-center gap-2 text-sm font-medium text-ink">
           <AvailabilityBadge status={info.status} />
-          {info.status === "AVAILABLE" ? (
-            <>
-              <span>
-                on Amazon {info.flag} {info.countryName}
-              </span>
-              {info.priceLabel && (
-                <span className="text-base font-bold text-ink">{info.priceLabel}</span>
-              )}
-            </>
-          ) : (
-            <span>
-              {info.flag} {info.countryName}
-            </span>
-          )}
+          {info.platform && <span className="text-ink-muted">on {info.platform}</span>}
+          {info.priceLabel && <span className="text-base font-bold text-ink">{info.priceLabel}</span>}
         </div>
 
-        <AmazonLink
-          href={info.url}
-          productSlug={productSlug}
-          country={code}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#ff9900] px-5 py-3 text-sm font-bold text-[#231a00] transition-[filter,transform] hover:brightness-105"
-        >
-          {ctaLabel}
-        </AmazonLink>
+        {info.hasLink ? (
+          <AmazonLink
+            href={info.url}
+            productSlug={productSlug}
+            country={code}
+            platform={info.platform}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#ff9900] px-5 py-3 text-sm font-bold text-[#231a00] transition-[filter] hover:brightness-105"
+          >
+            {info.cta || "Buy now"}
+          </AmazonLink>
+        ) : (
+          <p className="rounded-lg bg-sand px-4 py-3 text-center text-sm font-medium text-ink-muted">
+            No verified link for this country yet
+          </p>
+        )}
 
         {note && <p className="mt-3 text-xs leading-relaxed text-ink-muted">{note}</p>}
         <p className="mt-3 text-center text-[11px] text-ink-muted">

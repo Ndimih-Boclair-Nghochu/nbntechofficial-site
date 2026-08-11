@@ -26,24 +26,50 @@ export function marketplaceUrl(path = ""): string {
 }
 
 /* ------------------------------------------------------------------ *
- * Countries / Amazon marketplaces
+ * Countries / marketplaces
+ *
+ * NBN MARKET promotes products across multiple digital platforms — Amazon and
+ * others (Selar, Jumia, eBay, …). A country therefore has an OPTIONAL default
+ * Amazon domain; when it has none, per-product availability supplies the
+ * platform + link instead. Grouped by region so the platform can expand into
+ * Africa and other markets.
  * ------------------------------------------------------------------ */
 
 export type Country = {
   code: string;
   name: string;
   flag: string;
-  amazon: string;
   currency: string;
-  hreflang: string;
+  region: string;
+  /** Amazon domain if this country has one; otherwise null (use per-product platform). */
+  amazon?: string | null;
+  hreflang?: string;
 };
 
 export const COUNTRIES: Country[] = [
-  { code: "DE", name: "Germany", flag: "🇩🇪", amazon: "amazon.de", currency: "EUR", hreflang: "de-DE" },
-  { code: "GB", name: "United Kingdom", flag: "🇬🇧", amazon: "amazon.co.uk", currency: "GBP", hreflang: "en-GB" },
-  { code: "FR", name: "France", flag: "🇫🇷", amazon: "amazon.fr", currency: "EUR", hreflang: "fr-FR" },
-  { code: "IT", name: "Italy", flag: "🇮🇹", amazon: "amazon.it", currency: "EUR", hreflang: "it-IT" },
-  { code: "ES", name: "Spain", flag: "🇪🇸", amazon: "amazon.es", currency: "EUR", hreflang: "es-ES" },
+  // Europe — Amazon marketplaces
+  { code: "DE", name: "Germany", flag: "🇩🇪", currency: "EUR", region: "Europe", amazon: "amazon.de", hreflang: "de-DE" },
+  { code: "GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP", region: "Europe", amazon: "amazon.co.uk", hreflang: "en-GB" },
+  { code: "FR", name: "France", flag: "🇫🇷", currency: "EUR", region: "Europe", amazon: "amazon.fr", hreflang: "fr-FR" },
+  { code: "IT", name: "Italy", flag: "🇮🇹", currency: "EUR", region: "Europe", amazon: "amazon.it", hreflang: "it-IT" },
+  { code: "ES", name: "Spain", flag: "🇪🇸", currency: "EUR", region: "Europe", amazon: "amazon.es", hreflang: "es-ES" },
+  { code: "NL", name: "Netherlands", flag: "🇳🇱", currency: "EUR", region: "Europe", amazon: "amazon.nl" },
+  { code: "BE", name: "Belgium", flag: "🇧🇪", currency: "EUR", region: "Europe", amazon: "amazon.com.be" },
+  { code: "SE", name: "Sweden", flag: "🇸🇪", currency: "SEK", region: "Europe", amazon: "amazon.se" },
+  { code: "PL", name: "Poland", flag: "🇵🇱", currency: "PLN", region: "Europe", amazon: "amazon.pl" },
+  { code: "IE", name: "Ireland", flag: "🇮🇪", currency: "EUR", region: "Europe", amazon: "amazon.co.uk" },
+  { code: "AT", name: "Austria", flag: "🇦🇹", currency: "EUR", region: "Europe", amazon: "amazon.de" },
+  // North America
+  { code: "US", name: "United States", flag: "🇺🇸", currency: "USD", region: "North America", amazon: "amazon.com" },
+  { code: "CA", name: "Canada", flag: "🇨🇦", currency: "CAD", region: "North America", amazon: "amazon.ca" },
+  // Africa — mostly non-Amazon (Selar, Jumia, …)
+  { code: "ZA", name: "South Africa", flag: "🇿🇦", currency: "ZAR", region: "Africa", amazon: "amazon.co.za" },
+  { code: "EG", name: "Egypt", flag: "🇪🇬", currency: "EGP", region: "Africa", amazon: "amazon.eg" },
+  { code: "NG", name: "Nigeria", flag: "🇳🇬", currency: "NGN", region: "Africa", amazon: null },
+  { code: "GH", name: "Ghana", flag: "🇬🇭", currency: "GHS", region: "Africa", amazon: null },
+  { code: "KE", name: "Kenya", flag: "🇰🇪", currency: "KES", region: "Africa", amazon: null },
+  { code: "CM", name: "Cameroon", flag: "🇨🇲", currency: "XAF", region: "Africa", amazon: null },
+  { code: "CI", name: "Côte d’Ivoire", flag: "🇨🇮", currency: "XOF", region: "Africa", amazon: null },
 ];
 
 export const DEFAULT_COUNTRY = "DE";
@@ -55,6 +81,16 @@ export const COUNTRY_MAP: Record<string, Country> = Object.fromEntries(
 export function resolveCountry(code?: string | null): Country {
   const c = code ? COUNTRY_MAP[code.toUpperCase()] : undefined;
   return c || COUNTRY_MAP[DEFAULT_COUNTRY];
+}
+
+/** Countries grouped by region — for a tidy, scannable selector. */
+export function countriesByRegion(): { region: string; countries: Country[] }[] {
+  const order = ["Europe", "North America", "Africa"];
+  const groups: Record<string, Country[]> = {};
+  for (const c of COUNTRIES) (groups[c.region] ||= []).push(c);
+  return Object.keys(groups)
+    .sort((a, b) => order.indexOf(a) - order.indexOf(b))
+    .map((region) => ({ region, countries: groups[region] }));
 }
 
 /* ------------------------------------------------------------------ *
@@ -192,6 +228,8 @@ export type AvailabilityStatus = "AVAILABLE" | "UNAVAILABLE" | "AVAILABILITY_UNK
 
 export type CountryAvailability = {
   status: AvailabilityStatus;
+  /** Selling platform, e.g. "Amazon", "Selar", "Jumia", "eBay". */
+  platform?: string;
   url?: string;
   price?: number | null;
   currency?: string;
@@ -201,14 +239,20 @@ export type CountryAvailability = {
 export type ProductLike = {
   name: string;
   brand?: string | null;
+  /** Per-country availability JSON (historically named amazonAvailability). */
   amazonAvailability?: unknown;
 };
 
 export type ResolvedAvailability = {
   country: Country;
   status: AvailabilityStatus;
+  /** Selling platform label, e.g. "Amazon", "Selar". "" when none is known. */
+  platform: string;
   url: string;
+  /** true when we have a real product link (not just a search fallback). */
   hasDirectUrl: boolean;
+  /** true when there is any usable outbound link at all. */
+  hasLink: boolean;
   price: number | null;
   currency: string;
   priceLabel: string;
@@ -217,23 +261,21 @@ export type ResolvedAvailability = {
 const AFFILIATE_TAG = process.env.AMAZON_AFFILIATE_TAG || "";
 
 function withTag(url: string): string {
-  if (!url || !AFFILIATE_TAG) return url;
+  if (!url || !AFFILIATE_TAG || !/amazon\./i.test(url)) return url;
   return url + (url.includes("?") ? "&" : "?") + "tag=" + encodeURIComponent(AFFILIATE_TAG);
 }
 
-/** An honest search link — it does not claim a specific listing exists. */
+/** An honest Amazon search link — it does not claim a specific listing exists. */
 export function amazonSearchUrl(country: Country, product: ProductLike): string {
+  if (!country.amazon) return "";
   const q = encodeURIComponent([product.brand, product.name].filter(Boolean).join(" "));
   return withTag(`https://www.${country.amazon}/s?k=${q}`);
 }
 
 export function money(amount?: number | null, currency = "EUR"): string {
   if (amount == null || Number.isNaN(Number(amount))) return "";
-  const sym: Record<string, string> = { EUR: "€", GBP: "£", USD: "$" };
-  const val = Number(amount).toLocaleString("en-GB", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
+  const sym: Record<string, string> = { EUR: "€", GBP: "£", USD: "$", CAD: "$", ZAR: "R", NGN: "₦", GHS: "₵", KES: "KSh", EGP: "E£", SEK: "kr", PLN: "zł", XAF: "FCFA", XOF: "CFA" };
+  const val = Number(amount).toLocaleString("en-GB", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   return sym[currency] ? `${sym[currency]}${val}` : `${val} ${currency}`.trim();
 }
 
@@ -246,8 +288,9 @@ function readAvailabilityMap(raw: unknown): Record<string, CountryAvailability> 
 
 /**
  * Resolve availability for a product in one country. Unknown is never conflated
- * with unavailable. When there is no direct listing URL we fall back to an
- * honest Amazon search link.
+ * with unavailable. Platform-agnostic: uses the per-product platform + link when
+ * present; for Amazon countries with no direct link, falls back to an honest
+ * Amazon search link. Non-Amazon countries with no link simply have no CTA.
  */
 export function availabilityFor(product: ProductLike, code: string): ResolvedAvailability {
   const country = resolveCountry(code);
@@ -257,13 +300,19 @@ export function availabilityFor(product: ProductLike, code: string): ResolvedAva
   if (!["AVAILABLE", "UNAVAILABLE", "AVAILABILITY_UNKNOWN"].includes(status)) {
     status = "AVAILABILITY_UNKNOWN";
   }
+  const platform = data.platform || (country.amazon ? "Amazon" : "");
+  const directUrl = data.url ? withTag(data.url) : "";
+  const searchUrl = !directUrl && country.amazon ? amazonSearchUrl(country, product) : "";
+  const url = directUrl || searchUrl;
   const price = data.price != null && data.price !== undefined ? Number(data.price) : null;
   const currency = data.currency || country.currency;
   return {
     country,
     status,
-    url: data.url ? withTag(data.url) : amazonSearchUrl(country, product),
-    hasDirectUrl: !!data.url,
+    platform,
+    url,
+    hasDirectUrl: !!directUrl,
+    hasLink: !!url,
     price,
     currency,
     priceLabel: price != null ? money(price, currency) : "",
@@ -285,3 +334,29 @@ export const AVAILABILITY_LABEL: Record<AvailabilityStatus, string> = {
   UNAVAILABLE: "Not currently available",
   AVAILABILITY_UNKNOWN: "Availability not verified",
 };
+
+/** The Buy/CTA label for a resolved availability + status. */
+export function ctaLabel(a: ResolvedAvailability): string {
+  const platform = a.platform || "the store";
+  if (!a.hasLink) return "";
+  if (a.status === "AVAILABLE") return `Buy on ${platform}`;
+  if (a.status === "UNAVAILABLE") return `Search ${platform}`;
+  return a.hasDirectUrl ? `View on ${platform}` : `Check price on ${platform}`;
+}
+
+const STATUS_RANK: Record<AvailabilityStatus, number> = {
+  AVAILABLE: 0,
+  AVAILABILITY_UNKNOWN: 1,
+  UNAVAILABLE: 2,
+};
+
+/**
+ * Sort products so the ones available in the shopper's country come first, then
+ * unverified, then unavailable. Stable within each group.
+ */
+export function sortByAvailability<T extends ProductLike>(products: T[], code: string): T[] {
+  return products
+    .map((p, i) => ({ p, i, r: STATUS_RANK[availabilityFor(p, code).status] }))
+    .sort((a, b) => a.r - b.r || a.i - b.i)
+    .map((x) => x.p);
+}
