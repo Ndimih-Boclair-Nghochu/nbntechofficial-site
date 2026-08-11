@@ -32,7 +32,7 @@ export function Hero({
         };
 
   return (
-    <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-navy-950 text-white">
+    <section className="relative flex min-h-[88svh] items-center overflow-hidden bg-navy-950 pt-16 text-white sm:min-h-[92vh] sm:pt-0">
       {/* Full-bleed background image */}
       {photoUrl ? (
         <>
@@ -63,11 +63,11 @@ export function Hero({
       <div aria-hidden className="pointer-events-none absolute right-[-6%] top-[12%] h-80 w-80 rounded-full bg-cyan/20 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute left-[-8%] bottom-[-6%] h-72 w-72 rounded-full bg-iris/20 blur-3xl" />
 
-      <Container className="relative z-10 py-28">
+      <Container className="relative z-10 py-20 sm:py-28">
         <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:max-w-3xl lg:text-left">
           <motion.span
             {...fade(0)}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-soft backdrop-blur-sm"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-soft backdrop-blur-sm sm:text-xs"
           >
             <Sparkles className="h-3.5 w-3.5" />
             Available for new engagements
@@ -75,39 +75,39 @@ export function Hero({
 
           <motion.h1
             {...fade(0.08)}
-            className="mt-6 text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-hero"
+            className="mt-5 text-balance text-[clamp(2.1rem,8vw,4.5rem)] font-bold leading-[1.05] tracking-tight text-white sm:mt-6"
           >
             {headline}
           </motion.h1>
 
           <motion.p
             {...fade(0.16)}
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg lg:mx-0"
+            className="mx-auto mt-5 max-w-xl text-pretty text-[1.02rem] leading-relaxed text-white/80 sm:text-lg lg:mx-0"
           >
             {subheadline}
           </motion.p>
 
           <motion.div
             {...fade(0.24)}
-            className="mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+            className="mt-8 flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-center lg:justify-start"
           >
             <Link
               href="/work"
-              className="group inline-flex items-center gap-2 rounded-lg bg-cyan px-7 py-3.5 text-base font-semibold text-navy-950 shadow-glow transition-colors hover:bg-cyan-soft"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-cyan px-7 py-3.5 text-base font-semibold text-navy-950 shadow-glow transition-colors hover:bg-cyan-soft"
             >
               View my work
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href="/contact"
-              className="group inline-flex items-center gap-2 rounded-lg border border-white/25 px-7 py-3.5 text-base font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 px-7 py-3.5 text-base font-medium text-white transition-colors hover:border-cyan hover:text-cyan"
             >
               Get in touch
               <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </motion.div>
 
-          <motion.p {...fade(0.4)} className="mt-12 text-sm text-white/55">
+          <motion.p {...fade(0.4)} className="mt-10 text-sm text-white/55 sm:mt-12">
             {positioning}
           </motion.p>
 

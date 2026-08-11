@@ -37,6 +37,19 @@ export default async function HomePage() {
         photoAlt={content.heroPhotoAlt}
       />
 
+      {/* Marketplace button — immediately after the hero */}
+      <div className="bg-canvas">
+        <Container className="flex justify-center py-7">
+          <Link
+            href="/marketplace"
+            className="group inline-flex items-center gap-2 rounded-xl bg-navy px-8 py-4 text-base font-semibold text-white shadow-card transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-card-hover"
+          >
+            Explore the Marketplace
+            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </Container>
+      </div>
+
       {/* Values ticker — bridges the hero into the body */}
       <ValuesMarquee />
 
@@ -74,10 +87,10 @@ export default async function HomePage() {
                 <span className="h-px w-6 bg-current opacity-60" />
                 About
               </span>
-              <h2 className="mt-4 whitespace-nowrap text-[clamp(1.15rem,5.6vw,2.5rem)] font-bold leading-tight tracking-tight text-ink">
+              <h2 className="mt-4 text-balance text-[clamp(1.75rem,6vw,2.6rem)] font-bold leading-[1.12] tracking-tight text-ink">
                 {content.aboutTitle}
               </h2>
-              <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-body sm:text-lg lg:mx-0">
+              <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-ink-body sm:text-lg lg:mx-0">
                 {content.aboutText.split("\n\n")[0]}
               </p>
               <ul className="mt-7 grid gap-3 text-left sm:grid-cols-3">

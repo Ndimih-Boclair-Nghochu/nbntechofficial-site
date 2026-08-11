@@ -29,46 +29,46 @@ export function ProjectCard({ project, priority = false }: { project: Project; p
             fill
             priority={priority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            className="object-cover object-center transition-transform duration-[600ms] ease-out group-hover:scale-[1.06]"
           />
         ) : (
           <CoverFallback title={project.title} />
         )}
-        <span className="absolute left-4 top-4 rounded-full bg-navy-950/80 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+        {/* depth + legibility overlay */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950/45 via-transparent to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-90"
+        />
+        <span className="absolute left-3.5 top-3.5 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-navy backdrop-blur-sm">
           {categoryLabel(project.category)}
         </span>
         {project.featured && (
-          <span className="absolute right-4 top-4 rounded-full bg-cyan px-2.5 py-1 text-xs font-semibold text-navy-950">
+          <span className="absolute right-3.5 top-3.5 rounded-full bg-cyan px-2.5 py-1 text-[11px] font-bold text-navy-950">
             Featured
           </span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="text-lg font-semibold text-ink transition-colors group-hover:text-cyan-deep">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <h3 className="text-lg font-bold tracking-tight text-ink transition-colors group-hover:text-cyan-deep sm:text-xl">
           {project.title}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-body">{project.summary}</p>
 
-        <div className="mt-5 flex items-center pt-1">
-          <span className="inline-flex items-center gap-1.5 rounded-lg bg-cyan px-5 py-2.5 text-sm font-semibold text-navy-950 transition-colors group-hover:bg-cyan-soft">
-            {hasLive ? (
-              <>
-                View live <ExternalLink className="h-4 w-4" />
-              </>
-            ) : (
-              <>
-                View project <ArrowUpRight className="h-4 w-4" />
-              </>
-            )}
-          </span>
+        <div className="mt-auto flex items-center gap-1.5 pt-5 text-sm font-semibold text-cyan-deep">
+          {hasLive ? "View live" : "View project"}
+          {hasLive ? (
+            <ExternalLink className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          ) : (
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          )}
         </div>
       </div>
     </>
   );
 
   const className =
-    "group relative flex flex-col overflow-hidden rounded-xl2 border border-ink-line bg-gradient-to-b from-white to-navy-50/40 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan/40 hover:shadow-card-hover";
+    "group relative flex flex-col overflow-hidden rounded-xl2 border border-ink-line bg-white shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan/40 hover:shadow-card-hover";
 
   return hasLive ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={className} aria-label={`${project.title} — view live`}>

@@ -62,7 +62,7 @@ export function GalleryGrid({
                     alt={img.alt}
                     fill
                     sizes="(max-width: 640px) 70vw, 26rem"
-                    className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.06]"
+                    className="object-contain transition-transform duration-[600ms] ease-out group-hover:scale-[1.03]"
                   />
                   <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   <span className="pointer-events-none absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
