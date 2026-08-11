@@ -30,7 +30,8 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
               </Link>
               . Independent platform.
             </p>
-            <nav className="flex gap-4">
+            <nav className="flex flex-wrap gap-4">
+              <Link href="/marketplace/amazon" className="hover:text-cyan-deep">Search Amazon</Link>
               <Link href="/marketplace/about" className="hover:text-cyan-deep">About</Link>
               <Link href="/marketplace/guides" className="hover:text-cyan-deep">Guides</Link>
               <Link href="/contact" className="hover:text-cyan-deep">Contact</Link>

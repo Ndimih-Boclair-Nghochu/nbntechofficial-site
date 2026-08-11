@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Loader2, Plus, Pencil, Sparkles } from "lucide-react";
 import type { MarketProduct } from "@prisma/client";
 import { Card, Field, DeleteButton, useToast } from "@/components/admin/AdminUI";
+import { AmazonImport } from "@/components/admin/AmazonImport";
 import { marketProductSchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
 import { CATEGORIES, COUNTRIES, countriesByRegion } from "@/lib/marketplace";
+import type { AmazonProduct } from "@/lib/amazon/types";
 
 type Avail = { status: string; platform: string; url: string; price: string };
 type FormState = {
@@ -115,6 +117,35 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
     setAvail(emptyAvail());
     setEditingId(null);
     setErrors({});
+  }
+
+  // Prefill the form from an Amazon search result (admin import).
+  function importFromAmazon(p: AmazonProduct, cc: string) {
+    setEditingId(null);
+    setForm((f) => ({
+      ...f,
+      name: p.title || f.name,
+      slug: "",
+      brand: p.brand || f.brand,
+      imageUrl: p.image || f.imageUrl,
+      imageAlt: p.title || f.imageAlt,
+      gallery: p.images && p.images.length ? p.images.join("\n") : f.gallery,
+      price: p.price != null ? String(p.price) : f.price,
+      currency: p.currency || f.currency,
+      sku: p.asin || f.sku,
+      shortDescription: f.shortDescription || p.title || "",
+    }));
+    setAvail((a) => ({
+      ...a,
+      [cc]: {
+        status: p.price != null ? "AVAILABLE" : "AVAILABILITY_UNKNOWN",
+        platform: "Amazon",
+        url: p.detailPageUrl || "",
+        price: p.price != null ? String(p.price) : "",
+      },
+    }));
+    show("Imported from Amazon — review, add a category, then save.");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function startEdit(p: MarketProduct) {
@@ -232,7 +263,10 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
         <p className="mt-1 text-xs text-ink-muted">
           Only fill in what you know. Never invent availability, prices, ratings or reviews.
         </p>
-        <form onSubmit={onSubmit} className="mt-5 space-y-4">
+        <div className="mt-4">
+          <AmazonImport onPick={importFromAmazon} />
+        </div>
+        <form onSubmit={onSubmit} className="mt-2 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <Field label="Name" htmlFor="p-name" error={errors.name}>
               <input id="p-name" className="nbn-input" value={form.name} onChange={(e) => set({ name: e.target.value })} />
