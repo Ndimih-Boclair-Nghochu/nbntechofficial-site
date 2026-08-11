@@ -130,3 +130,19 @@
   color: #111633;
   background: #ffffff;
 }
+
+/* Horizontal scroll carousels (pillars, gallery strip, category bar): hide the
+   scrollbar but keep touch/trackpad/drag scrolling. */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Soft fade at the right edge of a horizontal scroller to hint "more →". */
+.edge-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 40px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 40px), transparent 100%);
+}

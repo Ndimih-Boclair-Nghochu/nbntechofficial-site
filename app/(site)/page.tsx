@@ -215,7 +215,7 @@ export default async function HomePage() {
               </Reveal>
             </div>
             <div className="mt-12">
-              <GalleryGrid images={gallery} />
+              <GalleryGrid images={gallery} variant="strip" />
             </div>
           </Container>
         </section>

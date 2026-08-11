@@ -3,11 +3,23 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import type { GalleryImage } from "@prisma/client";
 import { RevealItem, RevealGroup } from "@/components/site/Reveal";
 
-export function GalleryGrid({ images }: { images: GalleryImage[] }) {
+/**
+ * `masonry` — the classic column masonry (used on the full /gallery page).
+ * `strip`   — an advanced, horizontally-scrolling photographic rail (home): big
+ *             uniform-height frames you swipe through, like a photographer's
+ *             portfolio, with a hover zoom + caption and a full-screen lightbox.
+ */
+export function GalleryGrid({
+  images,
+  variant = "masonry",
+}: {
+  images: GalleryImage[];
+  variant?: "masonry" | "strip";
+}) {
   const [open, setOpen] = useState<number | null>(null);
 
   const close = useCallback(() => setOpen(null), []);
@@ -35,30 +47,63 @@ export function GalleryGrid({ images }: { images: GalleryImage[] }) {
 
   return (
     <>
-      <RevealGroup className="columns-2 gap-4 sm:columns-3 lg:columns-4 [&>*]:mb-4">
-        {images.map((img, i) => (
-          <RevealItem key={img.id} className="break-inside-avoid">
-            <button
-              onClick={() => setOpen(i)}
-              className="group relative block w-full overflow-hidden rounded-xl2 border border-ink-line bg-white shadow-card"
-            >
-              <Image
-                src={img.url}
-                alt={img.alt}
-                width={600}
-                height={600}
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="h-auto w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              {img.caption && (
-                <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-navy-950/85 to-transparent p-3 text-left text-xs font-medium text-white transition-transform duration-300 group-hover:translate-y-0">
-                  {img.caption}
-                </span>
-              )}
-            </button>
-          </RevealItem>
-        ))}
-      </RevealGroup>
+      {variant === "strip" ? (
+        <div className="edge-fade-x">
+          <RevealGroup className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-5">
+            {images.map((img, i) => (
+              <RevealItem key={img.id} className="shrink-0 snap-start">
+                <button
+                  onClick={() => setOpen(i)}
+                  aria-label={img.alt}
+                  className="group relative block h-64 w-[17rem] overflow-hidden rounded-xl2 border border-ink-line bg-navy-950 shadow-card sm:h-[22rem] sm:w-[26rem]"
+                >
+                  <Image
+                    src={img.url}
+                    alt={img.alt}
+                    fill
+                    sizes="(max-width: 640px) 70vw, 26rem"
+                    className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.06]"
+                  />
+                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <span className="pointer-events-none absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+                    <Expand className="h-4 w-4" />
+                  </span>
+                  {img.caption && (
+                    <span className="absolute inset-x-0 bottom-0 translate-y-2 p-4 text-left text-sm font-medium text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                      {img.caption}
+                    </span>
+                  )}
+                </button>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      ) : (
+        <RevealGroup className="columns-2 gap-4 sm:columns-3 lg:columns-4 [&>*]:mb-4">
+          {images.map((img, i) => (
+            <RevealItem key={img.id} className="break-inside-avoid">
+              <button
+                onClick={() => setOpen(i)}
+                className="group relative block w-full overflow-hidden rounded-xl2 border border-ink-line bg-white shadow-card"
+              >
+                <Image
+                  src={img.url}
+                  alt={img.alt}
+                  width={600}
+                  height={600}
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="h-auto w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {img.caption && (
+                  <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-navy-950/85 to-transparent p-3 text-left text-xs font-medium text-white transition-transform duration-300 group-hover:translate-y-0">
+                    {img.caption}
+                  </span>
+                )}
+              </button>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      )}
 
       {/* Lightbox */}
       <AnimatePresence>
