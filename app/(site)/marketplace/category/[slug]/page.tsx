@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { MarketHeader } from "@/components/marketplace/MarketHeader";
@@ -10,7 +9,7 @@ import { PageView } from "@/components/marketplace/PageView";
 import { SortSelect } from "@/components/marketplace/SortSelect";
 import { getProducts } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { BRAND, CATEGORY_MAP, GUIDES } from "@/lib/marketplace";
+import { BRAND, CATEGORY_MAP } from "@/lib/marketplace";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +44,6 @@ export default async function CategoryPage({ params, searchParams }: Params) {
     { name: "Marketplace", url: "/marketplace" },
     { name: cat.name, url: `/marketplace/category/${cat.slug}` },
   ];
-  const relatedGuides = GUIDES.filter((g) => g.categories.includes(cat.slug)).slice(0, 3);
 
   return (
     <>
@@ -53,40 +51,24 @@ export default async function CategoryPage({ params, searchParams }: Params) {
       <PageView event="category_view" params={{ category: cat.slug }} />
       <MarketHeader activeCategory={cat.slug} />
 
-      <Container className="pb-4">
+      <Container className="py-4">
         <Breadcrumbs items={crumbs} />
 
-        <div className="flex items-center gap-4">
-          <span className="text-4xl" aria-hidden>{cat.icon}</span>
-          <div>
-            <h1 className="font-serif text-3xl font-bold text-ink">{cat.name}</h1>
-            <p className="mt-1 max-w-2xl text-ink-muted">{cat.blurb}</p>
+        <div className="rounded-lg border border-ink-line bg-surface p-4 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="flex items-center gap-2 text-xl font-bold text-ink">
+              <span aria-hidden>{cat.icon}</span> {cat.name}
+              <span className="text-sm font-normal text-ink-muted">
+                ({products.length} product{products.length === 1 ? "" : "s"})
+              </span>
+            </h1>
+            <SortSelect value={sort} />
+          </div>
+
+          <div className="mt-5">
+            <ProductGrid products={products} country={country} empty="No products in this category yet — check back soon." />
           </div>
         </div>
-
-        <div className="my-6 flex flex-wrap items-center justify-between gap-3">
-          <span className="text-sm text-ink-muted">
-            {products.length} product{products.length === 1 ? "" : "s"}
-          </span>
-          <SortSelect value={sort} />
-        </div>
-
-        <ProductGrid products={products} country={country} empty="No products in this category yet — check back soon." />
-
-        {relatedGuides.length > 0 && (
-          <section className="mt-12">
-            <h2 className="font-serif text-xl font-bold text-ink">Related buying guides</h2>
-            <ul className="mt-3 space-y-2">
-              {relatedGuides.map((g) => (
-                <li key={g.slug}>
-                  <Link href={`/marketplace/guides/${g.slug}`} className="font-medium text-cyan-deep hover:underline">
-                    {g.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
       </Container>
     </>
   );

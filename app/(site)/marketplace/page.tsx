@@ -6,7 +6,7 @@ import { ProductGrid } from "@/components/marketplace/ProductCard";
 import { JsonLd } from "@/components/marketplace/JsonLd";
 import { getProducts } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { BRAND, TAGLINE, CATEGORIES, GUIDES, marketplaceUrl } from "@/lib/marketplace";
+import { BRAND, TAGLINE, CATEGORIES, marketplaceUrl } from "@/lib/marketplace";
 import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -14,27 +14,42 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `${BRAND} — ${TAGLINE}`,
   description:
-    "Ndimih Boclair Marketplace helps you discover products worth buying. Compare laptops, developer gear and electronics, check Amazon availability in your country, and buy with confidence.",
+    "Shop carefully selected products on the Ndimih Boclair Marketplace. Compare laptops, developer gear and electronics, and check Amazon availability in your country.",
   alternates: { canonical: "/marketplace" },
-  openGraph: {
-    title: `${BRAND} — ${TAGLINE}`,
-    description:
-      "Discover products worth buying. Compare options and check Amazon availability across Germany, the UK, France, Italy and Spain.",
-    url: marketplaceUrl(),
-    type: "website",
-  },
+  openGraph: { title: `${BRAND} — ${TAGLINE}`, url: marketplaceUrl(), type: "website" },
 };
 
-function truncate(s: string, n: number) {
-  return s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s;
+/** A white product panel with a heading — the storefront's building block. */
+function Panel({
+  title,
+  href,
+  children,
+}: {
+  title: string;
+  href?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-lg border border-ink-line bg-surface p-4 sm:p-5">
+      <div className="mb-4 flex items-baseline justify-between gap-3">
+        <h2 className="text-lg font-bold text-ink">{title}</h2>
+        {href && (
+          <Link href={href} className="text-sm font-semibold text-cyan-deep hover:underline">
+            See more
+          </Link>
+        )}
+      </div>
+      {children}
+    </section>
+  );
 }
 
 export default async function MarketplaceHome() {
   const country = getRequestCountry();
   const [featured, trending, latest] = await Promise.all([
-    getProducts({ featured: true, take: 8 }),
-    getProducts({ trending: true, take: 8 }),
-    getProducts({ take: 8 }),
+    getProducts({ featured: true, take: 10 }),
+    getProducts({ trending: true, take: 10 }),
+    getProducts({ take: 10 }),
   ]);
 
   const websiteJsonLd = {
@@ -57,121 +72,46 @@ export default async function MarketplaceHome() {
       <JsonLd data={websiteJsonLd} />
       <MarketHeader />
 
-      <Container className="pb-4">
-        {/* Hero */}
-        <section className="relative mt-6 overflow-hidden rounded-xl2 bg-gradient-to-br from-navy-950 via-navy to-navy-800 px-6 py-12 text-white shadow-card sm:px-10 sm:py-14">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-10 -top-16 h-64 w-64 rounded-full bg-cyan/20 blur-3xl"
-          />
-          <div className="relative max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-soft">{BRAND}</p>
-            <h1 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl">
-              Discover Products Worth Buying
-            </h1>
-            <p className="mt-4 text-white/80">
-              Explore carefully selected products, compare your options, and find the right products
-              for your needs — with clear availability across Amazon in Germany, the UK, France, Italy
-              and Spain.
-            </p>
-            <form action="/marketplace/search" method="get" role="search" className="mt-6 flex max-w-lg rounded-xl bg-white p-1.5 shadow-lg">
-              <input
-                type="search"
-                name="q"
-                placeholder="Search products, categories, brands…"
-                aria-label="Search products"
-                className="flex-1 rounded-lg px-4 py-2.5 text-sm text-ink focus:outline-none"
-              />
-              <button type="submit" className="rounded-lg bg-[#ff9900] px-5 text-sm font-bold text-[#231a00] hover:brightness-105">
-                Search
-              </button>
-            </form>
-            <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-              <span className="text-white/60">Popular:</span>
-              <Link href="/marketplace/guides/best-laptops-for-programming" className="rounded-full border border-white/20 bg-white/10 px-3 py-1 hover:bg-white/20">
-                Laptops for programming
-              </Link>
-              <Link href="/marketplace/category/student-essentials" className="rounded-full border border-white/20 bg-white/10 px-3 py-1 hover:bg-white/20">
-                Student essentials
-              </Link>
-              <Link href="/marketplace/guides/best-monitors-for-programmers" className="rounded-full border border-white/20 bg-white/10 px-3 py-1 hover:bg-white/20">
-                Monitors for developers
-              </Link>
-            </div>
-          </div>
-        </section>
+      <Container className="space-y-4 py-4">
+        <h1 className="sr-only">{BRAND} — {TAGLINE}</h1>
 
-        {/* Categories */}
-        <section className="mt-12">
-          <h2 className="font-serif text-2xl font-bold text-ink">Browse categories</h2>
-          <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {/* Shop by category — compact tiles */}
+        <section className="rounded-lg border border-ink-line bg-surface p-4 sm:p-5">
+          <h2 className="mb-4 text-lg font-bold text-ink">Shop by category</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
             {CATEGORIES.map((c) => (
               <Link
                 key={c.slug}
                 href={`/marketplace/category/${c.slug}`}
-                className="group flex flex-col gap-1.5 rounded-xl2 border border-ink-line bg-surface p-5 shadow-card transition-all hover:-translate-y-1 hover:border-cyan/40 hover:shadow-card-hover"
+                className="flex flex-col items-center gap-2 rounded-lg border border-ink-line p-3 text-center transition-colors hover:border-cyan/50 hover:bg-sand-soft"
               >
                 <span className="text-2xl" aria-hidden>{c.icon}</span>
-                <span className="font-semibold text-ink">{c.name}</span>
-                <span className="text-sm text-ink-muted">{c.blurb}</span>
+                <span className="text-xs font-medium leading-tight text-ink">{c.name}</span>
               </Link>
             ))}
           </div>
         </section>
 
-        {/* Featured / trending / latest */}
         {featured.length > 0 && (
-          <Section title="Featured products">
+          <Panel title="Featured products">
             <ProductGrid products={featured} country={country} />
-          </Section>
-        )}
-        {trending.length > 0 && (
-          <Section title="Trending now">
-            <ProductGrid products={trending} country={country} />
-          </Section>
-        )}
-        {featured.length === 0 && trending.length === 0 && (
-          <Section title="Latest products">
-            <ProductGrid
-              products={latest}
-              country={country}
-              empty="Products are being added to the marketplace. Check back shortly."
-            />
-          </Section>
+          </Panel>
         )}
 
-        {/* Guides */}
-        <section className="mt-14">
-          <div className="mb-5 flex items-baseline justify-between gap-3">
-            <h2 className="font-serif text-2xl font-bold text-ink">Buying guides</h2>
-            <Link href="/marketplace/guides" className="text-sm font-semibold text-cyan-deep">
-              All guides →
-            </Link>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {GUIDES.map((g) => (
-              <Link
-                key={g.slug}
-                href={`/marketplace/guides/${g.slug}`}
-                className="flex flex-col gap-2 rounded-xl2 border border-ink-line bg-surface p-5 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
-              >
-                <span className="text-xs font-bold uppercase tracking-wide text-[#c77b00]">Buying guide</span>
-                <strong className="text-lg text-ink">{g.title}</strong>
-                <span className="text-sm text-ink-muted">{truncate(g.intro, 120)}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {trending.length > 0 && (
+          <Panel title="Trending now">
+            <ProductGrid products={trending} country={country} />
+          </Panel>
+        )}
+
+        <Panel title={featured.length || trending.length ? "New arrivals" : "All products"}>
+          <ProductGrid
+            products={latest}
+            country={country}
+            empty="Products are being added to the marketplace. Check back shortly."
+          />
+        </Panel>
       </Container>
     </>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-14">
-      <h2 className="mb-5 font-serif text-2xl font-bold text-ink">{title}</h2>
-      {children}
-    </section>
   );
 }

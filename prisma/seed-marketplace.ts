@@ -49,7 +49,7 @@ const PRODUCTS: SeedProduct[] = [
     category: "laptops",
     price: 999,
     currency: "EUR",
-    imageUrl: "/logo-mark.png",
+    imageUrl: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80",
     imageAlt: "14-inch laptop suited to programming and development work",
     shortDescription:
       "A balanced 14-inch laptop with 16GB RAM and a fast SSD — enough headroom to run an IDE, browser and containers at once.",
@@ -86,7 +86,7 @@ const PRODUCTS: SeedProduct[] = [
     category: "student-essentials",
     price: 499,
     currency: "EUR",
-    imageUrl: "/logo-mark.png",
+    imageUrl: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80",
     imageAlt: "Affordable lightweight laptop for students",
     shortDescription:
       "A light, affordable laptop for note-taking, research, writing and everyday coursework with all-day battery life.",
@@ -116,7 +116,7 @@ const PRODUCTS: SeedProduct[] = [
     category: "developer-gear",
     price: 279,
     currency: "EUR",
-    imageUrl: "/logo-mark.png",
+    imageUrl: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80",
     imageAlt: "27-inch 1440p IPS monitor for programming",
     shortDescription:
       "A 27-inch 1440p IPS monitor that fits far more code on screen — one of the best value productivity upgrades for developers.",
@@ -144,7 +144,7 @@ const PRODUCTS: SeedProduct[] = [
     category: "developer-gear",
     price: 119,
     currency: "EUR",
-    imageUrl: "/logo-mark.png",
+    imageUrl: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&q=80",
     imageAlt: "Compact mechanical keyboard for programmers",
     shortDescription:
       "A comfortable mechanical keyboard built for long typing sessions, with a tidy layout that keeps common keys within reach.",
@@ -169,7 +169,7 @@ const PRODUCTS: SeedProduct[] = [
     category: "laptops",
     price: 1499,
     currency: "EUR",
-    imageUrl: "/logo-mark.png",
+    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80",
     imageAlt: "High-memory laptop for cloud and DevOps work",
     shortDescription: "A 32GB / 1TB laptop for engineers who run many containers, terminals and remote sessions at once.",
     description:
@@ -195,7 +195,7 @@ const PRODUCTS: SeedProduct[] = [
     category: "accessories",
     price: 199,
     currency: "EUR",
-    imageUrl: "/logo-mark.png",
+    imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80",
     imageAlt: "Over-ear noise-cancelling headphones for focused work",
     shortDescription: "Comfortable over-ear headphones with active noise cancelling to help you focus in busy or shared spaces.",
     description: "Deep work needs quiet. Active noise cancelling takes the edge off open offices, cafés and shared homes so you can concentrate.",

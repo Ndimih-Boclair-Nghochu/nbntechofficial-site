@@ -1,76 +1,42 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { CountryProvider } from "@/components/marketplace/CountryProvider";
-import { AffiliateDisclosure } from "@/components/marketplace/AffiliateDisclosure";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { CATEGORIES, GUIDES } from "@/lib/marketplace";
 
 /**
- * Marketplace shell: shares the country context + a compact footer across every
+ * Marketplace shell: shares the country context + a slim footer across every
  * marketplace page. Sits inside the global (site) layout, so it inherits the
  * main site navbar and footer — the marketplace feels like a natural extension
- * of the Ndimih Boclair site, not a separate app.
+ * of the Ndimih Boclair site, not a separate app. Kept intentionally lean so
+ * the storefront stays clean and product-first.
  */
 export default function MarketplaceLayout({ children }: { children: React.ReactNode }) {
   const initial = getRequestCountry();
 
   return (
     <CountryProvider initial={initial}>
-      {/* pt clears the fixed global navbar */}
-      <div className="min-h-screen bg-canvas pt-16 md:pt-[72px]">
+      {/* pt clears the fixed global navbar; bg keeps the storefront light */}
+      <div className="min-h-screen bg-sand-soft pt-16 md:pt-[72px]">
         {children}
 
-        {/* Marketplace footer band */}
-        <div className="mt-16 border-t border-ink-line bg-surface">
-          <Container className="py-10">
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <p className="font-serif text-lg font-bold text-ink">Ndimih Boclair Marketplace</p>
-                <p className="mt-2 text-sm text-ink-muted">
-                  Independent product recommendations. We help you compare options and decide with
-                  confidence — the purchase happens securely on Amazon.
-                </p>
-              </div>
-              <FooterCol title="Categories">
-                {CATEGORIES.slice(0, 6).map((c) => (
-                  <Link key={c.slug} href={`/marketplace/category/${c.slug}`} className="hover:text-cyan-deep">
-                    {c.name}
-                  </Link>
-                ))}
-              </FooterCol>
-              <FooterCol title="Buying guides">
-                {GUIDES.slice(0, 4).map((g) => (
-                  <Link key={g.slug} href={`/marketplace/guides/${g.slug}`} className="hover:text-cyan-deep">
-                    {g.title}
-                  </Link>
-                ))}
-              </FooterCol>
-              <FooterCol title="About">
-                <Link href="/marketplace/about" className="hover:text-cyan-deep">About &amp; methodology</Link>
-                <Link href="/marketplace/disclosure" className="hover:text-cyan-deep">Affiliate disclosure</Link>
-                <Link href="/contact" className="hover:text-cyan-deep">Contact</Link>
-              </FooterCol>
-            </div>
-            <div className="mt-8">
-              <AffiliateDisclosure />
-            </div>
-            <p className="mt-6 text-xs text-ink-muted">
-              Amazon and the Amazon logo are trademarks of Amazon.com, Inc. or its affiliates. The
-              Ndimih Boclair Marketplace is an independent platform and is not affiliated with or
-              endorsed by Amazon.
+        {/* Slim marketplace footer */}
+        <div className="mt-8 border-t border-ink-line bg-surface">
+          <Container className="flex flex-col items-center gap-3 py-6 text-center text-xs text-ink-muted sm:flex-row sm:justify-between sm:text-left">
+            <p className="max-w-xl">
+              As an Amazon Associate we may earn from qualifying purchases at no extra cost to you.{" "}
+              <Link href="/marketplace/disclosure" className="text-cyan-deep hover:underline">
+                Affiliate disclosure
+              </Link>
+              . Independent platform — not affiliated with Amazon.
             </p>
+            <nav className="flex gap-4">
+              <Link href="/marketplace/about" className="hover:text-cyan-deep">About</Link>
+              <Link href="/marketplace/guides" className="hover:text-cyan-deep">Guides</Link>
+              <Link href="/contact" className="hover:text-cyan-deep">Contact</Link>
+            </nav>
           </Container>
         </div>
       </div>
     </CountryProvider>
-  );
-}
-
-function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <p className="mb-3 text-sm font-semibold text-ink">{title}</p>
-      <nav className="flex flex-col gap-2 text-sm text-ink-muted">{children}</nav>
-    </div>
   );
 }
