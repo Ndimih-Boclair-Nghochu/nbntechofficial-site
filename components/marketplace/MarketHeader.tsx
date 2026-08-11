@@ -6,63 +6,79 @@ import { cn } from "@/lib/utils";
 import { CountrySelect } from "./CountrySelect";
 
 /**
- * Marketplace sub-header: brand, search, category strip and country selector.
- * Sits beneath the global site navbar and is shared by every marketplace page.
+ * NBN MARKET header — a premium two-tone storefront bar.
+ *  • wordmark (no logo)  • prominent search  • obvious "Deliver to" country pill
+ *  • a bold, clear category bar beneath.
+ * Shared by every marketplace page; fully responsive.
  */
 export function MarketHeader({ activeCategory, query }: { activeCategory?: string; query?: string }) {
   return (
-    <div className="border-b border-ink-line bg-surface">
-      <Container className="flex flex-wrap items-center gap-x-6 gap-y-3 py-4">
-        <Link href="/marketplace" className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-navy text-sm font-extrabold tracking-wide text-white">
-            NB
-          </span>
-          <span className="text-[15px] text-ink">
-            <strong className="font-bold">Ndimih Boclair</strong> Marketplace
-          </span>
+    <div className="bg-navy-950 text-white shadow-[0_2px_20px_rgba(3,10,59,0.25)]">
+      {/* Top row */}
+      <Container className="flex flex-wrap items-center gap-x-5 gap-y-3 py-3">
+        <Link
+          href="/marketplace"
+          aria-label="NBN MARKET home"
+          className="shrink-0 text-2xl font-extrabold tracking-tight"
+        >
+          <span className="text-white">NBN</span>{" "}
+          <span className="text-cyan">MARKET</span>
         </Link>
 
-        <form action="/marketplace/search" method="get" role="search" className="order-3 flex min-w-[220px] flex-1 sm:order-none">
+        <form
+          action="/marketplace/search"
+          method="get"
+          role="search"
+          className="order-3 flex w-full min-w-[220px] flex-1 md:order-none md:w-auto"
+        >
           <input
             type="search"
             name="q"
             defaultValue={query || ""}
             placeholder="Search products, categories, brands…"
-            aria-label="Search the marketplace"
+            aria-label="Search NBN MARKET"
             autoComplete="off"
-            className="w-full rounded-l-lg border border-r-0 border-ink-line bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/70 focus:border-cyan focus:outline-none focus:ring-2 focus:ring-cyan/30"
+            className="w-full rounded-l-lg border-0 bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-cyan"
           />
           <button
             type="submit"
             aria-label="Search"
-            className="inline-flex items-center gap-1.5 rounded-r-lg bg-[#ff9900] px-4 text-sm font-bold text-[#231a00] hover:brightness-105"
+            className="inline-flex items-center gap-1.5 rounded-r-lg bg-[#ff9900] px-4 font-bold text-[#231a00] transition hover:brightness-105"
           >
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">Search</span>
           </button>
         </form>
 
-        <div className="order-2 sm:order-none">
-          <CountrySelect />
+        <div className="ml-auto md:ml-0">
+          <CountrySelect variant="dark" />
         </div>
       </Container>
 
-      <Container className="flex gap-1 overflow-x-auto pb-3">
-        {CATEGORIES.map((c) => (
-          <Link
-            key={c.slug}
-            href={`/marketplace/category/${c.slug}`}
-            className={cn(
-              "whitespace-nowrap rounded-full px-3 py-1.5 text-sm transition-colors",
-              activeCategory === c.slug
-                ? "bg-cyan/10 font-semibold text-cyan-deep"
-                : "text-ink-muted hover:bg-sand hover:text-cyan-deep",
-            )}
-          >
-            {c.name}
-          </Link>
-        ))}
-      </Container>
+      {/* Category bar */}
+      <div className="border-t border-white/10 bg-navy-900">
+        <Container>
+          <nav aria-label="Product categories" className="flex gap-1 overflow-x-auto py-1">
+            {CATEGORIES.map((c) => {
+              const active = activeCategory === c.slug;
+              return (
+                <Link
+                  key={c.slug}
+                  href={`/marketplace/category/${c.slug}`}
+                  className={cn(
+                    "whitespace-nowrap border-b-2 px-3 py-2 text-sm font-bold transition-colors",
+                    active
+                      ? "border-cyan text-cyan"
+                      : "border-transparent text-white/85 hover:border-white/40 hover:text-white",
+                  )}
+                >
+                  {c.name}
+                </Link>
+              );
+            })}
+          </nav>
+        </Container>
+      </div>
     </div>
   );
 }

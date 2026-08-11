@@ -30,7 +30,7 @@ export default function DisclosurePage() {
         <article className="mx-auto max-w-3xl space-y-4 text-ink-body">
           <h1 className="font-serif text-3xl font-bold text-ink">Affiliate disclosure</h1>
           <p>
-            Some links on the Ndimih Boclair Marketplace are affiliate links, including links to Amazon
+            Some links on the NBN MARKET are affiliate links, including links to Amazon
             marketplaces (amazon.de, amazon.co.uk, amazon.fr, amazon.it, amazon.es and others). If you
             click one of these links and make a purchase, we may earn a commission at no additional cost
             to you.

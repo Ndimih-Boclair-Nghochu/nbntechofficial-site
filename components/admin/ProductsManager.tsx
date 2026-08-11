@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Plus, Pencil } from "lucide-react";
+import { Loader2, Plus, Pencil, Sparkles } from "lucide-react";
 import type { MarketProduct } from "@prisma/client";
 import { Card, Field, DeleteButton, useToast } from "@/components/admin/AdminUI";
 import { marketProductSchema } from "@/lib/validations";
@@ -82,7 +82,26 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const { show, toastNode } = useToast();
+
+  async function loadDemo() {
+    setSeeding(true);
+    try {
+      const res = await fetch("/api/marketplace/seed", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) {
+        show(json.error || "Could not load demo products.", "error");
+        return;
+      }
+      setItems(json.data.products as MarketProduct[]);
+      show(`Loaded ${json.data.seeded} demo products.`);
+    } catch {
+      show("Network error.", "error");
+    } finally {
+      setSeeding(false);
+    }
+  }
 
   const set = (patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch }));
 
@@ -348,9 +367,25 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
 
       {/* List */}
       <div>
-        <p className="mb-3 text-sm text-ink-muted">{items.length} product{items.length === 1 ? "" : "s"}</p>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm text-ink-muted">{items.length} product{items.length === 1 ? "" : "s"}</p>
+          <button
+            type="button"
+            onClick={loadDemo}
+            disabled={seeding}
+            className="inline-flex items-center gap-2 rounded-full border border-cyan/40 bg-cyan/10 px-4 py-2 text-sm font-medium text-cyan-deep hover:bg-cyan/15 disabled:opacity-60"
+          >
+            {seeding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+            Load demo products
+          </button>
+        </div>
         {items.length === 0 ? (
-          <Card><p className="text-sm text-ink-body">No products yet. Add your first one.</p></Card>
+          <Card>
+            <p className="text-sm text-ink-body">
+              No products yet. Click <strong>Load demo products</strong> to fill the store with sample
+              items (real photos + info) you can then edit or delete — or add your own above.
+            </p>
+          </Card>
         ) : (
           <ul className="space-y-2">
             {items.map((p) => (

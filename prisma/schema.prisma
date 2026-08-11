@@ -146,7 +146,7 @@ model GalleryImage {
   @@index([order])
 }
 
-/// Ndimih Boclair Marketplace product.
+/// NBN MARKET product.
 ///
 /// The marketplace is a product-discovery / recommendation platform — it never
 /// processes payments; the purchase happens on Amazon. `category` stores a

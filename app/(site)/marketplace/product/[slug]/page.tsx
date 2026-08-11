@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     } and Amazon availability in Germany, the UK, France, Italy and Spain.`,
     155,
   );
-  const title = `${p.name} — Price & Amazon Availability | Ndimih Boclair`;
+  const title = `${p.name} — Price & Amazon Availability | NBN MARKET`;
   const image = abs(p.imageUrl);
   return {
     title: `${p.name} — Price & Amazon Availability`,

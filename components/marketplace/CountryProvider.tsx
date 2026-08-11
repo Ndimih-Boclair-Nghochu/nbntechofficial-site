@@ -4,24 +4,70 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 import { COUNTRY_MAP, DEFAULT_COUNTRY, resolveCountry, type Country } from "@/lib/marketplace";
 
 /**
- * Privacy-conscious country preference, shared across the marketplace subtree.
+ * Country preference for the marketplace subtree.
  *
- * The server renders with an initial country (read from the `nbm_country`
- * cookie, so the first paint is crawlable and stable). After mount we sync from
- * localStorage and keep the cookie updated so the next server render matches.
- * We never force a country from uncertain detection — the user is always in
- * control via the selector.
+ * Precedence:
+ *   1. The user's explicit choice (localStorage / cookie) — always wins.
+ *   2. Auto-detection from the browser locale + timezone on first visit
+ *      (privacy-friendly: no permission prompt, no network call).
+ *   3. The default country.
+ *
+ * The server renders with the cookie value (stable, crawlable first paint); the
+ * client then detects/updates and keeps the cookie in sync for the next render.
  */
 
 type Ctx = {
   code: string;
   country: Country;
-  setCode: (code: string) => void;
+  setCode: (code: string, opts?: { manual?: boolean }) => void;
 };
 
 const CountryContext = createContext<Ctx | null>(null);
 
 const STORE_KEY = "nbm_country";
+
+const TZ_TO_COUNTRY: Record<string, string> = {
+  "Europe/Berlin": "DE",
+  "Europe/Busingen": "DE",
+  "Europe/London": "GB",
+  "Europe/Paris": "FR",
+  "Europe/Rome": "IT",
+  "Europe/Madrid": "ES",
+};
+
+/** Best-effort country guess from the browser locale, then timezone. */
+function detectCountry(): string | null {
+  try {
+    const langs =
+      (typeof navigator !== "undefined" && (navigator.languages || [navigator.language])) || [];
+    for (const l of langs) {
+      const m = /[-_]([A-Za-z]{2})\b/.exec(l || "");
+      if (m && COUNTRY_MAP[m[1].toUpperCase()]) return m[1].toUpperCase();
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz && TZ_TO_COUNTRY[tz] && COUNTRY_MAP[TZ_TO_COUNTRY[tz]]) return TZ_TO_COUNTRY[tz];
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function persist(code: string) {
+  try {
+    localStorage.setItem(STORE_KEY, code);
+  } catch {
+    /* ignore */
+  }
+  try {
+    document.cookie = `${STORE_KEY}=${code};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+  } catch {
+    /* ignore */
+  }
+}
 
 export function CountryProvider({
   initial,
@@ -30,20 +76,29 @@ export function CountryProvider({
   initial?: string;
   children: React.ReactNode;
 }) {
-  const [code, setCodeState] = useState(() => {
-    const c = initial && COUNTRY_MAP[initial.toUpperCase()] ? initial.toUpperCase() : DEFAULT_COUNTRY;
-    return c;
-  });
+  const [code, setCodeState] = useState(() =>
+    initial && COUNTRY_MAP[initial.toUpperCase()] ? initial.toUpperCase() : DEFAULT_COUNTRY,
+  );
 
-  // Hydrate from localStorage once on mount (may differ from the cookie).
+  // On first mount: honour a stored choice; otherwise auto-detect from location.
   useEffect(() => {
+    let stored: string | null = null;
     try {
-      const stored = localStorage.getItem(STORE_KEY);
-      if (stored && COUNTRY_MAP[stored.toUpperCase()] && stored.toUpperCase() !== code) {
-        setCodeState(stored.toUpperCase());
-      }
+      stored = localStorage.getItem(STORE_KEY);
     } catch {
-      /* localStorage unavailable — ignore */
+      /* ignore */
+    }
+    if (stored && COUNTRY_MAP[stored.toUpperCase()]) {
+      const c = stored.toUpperCase();
+      if (c !== code) setCodeState(c);
+      return;
+    }
+    const detected = detectCountry();
+    if (detected && detected !== code) {
+      setCodeState(detected);
+      persist(detected);
+    } else if (detected) {
+      persist(detected);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -51,16 +106,7 @@ export function CountryProvider({
   const setCode = useCallback((next: string) => {
     const c = COUNTRY_MAP[next?.toUpperCase()] ? next.toUpperCase() : DEFAULT_COUNTRY;
     setCodeState(c);
-    try {
-      localStorage.setItem(STORE_KEY, c);
-    } catch {
-      /* ignore */
-    }
-    try {
-      document.cookie = `${STORE_KEY}=${c};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
-    } catch {
-      /* ignore */
-    }
+    persist(c);
   }, []);
 
   return (
@@ -73,7 +119,6 @@ export function CountryProvider({
 export function useCountry(): Ctx {
   const ctx = useContext(CountryContext);
   if (!ctx) {
-    // Safe fallback so a stray usage never throws at runtime.
     return { code: DEFAULT_COUNTRY, country: resolveCountry(DEFAULT_COUNTRY), setCode: () => {} };
   }
   return ctx;

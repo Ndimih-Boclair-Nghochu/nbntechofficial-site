@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 // pages flooding the index) — but still crawlable to follow product links.
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search the Ndimih Boclair Marketplace for products, brands and categories.",
+  description: "Search the NBN MARKET for products, brands and categories.",
   alternates: { canonical: "/marketplace/search" },
   robots: { index: false, follow: true },
 };

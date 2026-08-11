@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "About & Methodology",
   description:
-    "How the Ndimih Boclair Marketplace researches and recommends products, and how our independent, affiliate-supported model works.",
+    "How the NBN MARKET researches and recommends products, and how our independent, affiliate-supported model works.",
   alternates: { canonical: "/marketplace/about" },
   openGraph: { title: `About & Methodology — ${BRAND}`, type: "website" },
 };
@@ -29,9 +29,9 @@ export default function AboutPage() {
       <Container className="pb-4">
         <Breadcrumbs items={crumbs} />
         <article className="mx-auto max-w-3xl prose-nbn">
-          <h1 className="font-serif text-3xl font-bold text-ink">About the Ndimih Boclair Marketplace</h1>
+          <h1 className="font-serif text-3xl font-bold text-ink">About NBN MARKET</h1>
           <p className="mt-4 text-lg text-ink-body">
-            The Ndimih Boclair Marketplace is an independent product-discovery platform. We research
+            NBN MARKET is an independent product-discovery platform. We research
             and recommend products worth buying, explain the trade-offs in plain language, and help
             you check whether an item is available on Amazon in your country.
           </p>

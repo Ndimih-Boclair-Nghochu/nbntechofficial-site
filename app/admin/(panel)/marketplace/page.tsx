@@ -10,7 +10,7 @@ export default async function AdminMarketplacePage() {
     <div>
       <AdminHeader
         title="Marketplace products"
-        description="Add and edit products for the Ndimih Boclair Marketplace. Set per-country Amazon availability — never fabricate availability, prices or ratings."
+        description="Add and edit products for the NBN MARKET. Set per-country Amazon availability — never fabricate availability, prices or ratings."
       />
       <ProductsManager initial={products} />
     </div>
