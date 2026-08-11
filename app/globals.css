@@ -122,3 +122,11 @@
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; background-clip: content-box; }
+
+/* Marketplace "Deliver to" selector: the closed control can be white-on-dark,
+   but the dropdown option list must stay readable (dark text on white). */
+.mkt-country-select option,
+.mkt-country-select optgroup {
+  color: #111633;
+  background: #ffffff;
+}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { MarketProduct } from "@prisma/client";
 import { availabilityFor, ctaLabel, money } from "@/lib/marketplace";
 import { AmazonLink } from "./AmazonLink";
+import { CardGallery } from "./CardGallery";
 
 function Stars({ rating }: { rating: number }) {
   const full = Math.round(rating);
@@ -21,20 +22,13 @@ export function ProductCard({ product, country }: { product: MarketProduct; coun
   const av = availabilityFor(product, country);
   const href = `/marketplace/product/${product.slug}`;
   const showRating = product.rating != null && product.reviewCount;
+  const images = [product.imageUrl, ...(product.gallery || [])].filter(Boolean) as string[];
 
   return (
     <article className="group flex flex-col rounded-lg border border-ink-line bg-surface p-3 transition-shadow hover:shadow-card-hover">
-      <Link href={href} aria-label={product.name} className="mb-3 block aspect-square overflow-hidden rounded-md bg-white">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={product.imageUrl || "/logo-mark.png"}
-          alt={product.imageAlt || product.name}
-          loading="lazy"
-          width={320}
-          height={320}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      </Link>
+      <div className="mb-3">
+        <CardGallery images={images.length ? images : ["/logo-mark.png"]} alt={product.imageAlt || product.name} href={href} />
+      </div>
 
       <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium text-ink">
         <Link href={href} className="hover:text-cyan-deep">{product.name}</Link>
