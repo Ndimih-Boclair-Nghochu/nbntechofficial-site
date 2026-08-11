@@ -145,3 +145,67 @@ model GalleryImage {
 
   @@index([order])
 }
+
+/// Ndimih Boclair Marketplace product.
+///
+/// The marketplace is a product-discovery / recommendation platform — it never
+/// processes payments; the purchase happens on Amazon. `category` stores a
+/// category slug (see lib/marketplace.ts) rather than an enum so new categories
+/// can be added in config without a schema change.
+///
+/// JSON fields:
+///   specs              — [{ "label": "...", "value": "..." }]
+///   faqs               — [{ "q": "...", "a": "..." }]
+///   amazonAvailability — { "DE": { status, url?, price?, currency? }, ... }
+///                        status ∈ AVAILABLE | UNAVAILABLE | AVAILABILITY_UNKNOWN
+model MarketProduct {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  brand            String?
+  /// Category slug (e.g. "laptops", "developer-gear").
+  category         String?
+
+  shortDescription String?
+  description      String?
+  whoFor           String?
+  whyRecommend     String?
+
+  imageUrl         String?
+  imageAlt         String?
+  gallery          String[] @default([])
+
+  /// Indicative reference price only — the real price is shown on Amazon.
+  price            Float?
+  currency         String   @default("EUR")
+
+  /// Only set when reliable — never fabricated.
+  rating           Float?
+  reviewCount      Int?
+
+  features         String[] @default([])
+  pros             String[] @default([])
+  cons             String[] @default([])
+  tags             String[] @default([])
+  related          String[] @default([])
+  guides           String[] @default([])
+
+  specs              Json    @default("[]")
+  faqs               Json    @default("[]")
+  amazonAvailability Json    @default("{}")
+
+  /// Only store if legitimately known; never invent GTIN/UPC/EAN/SKU.
+  sku       String?
+
+  featured  Boolean @default(false)
+  trending  Boolean @default(false)
+  published Boolean @default(true)
+  order     Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([published])
+  @@index([featured])
+}

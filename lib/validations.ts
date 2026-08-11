@@ -129,6 +129,81 @@ export const galleryImageSchema = z.object({
 });
 export type GalleryImageInput = z.infer<typeof galleryImageSchema>;
 
+/* ------------------------------------------------------------------ *
+ * Marketplace product
+ * ------------------------------------------------------------------ */
+
+export const availabilityStatuses = [
+  "AVAILABLE",
+  "UNAVAILABLE",
+  "AVAILABILITY_UNKNOWN",
+] as const;
+
+/** Per-country Amazon availability for one marketplace. */
+export const countryAvailabilitySchema = z.object({
+  status: z.enum(availabilityStatuses).default("AVAILABILITY_UNKNOWN"),
+  url: z.string().trim().url("Must be a valid URL").optional().or(z.literal("")),
+  price: z.coerce.number().nonnegative().optional().or(z.nan().transform(() => undefined)),
+  currency: z.string().trim().max(4).optional().or(z.literal("")),
+});
+
+const specRow = z.object({
+  label: z.string().trim().min(1).max(120),
+  value: z.string().trim().max(400).default(""),
+});
+const faqRow = z.object({
+  q: z.string().trim().min(1).max(300),
+  a: z.string().trim().min(1).max(2000),
+});
+
+export const marketProductSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(160),
+  slug: z
+    .string()
+    .trim()
+    .min(1, "Slug is required")
+    .max(80)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and hyphens only"),
+  brand: z.string().trim().max(120).optional().or(z.literal("")),
+  category: z.string().trim().max(80).optional().or(z.literal("")),
+  shortDescription: z.string().trim().max(300).optional().or(z.literal("")),
+  description: z.string().trim().max(6000).optional().or(z.literal("")),
+  whoFor: z.string().trim().max(2000).optional().or(z.literal("")),
+  whyRecommend: z.string().trim().max(2000).optional().or(z.literal("")),
+  imageUrl: imageRef,
+  imageAlt: z.string().trim().max(200).optional().or(z.literal("")),
+  gallery: z.array(z.string().trim()).default([]),
+  price: z.coerce.number().nonnegative().optional().or(z.nan().transform(() => undefined)),
+  currency: z.string().trim().max(4).default("EUR"),
+  rating: z.coerce
+    .number()
+    .min(0)
+    .max(5)
+    .optional()
+    .or(z.nan().transform(() => undefined)),
+  reviewCount: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .optional()
+    .or(z.nan().transform(() => undefined)),
+  features: z.array(z.string().trim().min(1)).default([]),
+  pros: z.array(z.string().trim().min(1)).default([]),
+  cons: z.array(z.string().trim().min(1)).default([]),
+  tags: z.array(z.string().trim().min(1)).default([]),
+  related: z.array(z.string().trim().min(1)).default([]),
+  guides: z.array(z.string().trim().min(1)).default([]),
+  specs: z.array(specRow).default([]),
+  faqs: z.array(faqRow).default([]),
+  amazonAvailability: z.record(z.string(), countryAvailabilitySchema).default({}),
+  sku: z.string().trim().max(80).optional().or(z.literal("")),
+  featured: z.coerce.boolean().default(false),
+  trending: z.coerce.boolean().default(false),
+  published: z.coerce.boolean().default(true),
+  order: z.coerce.number().int().min(0).default(0),
+});
+export type MarketProductInput = z.infer<typeof marketProductSchema>;
+
 export const loginSchema = z.object({
   email: z.string().trim().email("Enter a valid email"),
   password: z.string().min(1, "Password is required"),

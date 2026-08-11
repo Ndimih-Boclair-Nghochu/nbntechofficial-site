@@ -16,6 +16,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import ws from "ws";
 import { defaultSiteContent } from "../lib/content-defaults";
+import { seedMarketplace } from "./seed-marketplace";
 
 neonConfig.webSocketConstructor = ws;
 
@@ -215,6 +216,7 @@ async function main() {
   await seedSkills();
   await seedProjects();
   await seedTestimonials();
+  await seedMarketplace(prisma as unknown as import("@prisma/client").PrismaClient);
   console.log("\n✅ Seed complete.");
 }
 

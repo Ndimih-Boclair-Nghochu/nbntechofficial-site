@@ -12,6 +12,7 @@ import {
   Star,
   Inbox,
   Images,
+  ShoppingBag,
   LogOut,
   ExternalLink,
   Menu,
@@ -35,6 +36,7 @@ export function Sidebar({
   const nav = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true, badge: 0 },
     { href: "/admin/projects", label: "Projects", icon: FolderKanban, badge: 0 },
+    { href: "/admin/marketplace", label: "Marketplace", icon: ShoppingBag, badge: 0 },
     { href: "/admin/skills", label: "Skills", icon: Wrench, badge: 0 },
     { href: "/admin/gallery", label: "Gallery", icon: Images, badge: 0 },
     { href: "/admin/content", label: "Site content", icon: FileText, badge: 0 },
