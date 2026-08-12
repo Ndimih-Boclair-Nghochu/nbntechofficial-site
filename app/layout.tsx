@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Poppins, Inter } from "next/font/google";
 import { getSiteContent, getGalleryImages } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
@@ -92,6 +93,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Skip to content
         </a>
         {children}
+
+        {/* Awin Publisher MasterTag (publisher 3033801) — loaded globally once
+            via next/script; persists across client-side navigation without
+            duplicating. Powers Awin tracking, Convert-a-Link, Bounceless
+            Tracking and adMission disclosure. */}
+        <Script
+          id="awin-mastertag"
+          src="https://www.dwin2.com/pub.3033801.min.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
