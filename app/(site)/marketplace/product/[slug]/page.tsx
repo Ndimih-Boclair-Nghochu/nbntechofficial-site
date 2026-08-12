@@ -36,13 +36,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const desc = truncate(
     `${p.shortDescription || p.description || p.name} Key features, specifications${
       p.price != null ? `, price from ${money(p.price, p.currency)}` : ""
-    } and Amazon availability in Germany, the UK, France, Italy and Spain.`,
+    } and availability across Amazon and other trusted retailers in your country.`,
     155,
   );
-  const title = `${p.name} — Price & Amazon Availability | NBN MARKET`;
+  const title = `${p.name} — Price & Availability | NBN MARKET`;
   const image = abs(p.imageUrl);
   return {
-    title: `${p.name} — Price & Amazon Availability`,
+    title: `${p.name} — Price & Availability`,
     description: desc,
     alternates: { canonical: `/marketplace/product/${p.slug}` },
     openGraph: { title, description: desc, type: "website", images: image ? [{ url: image }] : undefined },
@@ -148,7 +148,7 @@ export default async function ProductPage({ params }: Params) {
             {product.price != null && (
               <p className="mt-3 border-t border-ink-line pt-3 text-2xl font-bold text-ink">
                 {money(product.price, product.currency)}
-                <span className="ml-2 text-xs font-normal text-ink-muted">indicative — live price on Amazon</span>
+                <span className="ml-2 text-xs font-normal text-ink-muted">indicative — see live price at the retailer</span>
               </p>
             )}
             {product.shortDescription && <p className="mt-3 text-sm text-ink-body">{product.shortDescription}</p>}

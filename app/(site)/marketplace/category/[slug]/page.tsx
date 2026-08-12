@@ -18,7 +18,7 @@ type Params = { params: { slug: string }; searchParams: { sort?: string } };
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const cat = CATEGORY_MAP[params.slug];
   if (!cat) return { title: "Category not found" };
-  const description = `${cat.blurb} Browse ${cat.name.toLowerCase()} on ${BRAND} and check Amazon availability in Germany, the UK, France, Italy and Spain.`;
+  const description = `${cat.blurb} Browse ${cat.name.toLowerCase()} on ${BRAND}, compare offers across Amazon and other trusted retailers, and check availability in your country.`;
   return {
     title: cat.name,
     description,

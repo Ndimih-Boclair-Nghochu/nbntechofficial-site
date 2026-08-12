@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const [a, b] = await Promise.all([getProductBySlug(pair[0]), getProductBySlug(pair[1])]);
   if (!a || !b) return { title: "Comparison not found" };
   const desc = truncate(
-    `Compare ${a.name} and ${b.name}: specifications, strengths, weaknesses, pricing and Amazon availability. Find out which is the better buy.`,
+    `Compare ${a.name} and ${b.name}: specifications, strengths, weaknesses, pricing and availability across trusted retailers. Find out which is the better buy.`,
     155,
   );
   return {

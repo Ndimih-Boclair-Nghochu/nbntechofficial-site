@@ -15,14 +15,14 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: `${BRAND} — ${TAGLINE}`,
   description:
-    "Shop carefully selected products on NBN MARKET. Compare laptops, developer gear and electronics, and check Amazon availability in your country.",
+    "Shop carefully selected products on NBN MARKET. Compare laptops, developer gear and electronics across Amazon and other trusted retailers, and check availability in your country.",
   alternates: { canonical: "/marketplace" },
   openGraph: { title: `${BRAND} — ${TAGLINE}`, url: marketplaceUrl(), type: "website" },
 };
 
 const TRUST = [
   { icon: ShieldCheck, label: "Independent picks", sub: "Real pros & cons — no fluff" },
-  { icon: Globe2, label: "5 Amazon marketplaces", sub: "DE · UK · FR · IT · ES" },
+  { icon: Globe2, label: "Multiple retailers", sub: "Amazon & more platforms" },
   { icon: MapPin, label: "Country-aware", sub: "Availability for where you shop" },
   { icon: ListChecks, label: "Honest data", sub: "Never faked prices or reviews" },
 ];

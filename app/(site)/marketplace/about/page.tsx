@@ -33,7 +33,8 @@ export default function AboutPage() {
           <p className="mt-4 text-lg text-ink-body">
             NBN MARKET is an independent product-discovery platform. We research
             and recommend products worth buying, explain the trade-offs in plain language, and help
-            you check whether an item is available on Amazon in your country.
+            you compare offers and check availability across Amazon and other trusted retailers in your
+            country.
           </p>
 
           <h2 className="mt-10 font-serif text-2xl font-bold text-ink">How we recommend products</h2>
@@ -46,8 +47,9 @@ export default function AboutPage() {
 
           <h2 className="mt-10 font-serif text-2xl font-bold text-ink">How we make money</h2>
           <p className="mt-3 text-ink-body">
-            Some links are Amazon affiliate links. If you buy through one, we may earn a commission at
-            no additional cost to you. This never influences our recommendations — see our{" "}
+            Some links are affiliate links — to Amazon and to other retailers through affiliate networks.
+            If you buy through one, we may earn a commission at no additional cost to you. This never
+            influences our recommendations — see our{" "}
             <Link href="/marketplace/disclosure" className="text-cyan-deep underline underline-offset-2">
               full affiliate disclosure
             </Link>

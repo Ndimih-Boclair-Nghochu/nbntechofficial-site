@@ -15,7 +15,7 @@ function truncate(s: string, n: number) {
 export const metadata: Metadata = {
   title: "Buying Guides",
   description:
-    "Independent buying guides for laptops, monitors, keyboards and developer gear. Learn what matters, compare top picks and check Amazon availability.",
+    "Independent buying guides for laptops, monitors, keyboards and developer gear. Learn what matters, compare top picks across trusted retailers and check availability in your country.",
   alternates: { canonical: "/marketplace/guides" },
   openGraph: { title: `Buying Guides — ${BRAND}`, type: "website" },
 };
