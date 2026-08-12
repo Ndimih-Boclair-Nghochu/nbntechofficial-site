@@ -259,3 +259,31 @@ model ProductOffer {
   @@index([provider])
   @@index([country])
 }
+
+/// Privacy-light on-site analytics events (no PII: no IP, no user agent, no
+/// user id). Powers the admin dashboard: product/offer views, searches, country
+/// selections and — most importantly — outbound affiliate clicks, broken down by
+/// provider, country and product. Actual commissions live in each network's own
+/// reporting; these events are the leading indicators we can measure ourselves.
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  /// product_view | category_view | guide_view | comparison_view |
+  /// marketplace_search | offer_view | buy_click | country_selected
+  type        String
+  productSlug String?
+  category    String?
+  /// Affiliate provider for buy_click (amazon | awin | impact | cj).
+  provider    String?
+  merchant    String?
+  /// ISO country code (from selection or edge geo).
+  country     String?
+  path        String?
+  query       String?
+  createdAt   DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([createdAt])
+  @@index([country])
+  @@index([provider])
+  @@index([productSlug])
+}

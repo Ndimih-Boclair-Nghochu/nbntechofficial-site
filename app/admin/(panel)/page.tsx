@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { auth } from "@/auth";
 import { getAdminCounts } from "@/lib/data";
+import { AnalyticsOverview } from "@/components/admin/AnalyticsOverview";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +67,12 @@ export default async function AdminDashboard() {
         </div>
       )}
 
+      {/* Marketplace performance — first-party analytics + charts */}
+      <AnalyticsOverview />
+
+      <h2 className="mb-4 mt-10 text-sm font-semibold uppercase tracking-wider text-ink-muted">
+        Content
+      </h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => {
           const Icon = s.icon;
