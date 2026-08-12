@@ -10,6 +10,7 @@ import { AvailabilityPanel, type AvailabilityEntry, AvailabilityBadge } from "@/
 import { AmazonLink } from "@/components/marketplace/AmazonLink";
 import { ProductGallery } from "@/components/marketplace/ProductGallery";
 import { getProductBySlug, getRelatedProducts } from "@/lib/marketplace-data";
+import { getOffersForProduct } from "@/lib/affiliate/link-service";
 import { getRequestCountry } from "@/lib/marketplace-server";
 import { availabilityFor, ctaLabel, sortByAvailability, CATEGORY_MAP, COUNTRIES, money } from "@/lib/marketplace";
 import { siteUrl } from "@/lib/utils";
@@ -57,6 +58,9 @@ export default async function ProductPage({ params }: Params) {
   const cat = product.category ? CATEGORY_MAP[product.category] : undefined;
   const related = sortByAvailability(await getRelatedProducts(product), country);
   const galleryImages = [product.imageUrl, ...(product.gallery || [])].filter(Boolean) as string[];
+  // Provider-agnostic offers (Amazon today; Awin/impact/CJ once synced). Shown
+  // only when there is more than one, so the current UI is unchanged until then.
+  const providerOffers = await getOffersForProduct(product, country);
 
   const specs: Spec[] = Array.isArray(product.specs) ? (product.specs as unknown as Spec[]) : [];
   const faqs: Faq[] = Array.isArray(product.faqs)
@@ -240,6 +244,39 @@ export default async function ProductPage({ params }: Params) {
                 </details>
               ))}
             </div>
+          </Section>
+        )}
+
+        {providerOffers.length > 1 && (
+          <Section title="More offers">
+            <ul className="divide-y divide-ink-line">
+              {providerOffers.map((o, i) => (
+                <li key={i} className="flex items-center justify-between gap-3 py-3">
+                  <div className="min-w-0">
+                    <span className="text-sm font-medium text-ink">{o.merchantName || o.provider}</span>
+                    {o.availability && (
+                      <span className="ml-2 text-xs text-ink-muted">{o.availability}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {o.price != null && (
+                      <span className="font-bold text-ink">{money(o.price, o.currency || "EUR")}</span>
+                    )}
+                    {(o.affiliateUrl || o.destinationUrl) && (
+                      <AmazonLink
+                        href={(o.affiliateUrl || o.destinationUrl) as string}
+                        productSlug={product.slug}
+                        country={country}
+                        platform={o.provider}
+                        className="rounded-lg bg-[#ff9900] px-3 py-1.5 text-sm font-bold text-[#231a00] hover:brightness-105"
+                      >
+                        View deal
+                      </AmazonLink>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </Section>
         )}
 

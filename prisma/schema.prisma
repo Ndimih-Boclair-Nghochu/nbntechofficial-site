@@ -196,6 +196,13 @@ model MarketProduct {
 
   /// Only store if legitimately known; never invent GTIN/UPC/EAN/SKU.
   sku       String?
+  /// Global identifiers used for cross-provider product matching / deduplication.
+  gtin      String?
+  mpn       String?
+
+  /// Offers from affiliate providers. Amazon per-country availability continues
+  /// to live in `amazonAvailability`; other networks populate ProductOffer.
+  offers    ProductOffer[]
 
   featured  Boolean @default(false)
   trending  Boolean @default(false)
@@ -208,4 +215,47 @@ model MarketProduct {
   @@index([category])
   @@index([published])
   @@index([featured])
+}
+
+/// A single buy option for a MarketProduct from an affiliate provider/merchant
+/// in a given country. Product ≠ Offer: one product can have many offers across
+/// Amazon / Awin / impact.com / CJ, which is what makes offer-comparison and
+/// multi-network support possible. Populated by provider sync jobs (once
+/// credentials + program approvals exist); Amazon's own availability stays in
+/// MarketProduct.amazonAvailability.
+model ProductOffer {
+  id                String        @id @default(cuid())
+  productId         String
+  product           MarketProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  /// "amazon" | "awin" | "impact" | "cj"
+  provider          String
+  merchantId        String?
+  merchantName      String?
+  /// The provider's product identifier (ASIN / aw_product_id / CJ id / catalog item id).
+  merchantProductId String?
+
+  price             Float?
+  originalPrice     Float?
+  currency          String?
+  availability      String?
+  /// ISO country code the offer applies to.
+  country           String
+
+  destinationUrl    String?
+  affiliateUrl      String?
+
+  /// Program/merchant relationship: available | applied | approved | rejected | inactive
+  programStatus     String?
+
+  metadata          Json      @default("{}")
+  lastSyncedAt      DateTime?
+  sourceUpdatedAt   DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([provider, merchantProductId, country])
+  @@index([productId, country])
+  @@index([provider])
+  @@index([country])
 }
