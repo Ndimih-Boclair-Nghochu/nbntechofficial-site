@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Loader2, Plus, Pencil, Sparkles } from "lucide-react";
 import type { MarketProduct } from "@prisma/client";
 import { Card, Field, DeleteButton, useToast } from "@/components/admin/AdminUI";
-import { AmazonImport } from "@/components/admin/AmazonImport";
+import { ProviderImport } from "@/components/admin/ProviderImport";
 import { marketProductSchema } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
 import { CATEGORIES, COUNTRIES, countriesByRegion } from "@/lib/marketplace";
@@ -264,7 +264,7 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
           Only fill in what you know. Never invent availability, prices, ratings or reviews.
         </p>
         <div className="mt-4">
-          <AmazonImport onPick={importFromAmazon} />
+          <ProviderImport onPick={importFromAmazon} />
         </div>
         <form onSubmit={onSubmit} className="mt-2 space-y-4">
           <div className="grid grid-cols-2 gap-3">
