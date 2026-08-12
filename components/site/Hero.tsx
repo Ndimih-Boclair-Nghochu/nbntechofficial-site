@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { Typewriter } from "@/components/site/Typewriter";
 
 const pillars = ["Web", "Mobile", "Cloud", "DevOps"];
 
@@ -75,9 +76,9 @@ export function Hero({
 
           <motion.h1
             {...fade(0.08)}
-            className="mt-5 text-balance text-[clamp(2.1rem,8vw,4.5rem)] font-bold leading-[1.05] tracking-tight text-white sm:mt-6"
+            className="mt-5 whitespace-nowrap text-[clamp(1.35rem,5.2vw,4rem)] font-bold leading-[1.1] tracking-tight text-white sm:mt-6"
           >
-            {headline}
+            <Typewriter text={headline} />
           </motion.h1>
 
           <motion.p

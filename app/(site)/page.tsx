@@ -37,7 +37,10 @@ export default async function HomePage() {
         photoAlt={content.heroPhotoAlt}
       />
 
-      {/* Marketplace button — immediately after the hero */}
+      {/* Values ticker — bridges the hero into the body */}
+      <ValuesMarquee />
+
+      {/* Marketplace button — below the marquee bar */}
       <div className="bg-canvas">
         <Container className="flex justify-center py-7">
           <Link
@@ -49,9 +52,6 @@ export default async function HomePage() {
           </Link>
         </Container>
       </div>
-
-      {/* Values ticker — bridges the hero into the body */}
-      <ValuesMarquee />
 
       {/* About preview — framed portrait + narrative + highlights */}
       <section className="relative overflow-hidden bg-canvas py-section">
@@ -87,7 +87,7 @@ export default async function HomePage() {
                 <span className="h-px w-6 bg-current opacity-60" />
                 About
               </span>
-              <h2 className="mt-4 text-balance text-[clamp(1.75rem,6vw,2.6rem)] font-bold leading-[1.12] tracking-tight text-ink">
+              <h2 className="mt-4 whitespace-nowrap text-[clamp(1.15rem,5.6vw,2.5rem)] font-bold leading-tight tracking-tight text-ink">
                 {content.aboutTitle}
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-ink-body sm:text-lg lg:mx-0">

@@ -49,34 +49,34 @@ export function GalleryGrid({
     <>
       {variant === "strip" ? (
         <div className="edge-fade-x">
-          <RevealGroup className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-5">
+          <div className="hide-scrollbar flex snap-x snap-mandatory items-center gap-4 overflow-x-auto px-1 pb-5">
             {images.map((img, i) => (
-              <RevealItem key={img.id} className="shrink-0 snap-start">
-                <button
-                  onClick={() => setOpen(i)}
-                  aria-label={img.alt}
-                  className="group relative block h-64 w-[17rem] overflow-hidden rounded-xl2 border border-ink-line bg-navy-950 shadow-card sm:h-[22rem] sm:w-[26rem]"
-                >
-                  <Image
-                    src={img.url}
-                    alt={img.alt}
-                    fill
-                    sizes="(max-width: 640px) 70vw, 26rem"
-                    className="object-contain transition-transform duration-[600ms] ease-out group-hover:scale-[1.03]"
-                  />
-                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <span className="pointer-events-none absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
-                    <Expand className="h-4 w-4" />
+              <button
+                key={img.id}
+                onClick={() => setOpen(i)}
+                aria-label={img.alt}
+                className="group relative block shrink-0 snap-start overflow-hidden rounded-2xl shadow-card ring-1 ring-black/5 transition-transform duration-300 hover:-translate-y-1"
+              >
+                {/* Full image — natural aspect at a uniform height, never cropped or boxed */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.url}
+                  alt={img.alt}
+                  loading="lazy"
+                  className="block h-56 w-auto max-w-none rounded-2xl object-cover sm:h-80"
+                />
+                <span className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-navy-950/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <span className="pointer-events-none absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+                  <Expand className="h-4 w-4" />
+                </span>
+                {img.caption && (
+                  <span className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-1 p-4 text-left text-sm font-medium text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    {img.caption}
                   </span>
-                  {img.caption && (
-                    <span className="absolute inset-x-0 bottom-0 translate-y-2 p-4 text-left text-sm font-medium text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                      {img.caption}
-                    </span>
-                  )}
-                </button>
-              </RevealItem>
+                )}
+              </button>
             ))}
-          </RevealGroup>
+          </div>
         </div>
       ) : (
         <RevealGroup className="columns-2 gap-4 sm:columns-3 lg:columns-4 [&>*]:mb-4">
