@@ -92,6 +92,7 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [seedingSelar, setSeedingSelar] = useState(false);
+  const [seedingAmazon, setSeedingAmazon] = useState(false);
   const { show, toastNode } = useToast();
 
   async function loadDemo() {
@@ -127,6 +128,24 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
       show("Network error.", "error");
     } finally {
       setSeedingSelar(false);
+    }
+  }
+
+  async function loadAmazon() {
+    setSeedingAmazon(true);
+    try {
+      const res = await fetch("/api/marketplace/seed-amazon", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) {
+        show(json.error || "Could not add Amazon products.", "error");
+        return;
+      }
+      setItems(json.data.products as MarketProduct[]);
+      show(`Added ${json.data.seeded} Amazon products.`);
+    } catch {
+      show("Network error.", "error");
+    } finally {
+      setSeedingAmazon(false);
     }
   }
 
@@ -459,6 +478,15 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
             >
               {seedingSelar ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
               Add curated products
+            </button>
+            <button
+              type="button"
+              onClick={loadAmazon}
+              disabled={seedingAmazon}
+              className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-700 hover:bg-amber-500/15 disabled:opacity-60"
+            >
+              {seedingAmazon ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+              Add Amazon products
             </button>
             <button
               type="button"
