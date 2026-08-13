@@ -23,7 +23,7 @@ import {
   COURSES_TAGLINE,
   coursesUrl,
   coursePath,
-  courseCategoriesByGroup,
+  COURSE_CATEGORIES,
 } from "@/lib/courses";
 import { siteUrl } from "@/lib/utils";
 
@@ -110,7 +110,6 @@ export default async function CoursesHome({ searchParams }: { searchParams: RawS
     getAvailableCourseProviders(),
   ]);
 
-  const groups = courseCategoriesByGroup();
   const availableSlugs = new Set(categories.map((c) => c.slug));
 
   const websiteJsonLd = {
@@ -153,31 +152,38 @@ export default async function CoursesHome({ searchParams }: { searchParams: RawS
               </div>
             </section>
 
-            {/* Browse by category */}
+            {/* Browse by category — compact tile grid */}
             <section>
-              <h2 className="mb-3 text-lg font-bold text-ink">Browse by category</h2>
-              <div className="space-y-5">
-                {groups.map((g) => (
-                  <div key={g.group}>
-                    <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">{g.group}</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {g.categories.map((c) => {
-                        const has = availableSlugs.has(c.slug);
-                        return (
-                          <Link
-                            key={c.slug}
-                            href={coursePath(c.slug)}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-ink-line bg-surface px-3 py-1.5 text-sm font-medium text-ink shadow-sm transition hover:border-cyan hover:text-cyan-deep"
-                          >
-                            <span aria-hidden>{c.icon}</span>
-                            {c.name}
-                            {has && <span className="text-xs text-cyan-deep">•</span>}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
+              <div className="mb-3 flex items-baseline justify-between gap-3">
+                <h2 className="text-lg font-bold text-ink">Browse by category</h2>
+                <span className="text-xs text-ink-muted">{COURSE_CATEGORIES.length} topics</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                {COURSE_CATEGORIES.map((c) => {
+                  const has = availableSlugs.has(c.slug);
+                  return (
+                    <Link
+                      key={c.slug}
+                      href={coursePath(c.slug)}
+                      title={c.blurb}
+                      className="group relative flex items-center gap-2.5 rounded-xl border border-ink-line bg-surface px-3 py-2.5 transition hover:border-cyan hover:shadow-card"
+                    >
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-sand-soft text-base transition group-hover:bg-cyan/10" aria-hidden>
+                        {c.icon}
+                      </span>
+                      <span className="min-w-0 truncate text-sm font-medium text-ink group-hover:text-cyan-deep">
+                        {c.name}
+                      </span>
+                      {has && (
+                        <span
+                          className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-cyan"
+                          title="Courses available"
+                          aria-label="Courses available"
+                        />
+                      )}
+                    </Link>
+                  );
+                })}
               </div>
             </section>
 
