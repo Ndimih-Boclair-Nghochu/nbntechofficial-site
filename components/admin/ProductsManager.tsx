@@ -91,6 +91,7 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [seedingSelar, setSeedingSelar] = useState(false);
   const { show, toastNode } = useToast();
 
   async function loadDemo() {
@@ -108,6 +109,24 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
       show("Network error.", "error");
     } finally {
       setSeeding(false);
+    }
+  }
+
+  async function loadSelar() {
+    setSeedingSelar(true);
+    try {
+      const res = await fetch("/api/marketplace/seed-selar", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) {
+        show(json.error || "Could not add Selar products.", "error");
+        return;
+      }
+      setItems(json.data.products as MarketProduct[]);
+      show(`Added ${json.data.seeded} Selar products.`);
+    } catch {
+      show("Network error.", "error");
+    } finally {
+      setSeedingSelar(false);
     }
   }
 
@@ -431,15 +450,26 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
       <div>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm text-ink-muted">{items.length} product{items.length === 1 ? "" : "s"}</p>
-          <button
-            type="button"
-            onClick={loadDemo}
-            disabled={seeding}
-            className="inline-flex items-center gap-2 rounded-full border border-cyan/40 bg-cyan/10 px-4 py-2 text-sm font-medium text-cyan-deep hover:bg-cyan/15 disabled:opacity-60"
-          >
-            {seeding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-            Load demo products
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={loadSelar}
+              disabled={seedingSelar}
+              className="inline-flex items-center gap-2 rounded-full border border-navy/30 bg-navy px-4 py-2 text-sm font-medium text-white hover:bg-navy-700 disabled:opacity-60"
+            >
+              {seedingSelar ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+              Add Selar products
+            </button>
+            <button
+              type="button"
+              onClick={loadDemo}
+              disabled={seeding}
+              className="inline-flex items-center gap-2 rounded-full border border-cyan/40 bg-cyan/10 px-4 py-2 text-sm font-medium text-cyan-deep hover:bg-cyan/15 disabled:opacity-60"
+            >
+              {seeding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              Load demo products
+            </button>
+          </div>
         </div>
         {items.length === 0 ? (
           <Card>
