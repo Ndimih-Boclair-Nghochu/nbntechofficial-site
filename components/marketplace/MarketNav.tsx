@@ -59,6 +59,16 @@ export function MarketNav({ categories }: { categories: AvailableCategory[] }) {
         </div>
 
         <nav className="flex-1 overflow-y-auto p-2">
+          {/* Online Courses — a first-class destination inside the marketplace */}
+          <Link
+            href="/courses"
+            onClick={() => setOpen(false)}
+            className="mb-1 flex items-center gap-2 rounded-lg bg-cyan/10 px-3 py-3 text-sm font-bold text-cyan-deep hover:bg-cyan/15"
+          >
+            <span aria-hidden>🎓</span>
+            Online Courses
+            <ChevronRight className="ml-auto h-4 w-4" />
+          </Link>
           {categories.length === 0 && <p className="p-4 text-sm text-ink-muted">No categories yet — add products to see them here.</p>}
           {categories.map((c) => (
             <div key={c.slug} className="border-b border-ink-line/60">

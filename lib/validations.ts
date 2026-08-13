@@ -206,6 +206,57 @@ export const marketProductSchema = z.object({
 });
 export type MarketProductInput = z.infer<typeof marketProductSchema>;
 
+/* ------------------------------------------------------------------ *
+ * Online course (affiliate digital product)
+ * ------------------------------------------------------------------ */
+
+export const courseSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(180),
+  slug: z
+    .string()
+    .trim()
+    .min(1, "Slug is required")
+    .max(80)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and hyphens only"),
+  description: z.string().trim().max(8000).optional().or(z.literal("")),
+  shortDescription: z.string().trim().max(300).optional().or(z.literal("")),
+  provider: z.string().trim().min(1, "Provider is required").max(60).default("Udemy"),
+  affiliateNetwork: z.string().trim().max(60).default("Impact"),
+  // The final tracked affiliate URL (generated in the network). Optional until set.
+  affiliateUrl: z.string().trim().url("Must be a valid URL").optional().or(z.literal("")),
+  image: imageRef,
+  imageAlt: z.string().trim().max(200).optional().or(z.literal("")),
+  category: z.string().trim().max(80).optional().or(z.literal("")),
+  subcategory: z.string().trim().max(80).optional().or(z.literal("")),
+  instructor: z.string().trim().max(160).optional().or(z.literal("")),
+  price: z.coerce.number().nonnegative().optional().or(z.nan().transform(() => undefined)),
+  currency: z.string().trim().max(4).default("USD"),
+  originalPrice: z.coerce.number().nonnegative().optional().or(z.nan().transform(() => undefined)),
+  discountPercentage: z.coerce.number().int().min(0).max(100).optional().or(z.nan().transform(() => undefined)),
+  rating: z.coerce.number().min(0).max(5).optional().or(z.nan().transform(() => undefined)),
+  reviewCount: z.coerce.number().int().min(0).optional().or(z.nan().transform(() => undefined)),
+  duration: z.string().trim().max(60).optional().or(z.literal("")),
+  lectureCount: z.coerce.number().int().min(0).optional().or(z.nan().transform(() => undefined)),
+  level: z.string().trim().max(40).optional().or(z.literal("")),
+  language: z.string().trim().max(40).default("English"),
+  certificateAvailable: z.coerce.boolean().default(false),
+  bestseller: z.coerce.boolean().default(false),
+  featured: z.coerce.boolean().default(false),
+  lastUpdated: z.string().trim().max(40).optional().or(z.literal("")),
+  tags: z.array(z.string().trim().min(1)).default([]),
+  whatYouLearn: z.array(z.string().trim().min(1)).default([]),
+  requirements: z.array(z.string().trim().min(1)).default([]),
+  commissionRate: z.coerce.number().min(0).max(100).optional().or(z.nan().transform(() => undefined)),
+  commissionType: z.string().trim().max(40).optional().or(z.literal("")),
+  trackingId: z.string().trim().max(120).optional().or(z.literal("")),
+  externalProductId: z.string().trim().max(120).optional().or(z.literal("")),
+  externalProductUrl: z.string().trim().url("Must be a valid URL").optional().or(z.literal("")),
+  demo: z.coerce.boolean().default(false),
+  published: z.coerce.boolean().default(true),
+  order: z.coerce.number().int().min(0).default(0),
+});
+export type CourseInput = z.infer<typeof courseSchema>;
+
 export const loginSchema = z.object({
   email: z.string().trim().email("Enter a valid email"),
   password: z.string().min(1, "Password is required"),

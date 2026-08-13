@@ -78,11 +78,17 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
         </Container>
       </div>
 
-      {categories.length > 0 && (
-        <div className="border-t border-white/10 bg-navy-900">
-          <Container>
-            <nav aria-label="Product categories" className="hide-scrollbar flex gap-1 overflow-x-auto py-1">
-              {categories.slice(0, 10).map((c) => {
+      <div className="border-t border-white/10 bg-navy-900">
+        <Container>
+          <nav aria-label="Product categories" className="hide-scrollbar flex gap-1 overflow-x-auto py-1">
+            {/* Online Courses — first-class link within the marketplace nav */}
+            <Link
+              href="/courses"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 border-transparent px-3 py-2 text-sm font-bold text-cyan transition-colors hover:text-white"
+            >
+              🎓 Online Courses
+            </Link>
+            {categories.slice(0, 10).map((c) => {
                 const active = activeCategory === c.slug;
                 return (
                   <Link
@@ -100,7 +106,6 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
             </nav>
           </Container>
         </div>
-      )}
     </div>
   );
 }

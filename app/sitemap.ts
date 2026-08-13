@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllProjectSlugs } from "@/lib/data";
 import { getAllProductSlugs } from "@/lib/marketplace-data";
 import { CATEGORIES, GUIDES } from "@/lib/marketplace";
+import { getAllCourseSlugs, getAvailableCourseCategories } from "@/lib/courses-data";
 import { siteUrl } from "@/lib/utils";
 
 // Regenerate hourly so newly-added marketplace products appear without a redeploy.
@@ -58,6 +59,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // --- Online Courses ---
+  const coursesHub = [{ url: `${base}/courses`, lastModified: now, changeFrequency: "daily" as const, priority: 0.9 }];
+
+  const courseCategories = await getAvailableCourseCategories();
+  const courseCategoryRoutes = courseCategories.map((c) => ({
+    url: `${base}/courses/${c.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  const courseSlugs = await getAllCourseSlugs();
+  const courseRoutes = courseSlugs.map((slug) => ({
+    url: `${base}/courses/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
   return [
     ...staticRoutes,
     ...projectRoutes,
@@ -65,5 +85,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryRoutes,
     ...guideRoutes,
     ...productRoutes,
+    ...coursesHub,
+    ...courseCategoryRoutes,
+    ...courseRoutes,
   ];
 }

@@ -290,3 +290,91 @@ model AnalyticsEvent {
   @@index([provider])
   @@index([productSlug])
 }
+
+/// NBN MARKET — Online Course (a digital affiliate product).
+///
+/// Kept separate from MarketProduct because courses have their own field set
+/// (instructor, duration, level, certificate, curriculum) and their own
+/// provider-agnostic affiliate model. A course is sold on an external platform
+/// (Udemy, Coursera, …) reached via an affiliate network (Impact, …); the app
+/// never processes payments. `category` / `provider` / `affiliateNetwork` are
+/// free-form slugs/strings (see lib/courses.ts) so new categories and networks
+/// can be added in config without a schema change.
+///
+/// `affiliateUrl` holds the FINAL tracked link generated in the affiliate
+/// network (e.g. the Impact-generated Udemy link) — the frontend never builds
+/// it. When empty, the CTA shows a disabled "link coming soon" state.
+///
+/// JSON fields:
+///   countryAvailability — { "US": true, ... } (optional; digital courses are
+///                         global by default, so an empty object means "all").
+model Course {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  description      String?
+  shortDescription String?
+
+  /// Platform the course is sold on (e.g. "Udemy", "Coursera"). Free-form.
+  provider         String   @default("Udemy")
+  /// Affiliate network the link is tracked through (e.g. "Impact", "Amazon Associates").
+  affiliateNetwork String   @default("Impact")
+  /// Final tracked affiliate URL (generated in the network). Empty until set.
+  affiliateUrl     String?
+
+  image            String?
+  imageAlt         String?
+
+  /// Category slug (see lib/courses.ts). Sub-category is a free-form slug.
+  category         String?
+  subcategory      String?
+
+  instructor       String?
+
+  /// Prices are shown as provided; the storefront localizes the displayed value.
+  price            Float?
+  currency         String   @default("USD")
+  originalPrice    Float?
+  discountPercentage Int?
+
+  /// Only store when legitimately known; never fabricated for real courses.
+  rating           Float?
+  reviewCount      Int?
+
+  /// Human-readable duration label (e.g. "24 hours" / "24h 30m").
+  duration         String?
+  lectureCount     Int?
+  /// "Beginner" | "Intermediate" | "Advanced" | "All Levels" (free-form).
+  level            String?
+  language         String   @default("English")
+  certificateAvailable Boolean @default(false)
+  bestseller       Boolean  @default(false)
+  featured         Boolean  @default(false)
+  /// Provider's "last updated" label (e.g. "2024-11"); string to avoid fake dates.
+  lastUpdated      String?
+
+  countryAvailability Json  @default("{}")
+  tags             String[] @default([])
+  whatYouLearn     String[] @default([])
+  requirements     String[] @default([])
+
+  /// Affiliate economics + external identifiers (for reporting / future syncs).
+  commissionRate   Float?
+  commissionType   String?
+  trackingId       String?
+  externalProductId String?
+  externalProductUrl String?
+
+  /// Clearly-labelled demo content until real affiliate courses are inserted.
+  demo             Boolean  @default(false)
+  published        Boolean  @default(true)
+  order            Int      @default(0)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([category])
+  @@index([published])
+  @@index([featured])
+  @@index([provider])
+}
