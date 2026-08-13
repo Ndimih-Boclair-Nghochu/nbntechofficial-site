@@ -176,6 +176,71 @@ export const SELAR_PRODUCTS: SelarProduct[] = [
     tags: ["course", "digital products", "make money online", "side hustle"],
     featured: true,
   },
+  {
+    name: "Anonymous YouTube Blueprint",
+    slug: "anonymous-youtube-blueprint",
+    brand: "Mark Angel",
+    subcategory: "youtube-automation",
+    price: 24804,
+    currency: "XAF",
+    imageUrl: "https://files.selar.co/product-images/2025/products/mark-angel1/anonymous-youtube-bluepri-selar.com-68d116ab30926.png",
+    imageAlt: "Anonymous YouTube Blueprint — build a faceless YouTube channel that earns",
+    affiliateUrl: "https://selar.com/p/18155eq972?affiliate=dqwe",
+    shortDescription:
+      "Build a YouTube channel that makes money — without ever showing your face. A proven, step-by-step anonymous YouTube system for complete beginners.",
+    description:
+      "What if you could build a money-making YouTube channel without a camera, without appearing on screen, and without needing to be “popular”? The Anonymous YouTube Blueprint is the step-by-step system for exactly that: launch, grow and monetise a faceless channel using a simple, repeatable process anyone can follow — just you, a laptop and a proven plan.",
+    features: [
+      "A proven anonymous / faceless YouTube system",
+      "No camera and no on-screen appearance",
+      "Step-by-step from launch to monetisation",
+      "A repeatable process for consistent growth",
+      "Beginner-friendly — start from scratch",
+    ],
+    pros: ["No face or camera required", "A clear step-by-step system", "A proven, in-demand income model"],
+    cons: ["Takes consistency to see results", "Monetisation isn't overnight"],
+    whoFor: "Anyone who wants a YouTube income without showing their face or being on camera.",
+    whyRecommend: "It turns the faceless-YouTube opportunity into a simple, followable blueprint — no guesswork.",
+    faqs: [
+      { q: "Do I need to be on camera?", a: "No — the whole system is built around anonymous, faceless channels." },
+      { q: "Is it available in my country?", a: "Yes. It's a digital blueprint delivered instantly, payable from anywhere via Selar." },
+    ],
+    tags: ["course", "youtube automation", "faceless youtube", "make money online"],
+    featured: true,
+    trending: true,
+  },
+  {
+    name: "Faceless YouTube Passive Income Blueprint",
+    slug: "faceless-youtube-passive-income-blueprint",
+    brand: "Renaissance Era",
+    subcategory: "youtube-automation",
+    price: null,
+    currency: "XAF",
+    imageUrl: "https://files.selar.co/product-images/2023/products/mallgitflex/faceless-youtube-passive--selar.co-64965cd07752d.png",
+    imageAlt: "Faceless YouTube Passive Income Blueprint — start and monetise a faceless channel",
+    affiliateUrl: "https://selar.com/1o6g?affiliate=cyl7",
+    shortDescription:
+      "Launch a brand-new faceless YouTube channel and work toward monetisation in 30–60 days using the passive-income strategies most YouTubers never learn.",
+    description:
+      "Learn how to start a profitable faceless YouTube channel from scratch and move toward monetisation fast. This blueprint reveals the growth strategies that only a small percentage of YouTubers use to build channels and generate passive income — all without ever showing your face.",
+    features: [
+      "Start a brand-new faceless channel from scratch",
+      "Growth strategies most creators never learn",
+      "A clear path toward monetisation in 30–60 days",
+      "Build toward passive YouTube income",
+      "No face and no camera required",
+    ],
+    pros: ["Beginner-friendly", "Faceless — no camera needed", "Focused on getting monetised quickly"],
+    cons: ["Timelines depend on your effort and YouTube approval", "Digital delivery only"],
+    whoFor: "Anyone who wants to start a faceless YouTube channel and build passive income.",
+    whyRecommend: "It's a focused, action-oriented plan for getting a faceless channel up and monetised.",
+    faqs: [
+      { q: "How fast can I get monetised?", a: "The blueprint targets 30–60 days, but timelines depend on your effort and YouTube's own approval process." },
+      { q: "Is it available in my country?", a: "Yes. It's a digital blueprint delivered instantly, payable from anywhere via Selar." },
+    ],
+    tags: ["course", "youtube automation", "faceless youtube", "passive income"],
+    trending: true,
+  },
 ];
 
 export function selarToData(p: SelarProduct): Prisma.MarketProductUncheckedCreateInput {
