@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const BRAND = "NBN TECH";
@@ -14,16 +15,21 @@ const HOLD_AFTER = 650; // ms to hold after bar fills
  */
 export function SplashScreen() {
   const reduce = useReducedMotion();
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [typed, setTyped] = useState("");
   const [progress, setProgress] = useState(0);
 
   // Decide whether to show (once per session), after mount to avoid hydration flash.
+  // The NBN MARKET storefront is its own site — never show the NBN TECH splash
+  // when a visitor lands directly on the marketplace or its sections.
   useEffect(() => {
+    if (pathname.startsWith("/marketplace")) return;
     const seen = sessionStorage.getItem("nbn_splash_seen");
     if (seen) return;
     setShow(true);
     document.body.style.overflow = "hidden";
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Typing effect.
