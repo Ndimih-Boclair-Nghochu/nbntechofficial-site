@@ -16,6 +16,7 @@ type FormState = {
   slug: string;
   brand: string;
   category: string;
+  subcategory: string;
   price: string;
   currency: string;
   rating: string;
@@ -50,7 +51,7 @@ const emptyAvail = (): Record<string, Avail> =>
   );
 
 const empty: FormState = {
-  name: "", slug: "", brand: "", category: "", price: "", currency: "EUR", rating: "", reviewCount: "",
+  name: "", slug: "", brand: "", category: "", subcategory: "", price: "", currency: "EUR", rating: "", reviewCount: "",
   sku: "", imageUrl: "", imageAlt: "", shortDescription: "", description: "", whoFor: "", whyRecommend: "",
   features: "", pros: "", cons: "", specsText: "", faqsText: "", gallery: "", tags: "", related: "", guides: "",
   featured: false, trending: false, published: true,
@@ -151,7 +152,7 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
   function startEdit(p: MarketProduct) {
     setEditingId(p.id);
     setForm({
-      name: p.name, slug: p.slug, brand: p.brand ?? "", category: p.category ?? "",
+      name: p.name, slug: p.slug, brand: p.brand ?? "", category: p.category ?? "", subcategory: p.subcategory ?? "",
       price: p.price?.toString() ?? "", currency: p.currency ?? "EUR",
       rating: p.rating?.toString() ?? "", reviewCount: p.reviewCount?.toString() ?? "",
       sku: p.sku ?? "", imageUrl: p.imageUrl ?? "", imageAlt: p.imageAlt ?? "",
@@ -190,7 +191,9 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
     const payload = {
       name: form.name,
       slug: form.slug ? slugify(form.slug) : slugify(form.name),
-      brand: form.brand, category: form.category,
+      brand: form.brand,
+      category: form.category ? slugify(form.category) : "",
+      subcategory: form.subcategory ? slugify(form.subcategory) : "",
       shortDescription: form.shortDescription, description: form.description,
       whoFor: form.whoFor, whyRecommend: form.whyRecommend,
       imageUrl: form.imageUrl, imageAlt: form.imageAlt,
@@ -277,11 +280,14 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
             <Field label="Brand" htmlFor="p-brand" error={errors.brand}>
               <input id="p-brand" className="nbn-input" value={form.brand} onChange={(e) => set({ brand: e.target.value })} />
             </Field>
-            <Field label="Category" htmlFor="p-cat" error={errors.category}>
-              <select id="p-cat" className="nbn-input" value={form.category} onChange={(e) => set({ category: e.target.value })}>
-                <option value="">— select —</option>
-                {CATEGORIES.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
-              </select>
+            <Field label="Category" htmlFor="p-cat" error={errors.category} hint="type any — new ones appear automatically">
+              <input id="p-cat" list="cat-suggestions" className="nbn-input" placeholder="e.g. Courses, Laptops" value={form.category} onChange={(e) => set({ category: e.target.value })} />
+              <datalist id="cat-suggestions">
+                {CATEGORIES.map((c) => <option key={c.slug} value={c.name} />)}
+              </datalist>
+            </Field>
+            <Field label="Sub-category" htmlFor="p-subcat" hint="optional, e.g. Web Development">
+              <input id="p-subcat" className="nbn-input" placeholder="optional" value={form.subcategory} onChange={(e) => set({ subcategory: e.target.value })} />
             </Field>
             <Field label="Reference price" htmlFor="p-price" error={errors.price}>
               <input id="p-price" type="number" step="0.01" className="nbn-input" value={form.price} onChange={(e) => set({ price: e.target.value })} />

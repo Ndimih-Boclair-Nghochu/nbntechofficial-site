@@ -32,6 +32,10 @@ export function Navbar() {
 
   useEffect(() => setOpen(false), [pathname]);
 
+  // The marketplace is its own storefront (NBN MARKET) with its own header —
+  // hide the NBN TECH site navbar there so it reads as a separate site.
+  if (pathname.startsWith("/marketplace")) return null;
+
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 

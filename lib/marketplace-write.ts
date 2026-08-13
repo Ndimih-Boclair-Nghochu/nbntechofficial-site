@@ -14,6 +14,7 @@ export function toProductData(
     slug: data.slug,
     brand: data.brand || null,
     category: data.category || null,
+    subcategory: data.subcategory || null,
     shortDescription: data.shortDescription || null,
     description: data.description || null,
     whoFor: data.whoFor || null,

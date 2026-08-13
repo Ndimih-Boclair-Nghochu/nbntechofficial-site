@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { MarketProduct } from "@prisma/client";
-import { availabilityFor, ctaLabel, money } from "@/lib/marketplace";
+import { availabilityFor, ctaLabel, money, COUNTRY_MAP } from "@/lib/marketplace";
+import { ensureRates, convert, roundPrice } from "@/lib/currency";
 import { AmazonLink } from "./AmazonLink";
 import { CardGallery } from "./CardGallery";
 
@@ -14,18 +15,33 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
+/** Localize a product's reference price into the shopper's country currency. */
+function localizedPrice(product: MarketProduct, country: string): string {
+  if (product.price == null) return "";
+  const from = product.currency || "EUR";
+  const target = COUNTRY_MAP[country]?.currency;
+  if (target && target !== from) {
+    const c = convert(product.price, from, target);
+    if (c != null) return money(roundPrice(c), target);
+  }
+  return money(product.price, from);
+}
+
 /**
- * Product card — image + title link to the product page (crawlable), plus a Buy
- * button that goes straight to the seller for the shopper's country.
+ * Product card — image + title link to the product page (crawlable), a price in
+ * the shopper's currency, and a "Buy from {platform}" button that goes straight
+ * to the seller for the shopper's country.
  */
-export function ProductCard({ product, country }: { product: MarketProduct; country: string }) {
+export async function ProductCard({ product, country }: { product: MarketProduct; country: string }) {
+  await ensureRates(); // ensure FX rates are loaded before we localize the price
   const av = availabilityFor(product, country);
   const href = `/marketplace/product/${product.slug}`;
   const showRating = product.rating != null && product.reviewCount;
   const images = [product.imageUrl, ...(product.gallery || [])].filter(Boolean) as string[];
+  const priceLabel = localizedPrice(product, country);
 
   return (
-    <article className="group flex flex-col rounded-lg border border-ink-line bg-surface p-3 transition-shadow hover:shadow-card-hover">
+    <article className="group flex h-full flex-col rounded-lg border border-ink-line bg-surface p-3 transition-shadow hover:shadow-card-hover">
       <div className="mb-3">
         <CardGallery images={images.length ? images : ["/logo-mark.png"]} alt={product.imageAlt || product.name} href={href} />
       </div>
@@ -41,17 +57,11 @@ export function ProductCard({ product, country }: { product: MarketProduct; coun
         </span>
       )}
 
-      {product.price != null && (
-        <span className="mt-1.5 text-lg font-bold text-ink">{money(product.price, product.currency)}</span>
-      )}
+      {priceLabel && <span className="mt-1.5 text-lg font-bold text-ink">{priceLabel}</span>}
 
       <span
         className={`mt-1 text-xs font-medium ${
-          av.status === "AVAILABLE"
-            ? "text-emerald-600"
-            : av.status === "UNAVAILABLE"
-              ? "text-rose-600"
-              : "text-ink-muted"
+          av.status === "AVAILABLE" ? "text-emerald-600" : av.status === "UNAVAILABLE" ? "text-rose-600" : "text-ink-muted"
         }`}
       >
         {av.status === "AVAILABLE"
@@ -61,7 +71,7 @@ export function ProductCard({ product, country }: { product: MarketProduct; coun
             : "Check availability"}
       </span>
 
-      <div className="mt-3">
+      <div className="mt-3 pt-1">
         {av.hasLink ? (
           <AmazonLink
             href={av.url}
@@ -77,7 +87,7 @@ export function ProductCard({ product, country }: { product: MarketProduct; coun
             href={href}
             className="flex w-full items-center justify-center rounded-lg border border-ink-line px-3 py-2 text-sm font-semibold text-ink transition hover:border-cyan hover:text-cyan-deep"
           >
-            View details
+            See where to buy
           </Link>
         )}
       </div>

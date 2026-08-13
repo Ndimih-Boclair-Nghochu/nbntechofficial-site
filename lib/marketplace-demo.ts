@@ -19,11 +19,16 @@ const UNVERIFIED: Record<string, { status: string }> = ["DE", "GB", "FR", "IT", 
   {},
 );
 
+type AvailabilityMap = Record<string, { status: string; platform?: string; url?: string; price?: number; currency?: string }>;
+
 export type DemoProduct = {
   name: string;
   slug: string;
   brand: string;
   category: string;
+  subcategory?: string;
+  /** Optional custom availability (e.g. courses on Udemy). Defaults to UNVERIFIED. */
+  availability?: AvailabilityMap;
   price: number;
   currency?: string;
   imageUrl: string;
@@ -41,6 +46,16 @@ export type DemoProduct = {
   featured?: boolean;
   trending?: boolean;
 };
+
+/** Honest search-link availability for a course on Udemy (a non-Amazon platform). */
+const courseAvail = (name: string): AvailabilityMap =>
+  ["DE", "GB", "FR", "IT", "ES", "NL", "PL", "SE"].reduce(
+    (m, c) => ({
+      ...m,
+      [c]: { status: "AVAILABILITY_UNKNOWN", platform: "Udemy", url: `https://www.udemy.com/courses/search/?q=${encodeURIComponent(name)}` },
+    }),
+    {} as AvailabilityMap,
+  );
 
 export const DEMO_PRODUCTS: DemoProduct[] = [
   {
@@ -261,6 +276,66 @@ export const DEMO_PRODUCTS: DemoProduct[] = [
     tags: ["travel", "student", "accessories"],
     trending: true,
   },
+  {
+    name: "Full-Stack Web Development Bootcamp",
+    slug: "full-stack-web-development-bootcamp",
+    brand: "NB Learning",
+    category: "courses",
+    subcategory: "web-development",
+    availability: courseAvail("Full-Stack Web Development Bootcamp"),
+    price: 89,
+    currency: "USD",
+    imageUrl: img("1517336714731-489689fd1ca8"),
+    imageAlt: "Full-stack web development course",
+    shortDescription: "A project-based course covering HTML, CSS, JavaScript, React, Node and databases — from first line of code to deployed app.",
+    description: "Learn modern full-stack development by building real projects. Covers the front end (HTML/CSS/JS/React), the back end (Node/APIs/databases) and shipping to production.",
+    features: ["40+ hours of video", "Hands-on projects", "React + Node + databases", "Certificate of completion"],
+    pros: ["Practical, project-based", "Beginner friendly", "Covers the whole stack"],
+    cons: ["Requires consistent practice"],
+    specs: [{ label: "Level", value: "Beginner → Intermediate" }, { label: "Format", value: "Self-paced video" }],
+    faqs: [{ q: "Do I need experience?", a: "No — it starts from the basics and builds up to full-stack projects." }],
+    tags: ["course", "web-development", "programming"],
+    featured: true,
+  },
+  {
+    name: "AWS Cloud Practitioner — Complete Course",
+    slug: "aws-cloud-practitioner-course",
+    brand: "NB Learning",
+    category: "courses",
+    subcategory: "cloud",
+    availability: courseAvail("AWS Cloud Practitioner course"),
+    price: 79,
+    currency: "USD",
+    imageUrl: img("1593642702821-c8da6771f0c6"),
+    imageAlt: "AWS cloud course on a laptop",
+    shortDescription: "Everything you need to understand AWS fundamentals and pass the Cloud Practitioner certification.",
+    description: "A structured path through core AWS services, pricing, security and the cloud mindset — with practice questions to get you certification-ready.",
+    features: ["Core AWS services explained", "Practice exam questions", "Real-world examples", "Certificate of completion"],
+    pros: ["Clear explanations", "Certification-focused", "Good for beginners"],
+    cons: ["Certification exam sold separately by AWS"],
+    specs: [{ label: "Level", value: "Beginner" }, { label: "Format", value: "Self-paced video" }],
+    tags: ["course", "cloud", "aws", "devops"],
+    trending: true,
+  },
+  {
+    name: "Python for Data Analysis",
+    slug: "python-for-data-analysis-course",
+    brand: "NB Learning",
+    category: "courses",
+    subcategory: "data",
+    availability: courseAvail("Python for Data Analysis"),
+    price: 69,
+    currency: "USD",
+    imageUrl: img("1588872657578-7efd1f1555ed"),
+    imageAlt: "Python data analysis course",
+    shortDescription: "Learn to clean, analyse and visualise data with Python, pandas and matplotlib through practical exercises.",
+    description: "A hands-on introduction to data analysis with Python. Work with real datasets using pandas, NumPy and matplotlib and finish able to turn raw data into insight.",
+    features: ["pandas + NumPy + matplotlib", "Real datasets", "Practical exercises", "Certificate of completion"],
+    pros: ["Very practical", "Great for beginners", "Portfolio-ready projects"],
+    cons: ["Some basic Python assumed"],
+    specs: [{ label: "Level", value: "Beginner → Intermediate" }, { label: "Format", value: "Self-paced video" }],
+    tags: ["course", "data", "python"],
+  },
 ];
 
 /** Map a demo product to a Prisma create/update payload. */
@@ -270,6 +345,7 @@ export function demoToData(p: DemoProduct): Prisma.MarketProductUncheckedCreateI
     slug: p.slug,
     brand: p.brand,
     category: p.category,
+    subcategory: p.subcategory ?? null,
     price: p.price,
     currency: p.currency || "EUR",
     imageUrl: p.imageUrl,
@@ -285,7 +361,7 @@ export function demoToData(p: DemoProduct): Prisma.MarketProductUncheckedCreateI
     guides: [],
     specs: p.specs as unknown as Prisma.InputJsonValue,
     faqs: (p.faqs ?? []) as unknown as Prisma.InputJsonValue,
-    amazonAvailability: UNVERIFIED as unknown as Prisma.InputJsonValue,
+    amazonAvailability: (p.availability ?? UNVERIFIED) as unknown as Prisma.InputJsonValue,
     featured: p.featured ?? false,
     trending: p.trending ?? false,
     published: true,

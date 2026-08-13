@@ -163,8 +163,11 @@ model MarketProduct {
   name             String
   slug             String   @unique
   brand            String?
-  /// Category slug (e.g. "laptops", "developer-gear").
+  /// Category slug (e.g. "laptops", "courses"). Free-form: admins add new ones
+  /// when creating a product, and syncs can set them automatically.
   category         String?
+  /// Optional sub-category slug within the category (e.g. "gaming" under laptops).
+  subcategory      String?
 
   shortDescription String?
   description      String?

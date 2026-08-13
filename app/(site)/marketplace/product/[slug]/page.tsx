@@ -12,7 +12,8 @@ import { ProductGallery } from "@/components/marketplace/ProductGallery";
 import { getProductBySlug, getRelatedProducts } from "@/lib/marketplace-data";
 import { getOffersForProduct } from "@/lib/affiliate/link-service";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { availabilityFor, ctaLabel, sortByAvailability, CATEGORY_MAP, COUNTRIES, money } from "@/lib/marketplace";
+import { availabilityFor, ctaLabel, sortByAvailability, CATEGORY_MAP, COUNTRY_MAP, COUNTRIES, money } from "@/lib/marketplace";
+import { ensureRates, convert, roundPrice } from "@/lib/currency";
 import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -55,7 +56,19 @@ export default async function ProductPage({ params }: Params) {
   if (!product) notFound();
 
   const country = getRequestCountry();
+  await ensureRates();
   const cat = product.category ? CATEGORY_MAP[product.category] : undefined;
+  // Localize the reference price into the shopper's country currency.
+  const priceTarget = COUNTRY_MAP[country]?.currency;
+  const mainPriceLabel = (() => {
+    if (product.price == null) return "";
+    const from = product.currency || "EUR";
+    if (priceTarget && priceTarget !== from) {
+      const c = convert(product.price, from, priceTarget);
+      if (c != null) return money(roundPrice(c), priceTarget);
+    }
+    return money(product.price, from);
+  })();
   const related = sortByAvailability(await getRelatedProducts(product), country);
   const galleryImages = [product.imageUrl, ...(product.gallery || [])].filter(Boolean) as string[];
   // Provider-agnostic offers (Amazon today; Awin/impact/CJ once synced). Shown
@@ -147,7 +160,7 @@ export default async function ProductPage({ params }: Params) {
             )}
             {product.price != null && (
               <p className="mt-3 border-t border-ink-line pt-3 text-2xl font-bold text-ink">
-                {money(product.price, product.currency)}
+                {mainPriceLabel}
                 <span className="ml-2 text-xs font-normal text-ink-muted">indicative — see live price at the retailer</span>
               </p>
             )}

@@ -105,6 +105,7 @@ export type Category = {
 };
 
 export const CATEGORIES: Category[] = [
+  { slug: "courses", name: "Courses", icon: "📚", blurb: "Online courses and learning to level up your skills and career." },
   { slug: "technology-electronics", name: "Technology & Electronics", icon: "💻", blurb: "Laptops, monitors, peripherals and the gear that powers modern work." },
   { slug: "laptops", name: "Laptops", icon: "🖥️", blurb: "Portable machines for students, developers and professionals." },
   { slug: "developer-gear", name: "Developer & Cloud Computing Gear", icon: "⌨️", blurb: "Keyboards, monitors and accessories built for people who ship code." },
@@ -118,6 +119,27 @@ export const CATEGORIES: Category[] = [
 export const CATEGORY_MAP: Record<string, Category> = Object.fromEntries(
   CATEGORIES.map((c) => [c.slug, c]),
 );
+
+/** Turn any slug into a readable label (for admin-added / synced categories). */
+export function slugToLabel(slug: string): string {
+  return (slug || "")
+    .split(/[-_/]+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+/** Display name for a category slug — known metadata, else a derived label. */
+export function categoryLabel(slug?: string | null): string {
+  if (!slug) return "";
+  return CATEGORY_MAP[slug]?.name || slugToLabel(slug);
+}
+
+/** Icon for a category slug — known icon, else a neutral default. */
+export function categoryIcon(slug?: string | null): string {
+  if (!slug) return "🏷️";
+  return CATEGORY_MAP[slug]?.icon || "🏷️";
+}
 
 /* ------------------------------------------------------------------ *
  * Editorial buying guides
@@ -340,7 +362,7 @@ export function ctaLabel(a: ResolvedAvailability): string {
   const platform = a.platform || "the store";
   if (!a.hasLink) return "";
   if (a.status === "UNAVAILABLE") return `Search ${platform}`;
-  return `Buy on ${platform}`;
+  return `Buy from ${platform}`;
 }
 
 const STATUS_RANK: Record<AvailabilityStatus, number> = {

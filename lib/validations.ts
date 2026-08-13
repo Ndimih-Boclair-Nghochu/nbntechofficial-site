@@ -167,6 +167,7 @@ export const marketProductSchema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and hyphens only"),
   brand: z.string().trim().max(120).optional().or(z.literal("")),
   category: z.string().trim().max(80).optional().or(z.literal("")),
+  subcategory: z.string().trim().max(80).optional().or(z.literal("")),
   shortDescription: z.string().trim().max(300).optional().or(z.literal("")),
   description: z.string().trim().max(6000).optional().or(z.literal("")),
   whoFor: z.string().trim().max(2000).optional().or(z.literal("")),

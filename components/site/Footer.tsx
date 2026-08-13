@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUpRight, Mail } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/Logo";
@@ -13,7 +16,11 @@ const nav = [
 ];
 
 export function Footer({ content }: { content: ResolvedSiteContent }) {
+  const pathname = usePathname();
   const year = new Date().getFullYear();
+
+  // The marketplace has its own footer — hide the NBN TECH site footer there.
+  if (pathname.startsWith("/marketplace")) return null;
 
   return (
     <footer className="relative overflow-hidden bg-navy-950 text-white">
