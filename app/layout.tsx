@@ -76,9 +76,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const [content, gallery] = await Promise.all([getSiteContent(), getGalleryImages({ take: 12 })]);
   const jsonLd = buildJsonLd(content, siteUrl(), gallery.map((g) => g.url));
 
+  // impact.com verification uses a non-standard `value` attribute (not `content`),
+  // which the JSX meta type doesn't allow — spread a cast props object so the tag
+  // renders exactly as impact.com's verifier expects.
+  const impactVerification = {
+    name: "impact-site-verification",
+    value: "6e7491db-2cac-448b-afd4-653685a35feb",
+  } as unknown as React.ComponentProps<"meta">;
+
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
+        {/* impact.com site verification (Udemy affiliate program). Rendered
+            verbatim with the `value` attribute impact.com's verifier expects. */}
+        <meta {...impactVerification} />
         {/* Structured data: Person + ProfessionalService + WebSite */}
         <script
           type="application/ld+json"
