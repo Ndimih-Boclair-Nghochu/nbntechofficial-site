@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { MarketProduct } from "@prisma/client";
-import { ShieldCheck, Globe2, MapPin, ListChecks } from "lucide-react";
+import type { MarketProduct, Course } from "@prisma/client";
+import { ShieldCheck, Globe2, MapPin, ListChecks, GraduationCap } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { MarketHeader } from "@/components/marketplace/MarketHeader";
 import { ProductCard, ProductGrid } from "@/components/marketplace/ProductCard";
 import { ProductRail, RailItem } from "@/components/marketplace/ProductRail";
 import { CategoryMenu } from "@/components/marketplace/CategoryMenu";
 import { JsonLd } from "@/components/marketplace/JsonLd";
+import { CourseCard } from "@/components/courses/CourseCard";
 import { getAllProducts, getAvailableCategories } from "@/lib/marketplace-data";
+import { getCourses } from "@/lib/courses-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
 import { BRAND, TAGLINE, marketplaceUrl, sortByAvailability, interleaveByCategory } from "@/lib/marketplace";
 import { ensureRates } from "@/lib/currency";
@@ -88,7 +90,12 @@ export default async function MarketplaceHome() {
   const country = getRequestCountry();
   await ensureRates();
 
-  const [all, categories] = await Promise.all([getAllProducts(), getAvailableCategories()]);
+  const [all, categories, courses] = await Promise.all([
+    getAllProducts(),
+    getAvailableCategories(),
+    // Top courses for the "Udemy Courses" rail — featured first, then highest-rated.
+    getCourses({ sort: "rating", take: 12 }),
+  ]);
 
   // Mix categories in the cross-category rails so they don't clump in the order
   // products were added (available items still come first via sortByAvailability).
@@ -158,6 +165,32 @@ export default async function MarketplaceHome() {
 
         <Rail title="Featured products" products={featured} country={country} />
         <Rail title="Trending now" products={trending} country={country} />
+
+        {/* Udemy Courses — a sideways rail linking into the Online Courses section */}
+        {courses.length > 0 && (
+          <section className="rounded-2xl border border-ink-line bg-surface p-4 shadow-card sm:p-5">
+            <div className="mb-4 flex items-baseline justify-between gap-3">
+              <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-ink">
+                <GraduationCap className="h-5 w-5 self-center text-cyan-deep" />
+                Udemy Courses
+                <span className="text-xs font-normal text-ink-muted sm:hidden">· swipe →</span>
+              </h2>
+              <Link href="/courses" className="shrink-0 text-sm font-semibold text-cyan-deep hover:underline">
+                See all
+              </Link>
+            </div>
+            <p className="-mt-2 mb-4 max-w-2xl text-sm text-ink-muted">
+              Online courses worth taking — compare cloud, AWS, DevOps, programming, data science and more.
+            </p>
+            <ProductRail>
+              {courses.map((c: Course) => (
+                <RailItem key={c.id}>
+                  <CourseCard course={c} country={country} showCompare={false} />
+                </RailItem>
+              ))}
+            </ProductRail>
+          </section>
+        )}
 
         {/* Partitioned, per-category rails (courses, laptops, …) */}
         {categories.map((c) => (

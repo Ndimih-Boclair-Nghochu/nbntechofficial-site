@@ -30,7 +30,16 @@ function Stars({ rating }: { rating: number }) {
  * centrally-resolved affiliate URL; when none is set yet it shows a disabled
  * "link coming soon" state instead of a dead link.
  */
-export async function CourseCard({ course, country }: { course: Course; country: string }) {
+export async function CourseCard({
+  course,
+  country,
+  showCompare = true,
+}: {
+  course: Course;
+  country: string;
+  /** Show the "Compare" toggle. Off outside the courses vertical (e.g. the marketplace home rail). */
+  showCompare?: boolean;
+}) {
   await ensureRates();
   const href = coursePath(course.slug);
   const url = resolveCourseUrl(course);
@@ -127,7 +136,7 @@ export async function CourseCard({ course, country }: { course: Course; country:
             >
               Details
             </Link>
-            <CompareToggle course={toCompareCourse(course, country)} />
+            {showCompare && <CompareToggle course={toCompareCourse(course, country)} />}
           </div>
           {url ? (
             <AmazonLink
