@@ -36,31 +36,34 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
 
   return (
     <div className="bg-navy-950 text-white shadow-[0_2px_20px_rgba(3,10,59,0.25)]">
-      <Container className="py-3">
-        <div className="flex flex-nowrap items-center gap-2 sm:gap-3">
-          <MarketNav categories={categories} />
-
-          <Link href="/marketplace" aria-label="NBN MARKET home" className="flex shrink-0 items-center gap-2">
-            <MarketLogo size={34} className="shrink-0" />
-            <span className="flex flex-col leading-none">
-              <span className="text-base font-extrabold tracking-tight sm:text-2xl">
-                <span className="text-white">NBN</span> <span className="text-cyan">MARKET</span>
-              </span>
-              <span className="hidden text-[10px] font-medium tracking-wide text-white/55 sm:block">
-                Discover products worth buying
-              </span>
+      {/* Brand bar — top row (where the site logo used to be) */}
+      <Container className="flex items-center justify-center py-2.5 sm:justify-start">
+        <Link href="/marketplace" aria-label="NBN MARKET home" className="flex items-center gap-2.5">
+          <MarketLogo size={38} className="shrink-0" />
+          <span className="flex flex-col leading-none">
+            <span className="text-xl font-extrabold tracking-tight sm:text-2xl">
+              <span className="text-white">NBN</span> <span className="text-cyan">MARKET</span>
             </span>
-          </Link>
-
-          <div className="hidden min-w-0 flex-1 md:block">{searchForm}</div>
-
-          <div className="ml-auto shrink-0 md:ml-0">
-            <CountrySelect variant="dark" />
-          </div>
-        </div>
-
-        <div className="mt-3 md:hidden">{searchForm}</div>
+            <span className="mt-0.5 text-[10px] font-medium tracking-wide text-white/55">
+              Discover products worth buying
+            </span>
+          </span>
+        </Link>
       </Container>
+
+      {/* Tools row — hamburger (categories) · search · country */}
+      <div className="border-t border-white/10">
+        <Container className="py-2.5">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <MarketNav categories={categories} />
+            <div className="hidden min-w-0 flex-1 md:block">{searchForm}</div>
+            <div className="ml-auto shrink-0 md:ml-0">
+              <CountrySelect variant="dark" />
+            </div>
+          </div>
+          <div className="mt-2.5 md:hidden">{searchForm}</div>
+        </Container>
+      </div>
 
       {categories.length > 0 && (
         <div className="border-t border-white/10 bg-navy-900">

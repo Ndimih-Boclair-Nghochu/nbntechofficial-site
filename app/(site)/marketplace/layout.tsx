@@ -15,8 +15,9 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
 
   return (
     <CountryProvider initial={initial}>
-      {/* pt clears the fixed global navbar; bg keeps the storefront light */}
-      <div className="min-h-screen bg-sand-soft pt-16 md:pt-[72px]">
+      {/* The NBN TECH site navbar is hidden here, so the NBN MARKET header sits
+          flush at the top (no clearance needed). */}
+      <div className="min-h-screen bg-sand-soft">
         {children}
 
         {/* Slim marketplace footer */}
