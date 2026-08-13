@@ -115,6 +115,7 @@ export const CATEGORIES: Category[] = [
   { slug: "home-kitchen", name: "Home & Kitchen", icon: "🍳", blurb: "Air fryers, blenders, scales and the tools that make cooking easier." },
   { slug: "storage-organization", name: "Storage & Organization", icon: "📦", blurb: "Bins, shelving and racks to declutter your home, garage and workspace." },
   { slug: "home-cleaning", name: "Home Cleaning", icon: "🧽", blurb: "Scrubbers, cleaners and tools that make tidying up faster and easier." },
+  { slug: "fitness", name: "Fitness & Home Gym", icon: "🏋️", blurb: "Resistance bands, benches, yoga gear and equipment for training at home." },
   { slug: "car-accessories", name: "Car & Automotive", icon: "🚗", blurb: "Phone mounts, inflators, vacuums and gear that upgrade every drive." },
   { slug: "gaming", name: "Gaming", icon: "🎮", blurb: "Rigs, peripherals and accessories for players who want an edge." },
   { slug: "travel-lifestyle", name: "Travel & Lifestyle", icon: "✈️", blurb: "Water bottles and gear that keep up with you on the move." },
