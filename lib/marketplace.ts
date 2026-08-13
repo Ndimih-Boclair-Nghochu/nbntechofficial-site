@@ -113,6 +113,8 @@ export const CATEGORIES: Category[] = [
   { slug: "student-essentials", name: "Student Essentials", icon: "🎓", blurb: "Reliable, affordable tools for coursework and campus life." },
   { slug: "home-office", name: "Home & Office", icon: "🏠", blurb: "Everything you need for a comfortable, productive workspace." },
   { slug: "home-kitchen", name: "Home & Kitchen", icon: "🍳", blurb: "Air fryers, blenders, scales and the tools that make cooking easier." },
+  { slug: "storage-organization", name: "Storage & Organization", icon: "📦", blurb: "Bins, shelving and racks to declutter your home, garage and workspace." },
+  { slug: "home-cleaning", name: "Home Cleaning", icon: "🧽", blurb: "Scrubbers, cleaners and tools that make tidying up faster and easier." },
   { slug: "car-accessories", name: "Car & Automotive", icon: "🚗", blurb: "Phone mounts, inflators, vacuums and gear that upgrade every drive." },
   { slug: "gaming", name: "Gaming", icon: "🎮", blurb: "Rigs, peripherals and accessories for players who want an edge." },
   { slug: "travel-lifestyle", name: "Travel & Lifestyle", icon: "✈️", blurb: "Water bottles and gear that keep up with you on the move." },
