@@ -112,8 +112,10 @@ export const CATEGORIES: Category[] = [
   { slug: "developer-gear", name: "Developer & Cloud Computing Gear", icon: "⌨️", blurb: "Keyboards, monitors and accessories built for people who ship code." },
   { slug: "student-essentials", name: "Student Essentials", icon: "🎓", blurb: "Reliable, affordable tools for coursework and campus life." },
   { slug: "home-office", name: "Home & Office", icon: "🏠", blurb: "Everything you need for a comfortable, productive workspace." },
+  { slug: "home-kitchen", name: "Home & Kitchen", icon: "🍳", blurb: "Air fryers, blenders, scales and the tools that make cooking easier." },
+  { slug: "car-accessories", name: "Car & Automotive", icon: "🚗", blurb: "Phone mounts, inflators, vacuums and gear that upgrade every drive." },
   { slug: "gaming", name: "Gaming", icon: "🎮", blurb: "Rigs, peripherals and accessories for players who want an edge." },
-  { slug: "travel-lifestyle", name: "Travel & Lifestyle", icon: "✈️", blurb: "Gear that keeps up with you on the move." },
+  { slug: "travel-lifestyle", name: "Travel & Lifestyle", icon: "✈️", blurb: "Water bottles and gear that keep up with you on the move." },
   { slug: "accessories", name: "Accessories", icon: "🔌", blurb: "The small upgrades that make a big difference." },
 ];
 
