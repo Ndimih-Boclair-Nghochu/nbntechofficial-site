@@ -68,6 +68,8 @@ export function CoursesManager({ initial }: { initial: Course[] }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [bulkText, setBulkText] = useState("");
+  const [bulkBusy, setBulkBusy] = useState(false);
   const { show, toastNode } = useToast();
 
   const set = (patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch }));
@@ -93,6 +95,37 @@ export function CoursesManager({ initial }: { initial: Course[] }) {
       show("Network error.", "error");
     } finally {
       setSeeding(false);
+    }
+  }
+
+  async function bulkImport() {
+    let payload: unknown;
+    try {
+      payload = JSON.parse(bulkText);
+    } catch {
+      show("That isn't valid JSON. Paste an array of course objects.", "error");
+      return;
+    }
+    setBulkBusy(true);
+    try {
+      const res = await fetch("/api/courses/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        show(json.error || "Import failed.", "error");
+        return;
+      }
+      setItems(json.data.courses as Course[]);
+      const { imported, failed } = json.data as { imported: number; failed: number };
+      show(`Imported ${imported} course${imported === 1 ? "" : "s"}${failed ? ` · ${failed} skipped` : ""}.`);
+      if (!failed) setBulkText("");
+    } catch {
+      show("Network error.", "error");
+    } finally {
+      setBulkBusy(false);
     }
   }
 
@@ -381,6 +414,37 @@ export function CoursesManager({ initial }: { initial: Course[] }) {
 
       {/* List */}
       <div>
+        {/* Bulk import — add 100+ courses (each with its own affiliate URL) at once */}
+        <details className="mb-4 rounded-xl border border-ink-line bg-surface p-4">
+          <summary className="cursor-pointer text-sm font-semibold text-ink">
+            Bulk import courses (JSON) — add many at once
+          </summary>
+          <p className="mt-2 text-xs text-ink-muted">
+            Paste a JSON array of courses. Each object needs at least <code>title</code>; add its own{" "}
+            <code>affiliateUrl</code>, <code>provider</code>, <code>affiliateNetwork</code>,{" "}
+            <code>externalProductId</code>, <code>category</code>, <code>price</code>, <code>rating</code>, etc.
+            Existing courses (matched by <code>slug</code>) are updated; new ones are created. Invalid rows are
+            skipped and reported.
+          </p>
+          <textarea
+            value={bulkText}
+            onChange={(e) => setBulkText(e.target.value)}
+            rows={8}
+            spellCheck={false}
+            placeholder={`[\n  {\n    "title": "AWS Certified Solutions Architect",\n    "provider": "Udemy",\n    "affiliateNetwork": "Impact",\n    "affiliateUrl": "https://trk.udemy.com/UNIQUE_1",\n    "externalProductId": "udemy-123",\n    "category": "aws",\n    "price": 19.99,\n    "originalPrice": 89.99,\n    "rating": 4.7,\n    "reviewCount": 12500,\n    "image": "https://..."\n  }\n]`}
+            className="nbn-input mt-2 font-mono text-xs"
+          />
+          <button
+            type="button"
+            onClick={bulkImport}
+            disabled={bulkBusy || !bulkText.trim()}
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-700 disabled:opacity-60"
+          >
+            {bulkBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            Import courses
+          </button>
+        </details>
+
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm text-ink-muted">{items.length} course{items.length === 1 ? "" : "s"}</p>
           <button type="button" onClick={loadDemo} disabled={seeding} className="inline-flex items-center gap-2 rounded-full border border-cyan/40 bg-cyan/10 px-4 py-2 text-sm font-medium text-cyan-deep hover:bg-cyan/15 disabled:opacity-60">

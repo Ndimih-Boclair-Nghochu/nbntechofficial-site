@@ -15,6 +15,16 @@ import type { Prisma } from "@prisma/client";
 const IMG = (seed: string) =>
   `https://placehold.co/640x360/0a1f44/ffffff/png?text=${encodeURIComponent(seed)}`;
 
+/**
+ * TEST affiliate URL only — the owner's first Impact/Udemy tracking link, used
+ * solely so the "View on Udemy" button is clickable while previewing the demo.
+ *
+ * This is NOT a shared/permanent link: it lives on these demo rows only. Every
+ * REAL course gets its OWN unique Impact URL entered per-course in the admin
+ * (Course.affiliateUrl). The frontend always resolves each course's own URL.
+ */
+const TEST_AFFILIATE_URL = "https://trk.udemy.com/aNDLqW";
+
 type DemoCourse = Omit<Prisma.CourseUncheckedCreateInput, "id" | "createdAt" | "updatedAt">;
 
 export const DEMO_COURSES: DemoCourse[] = [
@@ -23,7 +33,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-aws-certified-solutions-architect",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null, // paste the real Impact/Udemy tracked link here (or via admin)
+    affiliateUrl: TEST_AFFILIATE_URL, // TEST url only — each real course gets its own unique Impact URL
     image: IMG("AWS Solutions Architect"),
     imageAlt: "Demo course cover — AWS Certified Solutions Architect",
     category: "aws",
@@ -63,7 +73,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-python-for-data-science",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null,
+    affiliateUrl: TEST_AFFILIATE_URL,
     image: IMG("Python for Data Science"),
     imageAlt: "Demo course cover — Python for Data Science",
     category: "python",
@@ -103,7 +113,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-react-nextjs-development",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null,
+    affiliateUrl: TEST_AFFILIATE_URL,
     image: IMG("React and Next.js"),
     imageAlt: "Demo course cover — React and Next.js",
     category: "react",
@@ -143,7 +153,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-devops-bootcamp-docker-kubernetes",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null,
+    affiliateUrl: TEST_AFFILIATE_URL,
     image: IMG("DevOps Bootcamp"),
     imageAlt: "Demo course cover — DevOps Bootcamp",
     category: "devops",
@@ -183,7 +193,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-cybersecurity-ethical-hacking",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null,
+    affiliateUrl: TEST_AFFILIATE_URL,
     image: IMG("Cybersecurity"),
     imageAlt: "Demo course cover — Cybersecurity",
     category: "cybersecurity",
@@ -223,7 +233,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-ui-ux-design-figma",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null,
+    affiliateUrl: TEST_AFFILIATE_URL,
     image: IMG("UI UX Design"),
     imageAlt: "Demo course cover — UI/UX Design",
     category: "ui-ux-design",
@@ -263,7 +273,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-digital-marketing-seo",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null,
+    affiliateUrl: TEST_AFFILIATE_URL,
     image: IMG("Digital Marketing"),
     imageAlt: "Demo course cover — Digital Marketing",
     category: "digital-marketing",
@@ -303,7 +313,7 @@ export const DEMO_COURSES: DemoCourse[] = [
     slug: "demo-microsoft-azure-fundamentals-az900",
     provider: "Udemy",
     affiliateNetwork: "Impact",
-    affiliateUrl: null,
+    affiliateUrl: TEST_AFFILIATE_URL,
     image: IMG("Azure Fundamentals"),
     imageAlt: "Demo course cover — Microsoft Azure Fundamentals",
     category: "microsoft-azure",
