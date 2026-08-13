@@ -76,20 +76,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const [content, gallery] = await Promise.all([getSiteContent(), getGalleryImages({ take: 12 })]);
   const jsonLd = buildJsonLd(content, siteUrl(), gallery.map((g) => g.url));
 
-  // impact.com verification uses a non-standard `value` attribute (not `content`),
-  // which the JSX meta type doesn't allow — spread a cast props object so the tag
-  // renders exactly as impact.com's verifier expects.
-  const impactVerification = {
-    name: "impact-site-verification",
-    value: "6e7491db-2cac-448b-afd4-653685a35feb",
-  } as unknown as React.ComponentProps<"meta">;
-
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        {/* impact.com site verification (Udemy affiliate program). Rendered
-            verbatim with the `value` attribute impact.com's verifier expects. */}
-        <meta {...impactVerification} />
         {/* Structured data: Person + ProfessionalService + WebSite */}
         <script
           type="application/ld+json"
@@ -114,6 +103,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           src="https://www.dwin2.com/pub.3033801.min.js"
           strategy="afterInteractive"
         />
+
+        {/* impact.com Universal Tracking Tag (account P-A7615000-...). Loads the
+            impact.com tracker, transforms affiliate links and records impressions.
+            Also serves as impact.com site verification. Loaded globally once. */}
+        <Script id="impact-utt" strategy="afterInteractive">
+          {`(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7615000-1d05-4453-8029-7ba278f054be1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');`}
+        </Script>
       </body>
     </html>
   );
