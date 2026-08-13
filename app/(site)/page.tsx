@@ -44,7 +44,7 @@ export default async function HomePage() {
       <div className="bg-canvas">
         <Container className="flex justify-center py-7">
           <Link
-            href="/marketplace"
+            href="/nbnmarket"
             className="group inline-flex items-center gap-2 rounded-xl bg-navy px-8 py-4 text-base font-semibold text-white shadow-card transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-card-hover"
           >
             Explore the Marketplace

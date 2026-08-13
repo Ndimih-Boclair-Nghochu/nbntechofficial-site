@@ -64,7 +64,7 @@ export function MarketNav({ categories }: { categories: AvailableCategory[] }) {
             <div key={c.slug} className="border-b border-ink-line/60">
               <div className="flex items-center">
                 <Link
-                  href={`/marketplace/category/${c.slug}`}
+                  href={`/nbnmarket/category/${c.slug}`}
                   onClick={() => setOpen(false)}
                   className="flex flex-1 items-center gap-2 px-3 py-3 text-sm font-semibold text-ink hover:text-cyan-deep"
                 >
@@ -88,7 +88,7 @@ export function MarketNav({ categories }: { categories: AvailableCategory[] }) {
                   {c.subcategories.map((s) => (
                     <Link
                       key={s.slug}
-                      href={`/marketplace/category/${c.slug}?sub=${s.slug}`}
+                      href={`/nbnmarket/category/${c.slug}?sub=${s.slug}`}
                       onClick={() => setOpen(false)}
                       className="block py-1.5 text-sm text-ink-body hover:text-cyan-deep"
                     >

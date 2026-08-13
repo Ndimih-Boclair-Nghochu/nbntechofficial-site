@@ -11,15 +11,15 @@ export const metadata: Metadata = {
   title: "Affiliate Disclosure",
   description:
     "Our affiliate disclosure: some marketplace links are affiliate links to Amazon and other retailers. We may earn a commission at no extra cost to you; it never changes our recommendations.",
-  alternates: { canonical: "/marketplace/disclosure" },
+  alternates: { canonical: "/nbnmarket/disclosure" },
   openGraph: { title: `Affiliate Disclosure — ${BRAND}`, type: "website" },
 };
 
 export default function DisclosurePage() {
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    { name: "Affiliate disclosure", url: "/marketplace/disclosure" },
+    { name: "NBN Market", url: "/nbnmarket" },
+    { name: "Affiliate disclosure", url: "/nbnmarket/disclosure" },
   ];
   return (
     <>

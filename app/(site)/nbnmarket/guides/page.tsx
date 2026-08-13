@@ -16,15 +16,15 @@ export const metadata: Metadata = {
   title: "Buying Guides",
   description:
     "Independent buying guides for laptops, monitors, keyboards and developer gear. Learn what matters, compare top picks across trusted retailers and check availability in your country.",
-  alternates: { canonical: "/marketplace/guides" },
+  alternates: { canonical: "/nbnmarket/guides" },
   openGraph: { title: `Buying Guides — ${BRAND}`, type: "website" },
 };
 
 export default function GuidesIndex() {
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    { name: "Buying guides", url: "/marketplace/guides" },
+    { name: "NBN Market", url: "/nbnmarket" },
+    { name: "Buying guides", url: "/nbnmarket/guides" },
   ];
   return (
     <>
@@ -41,7 +41,7 @@ export default function GuidesIndex() {
           {GUIDES.map((g) => (
             <Link
               key={g.slug}
-              href={`/marketplace/guides/${g.slug}`}
+              href={`/nbnmarket/guides/${g.slug}`}
               className="flex flex-col gap-2 rounded-xl2 border border-ink-line bg-surface p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
             >
               <span className="text-xs font-bold uppercase tracking-wide text-[#c77b00]">Buying guide</span>

@@ -12,15 +12,15 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Search Amazon",
   description: "Search live Amazon products and check prices across marketplaces.",
-  alternates: { canonical: "/marketplace/amazon" },
+  alternates: { canonical: "/nbnmarket/amazon" },
   robots: { index: false, follow: true },
 };
 
 export default function AmazonSearchPage() {
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    { name: "Search Amazon", url: "/marketplace/amazon" },
+    { name: "NBN Market", url: "/nbnmarket" },
+    { name: "Search Amazon", url: "/nbnmarket/amazon" },
   ];
   return (
     <>

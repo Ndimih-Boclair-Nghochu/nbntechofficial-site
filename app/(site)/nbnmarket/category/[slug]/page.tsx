@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: name,
     description,
-    alternates: { canonical: `/marketplace/category/${params.slug}` },
+    alternates: { canonical: `/nbnmarket/category/${params.slug}` },
     openGraph: { title: `${name} — ${BRAND}`, description, type: "website" },
   };
 }
@@ -59,9 +59,9 @@ export default async function CategoryPage({ params, searchParams }: Params) {
 
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    { name, url: `/marketplace/category/${params.slug}` },
-    ...(sub ? [{ name: slugToLabel(sub), url: `/marketplace/category/${params.slug}?sub=${sub}` }] : []),
+    { name: "NBN Market", url: "/nbnmarket" },
+    { name, url: `/nbnmarket/category/${params.slug}` },
+    ...(sub ? [{ name: slugToLabel(sub), url: `/nbnmarket/category/${params.slug}?sub=${sub}` }] : []),
   ];
 
   return (
@@ -88,7 +88,7 @@ export default async function CategoryPage({ params, searchParams }: Params) {
           {subcats.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               <Link
-                href={`/marketplace/category/${params.slug}`}
+                href={`/nbnmarket/category/${params.slug}`}
                 className={`rounded-full px-3 py-1 text-xs font-medium ${!sub ? "bg-navy text-white" : "bg-sand-soft text-ink-body hover:text-cyan-deep"}`}
               >
                 All
@@ -96,7 +96,7 @@ export default async function CategoryPage({ params, searchParams }: Params) {
               {subcats.map((s) => (
                 <Link
                   key={s.slug}
-                  href={`/marketplace/category/${params.slug}?sub=${s.slug}`}
+                  href={`/nbnmarket/category/${params.slug}?sub=${s.slug}`}
                   className={`rounded-full px-3 py-1 text-xs font-medium ${sub === s.slug ? "bg-navy text-white" : "bg-sand-soft text-ink-body hover:text-cyan-deep"}`}
                 >
                   {s.name} <span className="opacity-70">({s.count})</span>

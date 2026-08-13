@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: `${p.name} — Price & Availability`,
     description: desc,
-    alternates: { canonical: `/marketplace/product/${p.slug}` },
+    alternates: { canonical: `/nbnmarket/product/${p.slug}` },
     openGraph: { title, description: desc, type: "website", images: image ? [{ url: image }] : undefined },
     twitter: { card: "summary_large_image", title, description: desc },
   };
@@ -93,9 +93,9 @@ export default async function ProductPage({ params }: Params) {
 
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    ...(cat ? [{ name: cat.name, url: `/marketplace/category/${cat.slug}` }] : []),
-    { name: product.name, url: `/marketplace/product/${product.slug}` },
+    { name: "NBN Market", url: "/nbnmarket" },
+    ...(cat ? [{ name: cat.name, url: `/nbnmarket/category/${cat.slug}` }] : []),
+    { name: product.name, url: `/nbnmarket/product/${product.slug}` },
   ];
 
   // ---- Structured data (assert only what is present & truthful) ----

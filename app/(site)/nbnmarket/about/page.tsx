@@ -12,15 +12,15 @@ export const metadata: Metadata = {
   title: "About & Methodology",
   description:
     "How the NBN MARKET researches and recommends products, and how our independent, affiliate-supported model works.",
-  alternates: { canonical: "/marketplace/about" },
+  alternates: { canonical: "/nbnmarket/about" },
   openGraph: { title: `About & Methodology — ${BRAND}`, type: "website" },
 };
 
 export default function AboutPage() {
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    { name: "About", url: "/marketplace/about" },
+    { name: "NBN Market", url: "/nbnmarket" },
+    { name: "About", url: "/nbnmarket/about" },
   ];
   return (
     <>
@@ -50,7 +50,7 @@ export default function AboutPage() {
             Some links are affiliate links — to Amazon and to other retailers through affiliate networks.
             If you buy through one, we may earn a commission at no additional cost to you. This never
             influences our recommendations — see our{" "}
-            <Link href="/marketplace/disclosure" className="text-cyan-deep underline underline-offset-2">
+            <Link href="/nbnmarket/disclosure" className="text-cyan-deep underline underline-offset-2">
               full affiliate disclosure
             </Link>
             .

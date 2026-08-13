@@ -22,7 +22,7 @@ export const TAGLINE = "Discover Products Worth Buying";
 
 /** Absolute marketplace base URL (canonical). */
 export function marketplaceUrl(path = ""): string {
-  return `${siteUrl()}/marketplace${path}`;
+  return `${siteUrl()}/nbnmarket${path}`;
 }
 
 /* ------------------------------------------------------------------ *
@@ -396,4 +396,35 @@ export function sortByAvailability<T extends ProductLike>(products: T[], code: s
     .map((p, i) => ({ p, i, r: STATUS_RANK[availabilityFor(p, code).status] }))
     .sort((a, b) => a.r - b.r || a.i - b.i)
     .map((x) => x.p);
+}
+
+/**
+ * Interleave products so consecutive items come from different categories,
+ * instead of clumping in the order they were added. Groups by category, then
+ * round-robins across the groups (1st of each category, 2nd of each, …). Input
+ * order is preserved within each category, so an availability sort applied
+ * beforehand still keeps available items ahead. Used for the mixed "Featured"
+ * and "Trending" rails on the storefront home.
+ */
+export function interleaveByCategory<T extends { category?: string | null }>(products: T[]): T[] {
+  const groups = new Map<string, T[]>();
+  for (const p of products) {
+    const key = p.category || "_uncategorised";
+    const arr = groups.get(key) || [];
+    arr.push(p);
+    groups.set(key, arr);
+  }
+  const buckets = Array.from(groups.values());
+  const out: T[] = [];
+  for (let i = 0; out.length < products.length; i++) {
+    let advanced = false;
+    for (const b of buckets) {
+      if (i < b.length) {
+        out.push(b[i]);
+        advanced = true;
+      }
+    }
+    if (!advanced) break;
+  }
+  return out;
 }

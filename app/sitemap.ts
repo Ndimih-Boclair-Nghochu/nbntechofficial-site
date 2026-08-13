@@ -30,21 +30,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // --- Marketplace ---
   const marketplaceHubs = [
-    { path: "/marketplace", priority: 0.9, freq: "daily" as const },
-    { path: "/marketplace/guides", priority: 0.7, freq: "weekly" as const },
-    { path: "/marketplace/about", priority: 0.4, freq: "monthly" as const },
-    { path: "/marketplace/disclosure", priority: 0.3, freq: "yearly" as const },
+    { path: "/nbnmarket", priority: 0.9, freq: "daily" as const },
+    { path: "/nbnmarket/guides", priority: 0.7, freq: "weekly" as const },
+    { path: "/nbnmarket/about", priority: 0.4, freq: "monthly" as const },
+    { path: "/nbnmarket/disclosure", priority: 0.3, freq: "yearly" as const },
   ].map((r) => ({ url: `${base}${r.path}`, lastModified: now, changeFrequency: r.freq, priority: r.priority }));
 
   const categoryRoutes = CATEGORIES.map((c) => ({
-    url: `${base}/marketplace/category/${c.slug}`,
+    url: `${base}/nbnmarket/category/${c.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
   const guideRoutes = GUIDES.map((g) => ({
-    url: `${base}/marketplace/guides/${g.slug}`,
+    url: `${base}/nbnmarket/guides/${g.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.7,
@@ -52,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const productSlugs = await getAllProductSlugs();
   const productRoutes = productSlugs.map((slug) => ({
-    url: `${base}/marketplace/product/${slug}`,
+    url: `${base}/nbnmarket/product/${slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.8,

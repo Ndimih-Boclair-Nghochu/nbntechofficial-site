@@ -17,7 +17,7 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
   const categories = await getAvailableCategories();
 
   const searchForm = (
-    <form action="/marketplace/search" method="get" role="search" className="flex w-full">
+    <form action="/nbnmarket/search" method="get" role="search" className="flex w-full">
       <input
         type="search"
         name="q"
@@ -38,7 +38,7 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
     <div className="bg-navy-950 text-white shadow-[0_2px_20px_rgba(3,10,59,0.25)]">
       {/* Brand bar — top row (where the site logo used to be) */}
       <Container className="flex items-center justify-between py-2.5">
-        <Link href="/marketplace" aria-label="NBN MARKET home" className="flex items-center gap-2.5">
+        <Link href="/nbnmarket" aria-label="NBN MARKET home" className="flex items-center gap-2.5">
           <MarketLogo size={38} className="shrink-0" />
           <span className="flex flex-col leading-none">
             <span className="text-xl font-extrabold tracking-tight sm:text-2xl">
@@ -87,7 +87,7 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
                 return (
                   <Link
                     key={c.slug}
-                    href={`/marketplace/category/${c.slug}`}
+                    href={`/nbnmarket/category/${c.slug}`}
                     className={cn(
                       "whitespace-nowrap border-b-2 px-3 py-2 text-sm font-bold transition-colors",
                       active ? "border-cyan text-cyan" : "border-transparent text-white/85 hover:border-white/40 hover:text-white",

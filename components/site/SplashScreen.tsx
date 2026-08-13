@@ -24,7 +24,7 @@ export function SplashScreen() {
   // The NBN MARKET storefront is its own site — never show the NBN TECH splash
   // when a visitor lands directly on the marketplace or its sections.
   useEffect(() => {
-    if (pathname.startsWith("/marketplace")) return;
+    if (pathname.startsWith("/nbnmarket")) return;
     const seen = sessionStorage.getItem("nbn_splash_seen");
     if (seen) return;
     setShow(true);

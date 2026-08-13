@@ -517,12 +517,12 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
                     {p.name} {!p.published && <span className="text-xs font-normal text-rose-600">(draft)</span>}
                   </p>
                   <p className="truncate text-xs text-ink-muted">
-                    {p.category || "—"} · /marketplace/product/{p.slug}
+                    {p.category || "—"} · /nbnmarket/product/{p.slug}
                     {p.featured && " · featured"}
                     {p.trending && " · trending"}
                   </p>
                 </div>
-                <a href={`/marketplace/product/${p.slug}`} target="_blank" rel="noreferrer" className="rounded-md px-2 py-1.5 text-xs font-medium text-ink-body hover:bg-canvas hover:text-cyan-deep">View</a>
+                <a href={`/nbnmarket/product/${p.slug}`} target="_blank" rel="noreferrer" className="rounded-md px-2 py-1.5 text-xs font-medium text-ink-body hover:bg-canvas hover:text-cyan-deep">View</a>
                 <button onClick={() => startEdit(p)} className="rounded-md px-2.5 py-1.5 text-xs font-medium text-ink-body hover:bg-canvas hover:text-cyan-deep">Edit</button>
                 <DeleteButton onConfirm={() => remove(p.id)} itemName={p.name} />
               </li>

@@ -20,7 +20,7 @@ export function Footer({ content }: { content: ResolvedSiteContent }) {
   const year = new Date().getFullYear();
 
   // The marketplace has its own footer — hide the NBN TECH site footer there.
-  if (pathname.startsWith("/marketplace")) return null;
+  if (pathname.startsWith("/nbnmarket")) return null;
 
   return (
     <footer className="relative overflow-hidden bg-navy-950 text-white">

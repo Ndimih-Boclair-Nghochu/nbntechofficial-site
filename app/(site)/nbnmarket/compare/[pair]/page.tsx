@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: `${a.name} vs ${b.name} — Comparison`,
     description: desc,
-    alternates: { canonical: `/marketplace/compare/${a.slug}-vs-${b.slug}` },
+    alternates: { canonical: `/nbnmarket/compare/${a.slug}-vs-${b.slug}` },
     openGraph: { title: `${a.name} vs ${b.name} | ${BRAND}`, description: desc, type: "article" },
   };
 }
@@ -54,8 +54,8 @@ export default async function ComparePage({ params }: Params) {
   const country = getRequestCountry();
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    { name: `${a.name} vs ${b.name}`, url: `/marketplace/compare/${a.slug}-vs-${b.slug}` },
+    { name: "NBN Market", url: "/nbnmarket" },
+    { name: `${a.name} vs ${b.name}`, url: `/nbnmarket/compare/${a.slug}-vs-${b.slug}` },
   ];
 
   // Union of spec labels
@@ -71,7 +71,7 @@ export default async function ComparePage({ params }: Params) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={p.imageUrl || "/logo-mark.png"} alt={p.imageAlt || p.name} width={220} height={165} loading="lazy" className="mx-auto mb-3 aspect-[4/3] w-full max-w-[240px] rounded-lg object-cover" />
         <h2 className="font-serif text-lg font-bold text-ink">
-          <Link href={`/marketplace/product/${p.slug}`} className="hover:text-cyan-deep">{p.name}</Link>
+          <Link href={`/nbnmarket/product/${p.slug}`} className="hover:text-cyan-deep">{p.name}</Link>
         </h2>
         {p.price != null && <p className="mt-1 text-xl font-bold text-ink">{money(p.price, p.currency)}</p>}
         {av.hasLink ? (
@@ -79,7 +79,7 @@ export default async function ComparePage({ params }: Params) {
             {ctaLabel(av) || "Buy now"}
           </AmazonLink>
         ) : (
-          <Link href={`/marketplace/product/${p.slug}`} className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-ink-line px-4 py-2.5 text-sm font-semibold text-ink hover:border-cyan hover:text-cyan-deep">
+          <Link href={`/nbnmarket/product/${p.slug}`} className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-ink-line px-4 py-2.5 text-sm font-semibold text-ink hover:border-cyan hover:text-cyan-deep">
             View details
           </Link>
         )}

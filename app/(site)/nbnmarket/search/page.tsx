@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Search",
   description: "Search the NBN MARKET for products, brands and categories.",
-  alternates: { canonical: "/marketplace/search" },
+  alternates: { canonical: "/nbnmarket/search" },
   robots: { index: false, follow: true },
 };
 
@@ -51,7 +51,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
         )}
         <p className="mt-8 text-xs text-ink-muted">
           Looking for {BRAND}? Browse the{" "}
-          <a href="/marketplace" className="text-cyan-deep hover:underline">marketplace home</a>.
+          <a href="/nbnmarket" className="text-cyan-deep hover:underline">marketplace home</a>.
         </p>
       </Container>
     </>

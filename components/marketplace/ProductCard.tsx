@@ -36,7 +36,7 @@ export async function ProductCard({ product, country }: { product: MarketProduct
   await ensureRates(); // ensure FX rates are loaded before we localize the price
   const av = availabilityFor(product, country);
   const buy = av.hasLink ? av : primaryOffer(product); // always offer a "Buy on …" when possible
-  const href = `/marketplace/product/${product.slug}`;
+  const href = `/nbnmarket/product/${product.slug}`;
   const showRating = product.rating != null && product.reviewCount;
   const images = [product.imageUrl, ...(product.gallery || [])].filter(Boolean) as string[];
   const priceLabel = localizedPrice(product, country);

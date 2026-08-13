@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: guide.title,
     description: truncate(guide.intro, 155),
-    alternates: { canonical: `/marketplace/guides/${guide.slug}` },
+    alternates: { canonical: `/nbnmarket/guides/${guide.slug}` },
     openGraph: { title: guide.metaTitle, description: truncate(guide.intro, 155), type: "article" },
   };
 }
@@ -39,9 +39,9 @@ export default async function GuidePage({ params }: Params) {
 
   const crumbs: Crumb[] = [
     { name: "Home", url: "/" },
-    { name: "Marketplace", url: "/marketplace" },
-    { name: "Buying guides", url: "/marketplace/guides" },
-    { name: guide.title, url: `/marketplace/guides/${guide.slug}` },
+    { name: "NBN Market", url: "/nbnmarket" },
+    { name: "Buying guides", url: "/nbnmarket/guides" },
+    { name: guide.title, url: `/nbnmarket/guides/${guide.slug}` },
   ];
 
   const articleJsonLd = {
@@ -94,7 +94,7 @@ export default async function GuidePage({ params }: Params) {
           {otherGuides.map((g, i) => (
             <span key={g.slug}>
               {i > 0 && " · "}
-              <Link href={`/marketplace/guides/${g.slug}`} className="font-medium text-cyan-deep hover:underline">
+              <Link href={`/nbnmarket/guides/${g.slug}`} className="font-medium text-cyan-deep hover:underline">
                 {g.title}
               </Link>
             </span>

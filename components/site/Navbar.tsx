@@ -11,7 +11,7 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/work", label: "Work" },
-  { href: "/marketplace", label: "Marketplace" },
+  { href: "/nbnmarket", label: "NBN Market" },
   { href: "/gallery", label: "Gallery" },
   { href: "/process", label: "Process" },
   { href: "/reviews", label: "Reviews" },
@@ -34,7 +34,7 @@ export function Navbar() {
 
   // The marketplace is its own storefront (NBN MARKET) with its own header —
   // hide the NBN TECH site navbar there so it reads as a separate site.
-  if (pathname.startsWith("/marketplace")) return null;
+  if (pathname.startsWith("/nbnmarket")) return null;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);

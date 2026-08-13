@@ -44,7 +44,7 @@ export function CategoryMenu({ categories }: { categories: AvailableCategory[] }
             {categories.map((c) => (
               <div key={c.slug} className="rounded-xl border border-ink-line p-3">
                 <Link
-                  href={`/marketplace/category/${c.slug}`}
+                  href={`/nbnmarket/category/${c.slug}`}
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-2 text-sm font-bold text-ink hover:text-cyan-deep"
                 >
@@ -57,7 +57,7 @@ export function CategoryMenu({ categories }: { categories: AvailableCategory[] }
                     {c.subcategories.map((s) => (
                       <Link
                         key={s.slug}
-                        href={`/marketplace/category/${c.slug}?sub=${s.slug}`}
+                        href={`/nbnmarket/category/${c.slug}?sub=${s.slug}`}
                         onClick={() => setOpen(false)}
                         className="rounded-full bg-sand-soft px-2.5 py-1 text-xs text-ink-body transition-colors hover:text-cyan-deep"
                       >

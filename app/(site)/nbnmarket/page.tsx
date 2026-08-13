@@ -10,7 +10,7 @@ import { CategoryMenu } from "@/components/marketplace/CategoryMenu";
 import { JsonLd } from "@/components/marketplace/JsonLd";
 import { getAllProducts, getAvailableCategories } from "@/lib/marketplace-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
-import { BRAND, TAGLINE, marketplaceUrl, sortByAvailability } from "@/lib/marketplace";
+import { BRAND, TAGLINE, marketplaceUrl, sortByAvailability, interleaveByCategory } from "@/lib/marketplace";
 import { ensureRates } from "@/lib/currency";
 import { siteUrl } from "@/lib/utils";
 
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "buy on Amazon",
     "online courses",
   ],
-  alternates: { canonical: "/marketplace" },
+  alternates: { canonical: "/nbnmarket" },
   openGraph: { title: `${BRAND} — ${TAGLINE}`, description: MKT_DESC, url: marketplaceUrl(), type: "website", siteName: BRAND },
   twitter: { card: "summary_large_image", title: `${BRAND} — ${TAGLINE}`, description: MKT_DESC },
 };
@@ -90,8 +90,10 @@ export default async function MarketplaceHome() {
 
   const [all, categories] = await Promise.all([getAllProducts(), getAvailableCategories()]);
 
-  const featured = sortByAvailability(all.filter((p) => p.featured), country).slice(0, 12);
-  const trending = sortByAvailability(all.filter((p) => p.trending), country).slice(0, 12);
+  // Mix categories in the cross-category rails so they don't clump in the order
+  // products were added (available items still come first via sortByAvailability).
+  const featured = interleaveByCategory(sortByAvailability(all.filter((p) => p.featured), country)).slice(0, 12);
+  const trending = interleaveByCategory(sortByAvailability(all.filter((p) => p.trending), country)).slice(0, 12);
 
   const byCat = new Map<string, MarketProduct[]>();
   for (const p of all) {
@@ -110,7 +112,7 @@ export default async function MarketplaceHome() {
     description: MKT_DESC,
     potentialAction: {
       "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: `${siteUrl()}/marketplace/search?q={search_term_string}` },
+      target: { "@type": "EntryPoint", urlTemplate: `${siteUrl()}/nbnmarket/search?q={search_term_string}` },
       "query-input": "required name=search_term_string",
     },
   };
@@ -162,7 +164,7 @@ export default async function MarketplaceHome() {
           <Rail
             key={c.slug}
             title={c.name}
-            href={`/marketplace/category/${c.slug}`}
+            href={`/nbnmarket/category/${c.slug}`}
             products={sortByAvailability(byCat.get(c.slug) || [], country).slice(0, 12)}
             country={country}
           />
