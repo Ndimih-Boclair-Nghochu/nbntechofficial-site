@@ -72,8 +72,14 @@ export async function ProductCard({ product, country }: { product: MarketProduct
             : "Check availability"}
       </span>
 
-      <div className="mt-3 pt-1">
-        {buy ? (
+      <div className="mt-3 space-y-2 pt-1">
+        <Link
+          href={href}
+          className="flex w-full items-center justify-center rounded-lg border border-ink-line px-3 py-2 text-sm font-semibold text-ink transition hover:border-cyan hover:text-cyan-deep"
+        >
+          View details
+        </Link>
+        {buy && (
           <AmazonLink
             href={buy.url}
             productSlug={product.slug}
@@ -83,13 +89,6 @@ export async function ProductCard({ product, country }: { product: MarketProduct
           >
             {ctaLabel(buy)}
           </AmazonLink>
-        ) : (
-          <Link
-            href={href}
-            className="flex w-full items-center justify-center rounded-lg border border-ink-line px-3 py-2 text-sm font-semibold text-ink transition hover:border-cyan hover:text-cyan-deep"
-          >
-            View product
-          </Link>
         )}
       </div>
     </article>

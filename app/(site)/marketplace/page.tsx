@@ -16,12 +16,28 @@ import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
+const MKT_DESC =
+  "NBN MARKET — discover products worth buying. Compare laptops, developer gear, courses and electronics across Amazon and other trusted retailers, with prices and availability for your country.";
+
 export const metadata: Metadata = {
-  title: `${BRAND} — ${TAGLINE}`,
-  description:
-    "Shop carefully selected products on NBN MARKET. Compare laptops, developer gear, courses and electronics across Amazon and other trusted retailers, and check availability in your country.",
+  // Absolute title so the search result reads cleanly as "NBN MARKET …" and the
+  // marketplace ranks for "NBN Market" independently of the NBN TECH site.
+  title: { absolute: `${BRAND} — ${TAGLINE}` },
+  description: MKT_DESC,
+  keywords: [
+    "NBN MARKET",
+    "NBN Market",
+    "NBN Market marketplace",
+    "Ndimih Boclair Marketplace",
+    "product discovery",
+    "compare prices",
+    "affiliate marketplace",
+    "buy on Amazon",
+    "online courses",
+  ],
   alternates: { canonical: "/marketplace" },
-  openGraph: { title: `${BRAND} — ${TAGLINE}`, url: marketplaceUrl(), type: "website" },
+  openGraph: { title: `${BRAND} — ${TAGLINE}`, description: MKT_DESC, url: marketplaceUrl(), type: "website", siteName: BRAND },
+  twitter: { card: "summary_large_image", title: `${BRAND} — ${TAGLINE}`, description: MKT_DESC },
 };
 
 const TRUST = [
@@ -89,17 +105,28 @@ export default async function MarketplaceHome() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: BRAND,
+    alternateName: "NBN Market",
     url: marketplaceUrl(),
+    description: MKT_DESC,
     potentialAction: {
       "@type": "SearchAction",
       target: { "@type": "EntryPoint", urlTemplate: `${siteUrl()}/marketplace/search?q={search_term_string}` },
       "query-input": "required name=search_term_string",
     },
   };
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: BRAND,
+    alternateName: "NBN Market",
+    url: marketplaceUrl(),
+    logo: `${siteUrl()}/icon.png`,
+    parentOrganization: { "@type": "Organization", name: "NBN TECH", url: siteUrl() },
+  };
 
   return (
     <>
-      <JsonLd data={websiteJsonLd} />
+      <JsonLd data={[websiteJsonLd, orgJsonLd]} />
       <MarketHeader />
 
       <Container className="space-y-5 py-5">
