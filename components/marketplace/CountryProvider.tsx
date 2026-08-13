@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { COUNTRY_MAP, DEFAULT_COUNTRY, resolveCountry, type Country } from "@/lib/marketplace";
 
 /**
@@ -92,6 +93,7 @@ function persist(code: string) {
 }
 
 export function CountryProvider({ initial, children }: { initial?: string; children: React.ReactNode }) {
+  const router = useRouter();
   const [code, setCodeState] = useState(() =>
     initial && COUNTRY_MAP[initial.toUpperCase()] ? initial.toUpperCase() : DEFAULT_COUNTRY,
   );
@@ -112,16 +114,23 @@ export function CountryProvider({ initial, children }: { initial?: string; child
       if (cancelled || !detected || !COUNTRY_MAP[detected]) return;
       setCodeState(detected);
       persist(detected);
+      router.refresh(); // re-render prices/availability for the detected country
     })();
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setCode = useCallback((next: string) => {
-    const c = COUNTRY_MAP[next?.toUpperCase()] ? next.toUpperCase() : DEFAULT_COUNTRY;
-    setCodeState(c);
-    persist(c);
-  }, []);
+  const setCode = useCallback(
+    (next: string) => {
+      const c = COUNTRY_MAP[next?.toUpperCase()] ? next.toUpperCase() : DEFAULT_COUNTRY;
+      setCodeState(c);
+      persist(c);
+      // Re-run server components so prices convert to the new currency and
+      // availability updates immediately — no manual refresh needed.
+      router.refresh();
+    },
+    [router],
+  );
 
   return (
     <CountryContext.Provider value={{ code, country: resolveCountry(code), setCode }}>

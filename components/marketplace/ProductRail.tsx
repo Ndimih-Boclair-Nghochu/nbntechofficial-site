@@ -30,7 +30,7 @@ export function ProductRail({ children }: { children: React.ReactNode }) {
         <ChevronLeft className="h-5 w-5" />
       </button>
 
-      <div ref={ref} className="hide-scrollbar flex snap-x gap-3 overflow-x-auto pb-1 md:gap-4">
+      <div ref={ref} className="hide-scrollbar edge-fade-x flex snap-x gap-3 overflow-x-auto pb-1 md:gap-4">
         {children}
       </div>
 

@@ -41,9 +41,14 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
           <MarketNav categories={categories} />
 
           <Link href="/marketplace" aria-label="NBN MARKET home" className="flex shrink-0 items-center gap-2">
-            <MarketLogo size={32} />
-            <span className="hidden text-lg font-extrabold tracking-tight sm:inline sm:text-2xl">
-              <span className="text-white">NBN</span> <span className="text-cyan">MARKET</span>
+            <MarketLogo size={34} className="shrink-0" />
+            <span className="flex flex-col leading-none">
+              <span className="text-base font-extrabold tracking-tight sm:text-2xl">
+                <span className="text-white">NBN</span> <span className="text-cyan">MARKET</span>
+              </span>
+              <span className="hidden text-[10px] font-medium tracking-wide text-white/55 sm:block">
+                Discover products worth buying
+              </span>
             </span>
           </Link>
 

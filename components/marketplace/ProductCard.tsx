@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { MarketProduct } from "@prisma/client";
-import { availabilityFor, ctaLabel, money, COUNTRY_MAP } from "@/lib/marketplace";
+import { availabilityFor, ctaLabel, money, primaryOffer, COUNTRY_MAP } from "@/lib/marketplace";
 import { ensureRates, convert, roundPrice } from "@/lib/currency";
 import { AmazonLink } from "./AmazonLink";
 import { CardGallery } from "./CardGallery";
@@ -35,6 +35,7 @@ function localizedPrice(product: MarketProduct, country: string): string {
 export async function ProductCard({ product, country }: { product: MarketProduct; country: string }) {
   await ensureRates(); // ensure FX rates are loaded before we localize the price
   const av = availabilityFor(product, country);
+  const buy = av.hasLink ? av : primaryOffer(product); // always offer a "Buy on …" when possible
   const href = `/marketplace/product/${product.slug}`;
   const showRating = product.rating != null && product.reviewCount;
   const images = [product.imageUrl, ...(product.gallery || [])].filter(Boolean) as string[];
@@ -72,22 +73,22 @@ export async function ProductCard({ product, country }: { product: MarketProduct
       </span>
 
       <div className="mt-3 pt-1">
-        {av.hasLink ? (
+        {buy ? (
           <AmazonLink
-            href={av.url}
+            href={buy.url}
             productSlug={product.slug}
-            country={country}
-            platform={av.platform}
+            country={buy.country.code}
+            platform={buy.platform}
             className="flex w-full items-center justify-center rounded-lg bg-[#ff9900] px-3 py-2 text-sm font-bold text-[#231a00] transition hover:brightness-105"
           >
-            {ctaLabel(av) || "Buy now"}
+            {ctaLabel(buy)}
           </AmazonLink>
         ) : (
           <Link
             href={href}
             className="flex w-full items-center justify-center rounded-lg border border-ink-line px-3 py-2 text-sm font-semibold text-ink transition hover:border-cyan hover:text-cyan-deep"
           >
-            See where to buy
+            View product
           </Link>
         )}
       </div>

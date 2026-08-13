@@ -359,10 +359,25 @@ export const AVAILABILITY_LABEL: Record<AvailabilityStatus, string> = {
 
 /** The Buy/CTA label for a resolved availability + status. */
 export function ctaLabel(a: ResolvedAvailability): string {
-  const platform = a.platform || "the store";
   if (!a.hasLink) return "";
-  if (a.status === "UNAVAILABLE") return `Search ${platform}`;
-  return `Buy from ${platform}`;
+  return `Buy on ${a.platform || "store"}`;
+}
+
+/**
+ * The best purchasable offer for a product across all countries — used as a
+ * fallback so a card/CTA can always say "Buy on {platform}" even when the
+ * shopper's own country has no direct link. Prefers AVAILABLE, then any linked
+ * offer. Returns null only when nothing links anywhere.
+ */
+export function primaryOffer(product: ProductLike): ResolvedAvailability | null {
+  let fallback: ResolvedAvailability | null = null;
+  for (const c of COUNTRIES) {
+    const a = availabilityFor(product, c.code);
+    if (!a.hasLink) continue;
+    if (a.status === "AVAILABLE") return a;
+    if (!fallback) fallback = a;
+  }
+  return fallback;
 }
 
 const STATUS_RANK: Record<AvailabilityStatus, number> = {

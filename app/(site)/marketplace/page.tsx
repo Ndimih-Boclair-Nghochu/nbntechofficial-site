@@ -47,7 +47,10 @@ function Rail({
   return (
     <section className="rounded-2xl border border-ink-line bg-surface p-4 shadow-card sm:p-5">
       <div className="mb-4 flex items-baseline justify-between gap-3">
-        <h2 className="text-lg font-bold tracking-tight text-ink">{title}</h2>
+        <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-ink">
+          {title}
+          <span className="text-xs font-normal text-ink-muted sm:hidden">· swipe →</span>
+        </h2>
         {href && (
           <Link href={href} className="shrink-0 text-sm font-semibold text-cyan-deep hover:underline">
             See all
@@ -102,17 +105,16 @@ export default async function MarketplaceHome() {
       <Container className="space-y-5 py-5">
         <h1 className="sr-only">{BRAND} — {TAGLINE}</h1>
 
-        {/* Trust strip */}
-        <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {/* Trust strip — tiny pills, swipe sideways on mobile */}
+        <section className="hide-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 lg:flex-wrap lg:justify-center">
           {TRUST.map(({ icon: Icon, label, sub }) => (
-            <div key={label} className="flex items-center gap-3 rounded-2xl border border-ink-line bg-surface px-4 py-3 shadow-card">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-cyan/10 text-cyan-deep">
-                <Icon className="h-5 w-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-bold text-ink">{label}</span>
-                <span className="block truncate text-xs text-ink-muted">{sub}</span>
-              </span>
+            <div
+              key={label}
+              title={sub}
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-ink-line bg-surface px-3 py-1.5 shadow-sm"
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0 text-cyan-deep" />
+              <span className="whitespace-nowrap text-xs font-semibold text-ink">{label}</span>
             </div>
           ))}
         </section>

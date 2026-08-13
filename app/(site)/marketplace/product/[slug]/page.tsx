@@ -221,16 +221,24 @@ export default async function ProductPage({ params }: Params) {
               <tbody>
                 {COUNTRIES.map((c) => {
                   const a = availabilityFor(product, c.code);
+                  // Price for the row: the verified per-country price if set,
+                  // otherwise the reference price converted into this currency.
+                  let rowPrice = "—";
+                  if (a.price != null) rowPrice = money(a.price, a.currency);
+                  else if (product.price != null) {
+                    const cv = convert(product.price, product.currency || "EUR", c.currency);
+                    rowPrice = cv != null ? money(roundPrice(cv), c.currency) : money(product.price, product.currency || "EUR");
+                  }
                   return (
                     <tr key={c.code} className="border-b border-ink-line">
                       <td className="py-2 pr-4 text-ink">{c.flag} {c.name}</td>
                       <td className="py-2 pr-4 text-ink-muted">{a.platform || "—"}</td>
                       <td className="py-2 pr-4"><AvailabilityBadge status={a.status} /></td>
-                      <td className="py-2 pr-4 text-ink">{a.price != null ? money(a.price, a.currency) : "—"}</td>
+                      <td className="py-2 pr-4 text-ink">{rowPrice}</td>
                       <td className="py-2">
                         {a.hasLink ? (
-                          <AmazonLink href={a.url} productSlug={product.slug} country={c.code} platform={a.platform} className="font-medium text-cyan-deep hover:underline">
-                            {a.hasDirectUrl ? "View" : "Search"} ›
+                          <AmazonLink href={a.url} productSlug={product.slug} country={c.code} platform={a.platform} className="whitespace-nowrap font-semibold text-cyan-deep hover:underline">
+                            {ctaLabel(a)} ›
                           </AmazonLink>
                         ) : (
                           <span className="text-ink-muted">—</span>
