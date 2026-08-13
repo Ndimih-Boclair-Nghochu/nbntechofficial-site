@@ -15,7 +15,11 @@ type SelarProduct = {
   name: string;
   slug: string;
   brand: string;
+  /** Category slug; defaults to "courses". */
+  category?: string;
   subcategory: string;
+  /** Selling platform for the buy link; defaults to "Selar". */
+  platform?: string;
   price: number | null;
   currency: string;
   imageUrl: string;
@@ -34,10 +38,10 @@ type SelarProduct = {
   trending?: boolean;
 };
 
-/** Availability for a digital product: available in every country via Selar. */
-function selarAvailability(url: string) {
+/** Availability for a globally-available product: available in every country. */
+function everywhereAvailability(url: string, platform: string) {
   return COUNTRIES.reduce<Record<string, { status: string; platform: string; url: string }>>(
-    (m, c) => ({ ...m, [c.code]: { status: "AVAILABLE", platform: "Selar", url } }),
+    (m, c) => ({ ...m, [c.code]: { status: "AVAILABLE", platform, url } }),
     {},
   );
 }
@@ -241,6 +245,40 @@ export const SELAR_PRODUCTS: SelarProduct[] = [
     tags: ["course", "youtube automation", "faceless youtube", "passive income"],
     trending: true,
   },
+  {
+    name: "Advanced Amino Formula",
+    slug: "advanced-amino-formula",
+    brand: "Advanced Bionutritionals",
+    category: "health-supplements",
+    subcategory: "muscle-support",
+    platform: "Advanced Bionutritionals",
+    price: 39.95,
+    currency: "USD",
+    imageUrl: "https://www.advancedbionutritionals.com/Images/Products-2020/Advanced-Amino-Formula/1bottle.png",
+    imageAlt: "Advanced Amino Formula — essential amino acid supplement for muscle support",
+    affiliateUrl: "https://www.advancedbionutritionals.com/DS24/Advanced-Amino/Muscle-Mass-Loss/HD.htm#aff=pickscashflow9243",
+    shortDescription:
+      "An essential amino acid formula designed to help your body maintain and build muscle — supporting strength, energy and healthy, active ageing.",
+    description:
+      "As we age, the body finds it harder to hold onto muscle. Advanced Amino Formula delivers the essential amino acids — the building blocks of protein — that your body needs to help maintain and rebuild muscle, support strength and stay active. It's a simple daily way to give your muscles the raw materials they need.",
+    features: [
+      "A complete essential amino acid (EAA) blend",
+      "Formulated to support muscle maintenance & strength",
+      "Delivers building blocks the body can't make on its own",
+      "Convenient to take daily",
+      "From an established US supplement brand",
+    ],
+    pros: ["Targets muscle support as you age", "Simple daily supplement", "Quality-focused formula"],
+    cons: ["A supplement — not a substitute for exercise or a balanced diet", "Individual results vary"],
+    whoFor: "Adults who want to support muscle mass, strength and healthy, active ageing.",
+    whyRecommend: "It focuses on essential amino acids — the raw materials your muscles actually need — in one convenient daily formula.",
+    faqs: [
+      { q: "How do I take it?", a: "Follow the directions on the product label; it's designed as a simple daily supplement." },
+      { q: "Does it ship to my country?", a: "Shipping options and delivery are confirmed at checkout on the retailer's website." },
+    ],
+    tags: ["supplement", "amino acids", "muscle", "health", "healthy ageing"],
+    featured: true,
+  },
 ];
 
 export function selarToData(p: SelarProduct): Prisma.MarketProductUncheckedCreateInput {
@@ -248,7 +286,7 @@ export function selarToData(p: SelarProduct): Prisma.MarketProductUncheckedCreat
     name: p.name,
     slug: p.slug,
     brand: p.brand,
-    category: "courses",
+    category: p.category ?? "courses",
     subcategory: p.subcategory,
     price: p.price ?? null,
     currency: p.currency,
@@ -267,7 +305,7 @@ export function selarToData(p: SelarProduct): Prisma.MarketProductUncheckedCreat
     guides: [],
     specs: [] as unknown as Prisma.InputJsonValue,
     faqs: p.faqs as unknown as Prisma.InputJsonValue,
-    amazonAvailability: selarAvailability(p.affiliateUrl) as unknown as Prisma.InputJsonValue,
+    amazonAvailability: everywhereAvailability(p.affiliateUrl, p.platform ?? "Selar") as unknown as Prisma.InputJsonValue,
     featured: p.featured ?? false,
     trending: p.trending ?? false,
     published: true,

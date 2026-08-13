@@ -118,11 +118,11 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
       const res = await fetch("/api/marketplace/seed-selar", { method: "POST" });
       const json = await res.json();
       if (!res.ok) {
-        show(json.error || "Could not add Selar products.", "error");
+        show(json.error || "Could not add curated products.", "error");
         return;
       }
       setItems(json.data.products as MarketProduct[]);
-      show(`Added ${json.data.seeded} Selar products.`);
+      show(`Added ${json.data.seeded} curated products.`);
     } catch {
       show("Network error.", "error");
     } finally {
@@ -458,7 +458,7 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
               className="inline-flex items-center gap-2 rounded-full border border-navy/30 bg-navy px-4 py-2 text-sm font-medium text-white hover:bg-navy-700 disabled:opacity-60"
             >
               {seedingSelar ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              Add Selar products
+              Add curated products
             </button>
             <button
               type="button"

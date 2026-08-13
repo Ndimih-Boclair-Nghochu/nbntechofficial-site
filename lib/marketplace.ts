@@ -106,6 +106,7 @@ export type Category = {
 
 export const CATEGORIES: Category[] = [
   { slug: "courses", name: "Courses", icon: "📚", blurb: "Online courses and learning to level up your skills and career." },
+  { slug: "health-supplements", name: "Health & Supplements", icon: "💊", blurb: "Supplements and wellness products to support a healthier, more active life." },
   { slug: "technology-electronics", name: "Technology & Electronics", icon: "💻", blurb: "Laptops, monitors, peripherals and the gear that powers modern work." },
   { slug: "laptops", name: "Laptops", icon: "🖥️", blurb: "Portable machines for students, developers and professionals." },
   { slug: "developer-gear", name: "Developer & Cloud Computing Gear", icon: "⌨️", blurb: "Keyboards, monitors and accessories built for people who ship code." },
