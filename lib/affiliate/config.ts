@@ -26,7 +26,7 @@ const FLAG_DEFAULT: Record<ProviderId, boolean> = {
 
 export const REQUIRED_VARS: Record<ProviderId, string[]> = {
   amazon: ["AMAZON_CREATOR_CREDENTIAL_ID", "AMAZON_CREATOR_CREDENTIAL_SECRET", "AMAZON_CREATOR_VERSION"],
-  awin: ["AWIN_API_TOKEN", "AWIN_PUBLISHER_ID"],
+  awin: ["AWIN_API_TOKEN", "AWIN_PUBLISHER_ID", "AWIN_FEED_URL"],
   impact: ["IMPACT_ACCOUNT_SID", "IMPACT_AUTH_TOKEN"],
   cj: ["CJ_PERSONAL_ACCESS_TOKEN", "CJ_CID"],
 };

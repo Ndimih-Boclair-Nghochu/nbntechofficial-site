@@ -92,15 +92,18 @@ test("config: Amazon enabled by default, others off", () => {
 test("config: missing credentials reported by name, not value", () => {
   delete process.env.AWIN_API_TOKEN;
   delete process.env.AWIN_PUBLISHER_ID;
+  delete process.env.AWIN_FEED_URL;
   assert.equal(isProviderConfigured("awin"), false);
-  assert.deepEqual(missingVars("awin"), ["AWIN_API_TOKEN", "AWIN_PUBLISHER_ID"]);
+  assert.deepEqual(missingVars("awin"), ["AWIN_API_TOKEN", "AWIN_PUBLISHER_ID", "AWIN_FEED_URL"]);
 
   process.env.AWIN_API_TOKEN = "x";
   process.env.AWIN_PUBLISHER_ID = "y";
+  process.env.AWIN_FEED_URL = "z";
   assert.equal(isProviderConfigured("awin"), true);
   assert.deepEqual(missingVars("awin"), []);
   delete process.env.AWIN_API_TOKEN;
   delete process.env.AWIN_PUBLISHER_ID;
+  delete process.env.AWIN_FEED_URL;
 });
 
 /* --------------------------- normalize ---------------------------- */
