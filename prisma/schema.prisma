@@ -268,6 +268,26 @@ model ProductOffer {
 /// selections and — most importantly — outbound affiliate clicks, broken down by
 /// provider, country and product. Actual commissions live in each network's own
 /// reporting; these events are the leading indicators we can measure ourselves.
+/// A Telegram bot user. Stores the chat id + their chosen delivery country so
+/// product replies localize the same way the website's "deliver to" selector
+/// does. Saved/alerted products are added in a later phase.
+model TelegramUser {
+  id           String   @id @default(cuid())
+  /// Telegram chat id (stored as string — ids can exceed 32-bit).
+  chatId       String   @unique
+  username     String?
+  firstName    String?
+  /// Delivery country code (see lib/marketplace COUNTRIES). Defaults to site default.
+  country      String   @default("DE")
+  /// Last deep-link /start payload (e.g. "alert_<productId>"), for later phases.
+  startPayload String?
+  blocked      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([country])
+}
+
 model AnalyticsEvent {
   id          String   @id @default(cuid())
   /// product_view | category_view | guide_view | comparison_view |
