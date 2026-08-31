@@ -72,8 +72,8 @@ export default function ReturnsPage() {
           <h2 className="pt-2 font-serif text-xl font-bold text-ink">Need help?</h2>
           <p>
             If you&apos;re unsure where you bought an item or which policy applies, contact us at{" "}
-            <a href="mailto:boclair42@gmail.com" className="text-cyan-deep hover:underline">
-              boclair42@gmail.com
+            <a href="mailto:ndimihboclair4@gmail.com" className="text-cyan-deep hover:underline">
+              ndimihboclair4@gmail.com
             </a>{" "}
             and we&apos;ll help you find the right retailer and their returns process. We can guide you,
             but the return itself is processed by the store that fulfilled your order.
