@@ -70,6 +70,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // One auto-generated blog article per product (created the moment it's added).
+  const productBlogRoutes = productSlugs.map((slug) => ({
+    url: `${base}/nbnmarket/blog/product/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
   // --- Online Courses ---
   const coursesHub = [{ url: `${base}/courses`, lastModified: now, changeFrequency: "daily" as const, priority: 0.9 }];
 
@@ -89,6 +97,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // One auto-generated blog article per course (created the moment it's posted).
+  const courseBlogRoutes = courseSlugs.map((slug) => ({
+    url: `${base}/nbnmarket/blog/course/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
   return [
     ...staticRoutes,
     ...projectRoutes,
@@ -97,8 +113,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...guideRoutes,
     ...blogRoutes,
     ...productRoutes,
+    ...productBlogRoutes,
     ...coursesHub,
     ...courseCategoryRoutes,
     ...courseRoutes,
+    ...courseBlogRoutes,
   ];
 }

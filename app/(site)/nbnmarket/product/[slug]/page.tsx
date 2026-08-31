@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { productBlogPath } from "@/lib/blog";
 import { Container } from "@/components/ui/Container";
 import { MarketHeader } from "@/components/marketplace/MarketHeader";
 import { ProductGrid } from "@/components/marketplace/ProductCard";
@@ -165,6 +167,9 @@ export default async function ProductPage({ params }: Params) {
               </p>
             )}
             {product.shortDescription && <p className="mt-3 text-sm text-ink-body">{product.shortDescription}</p>}
+            <Link href={productBlogPath(product.slug)} className="mt-2 inline-block text-sm font-medium text-cyan-deep hover:underline">
+              📖 Read our full review &amp; buying guide →
+            </Link>
 
             {product.features.length > 0 && (
               <div className="mt-4">

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Course } from "@prisma/client";
+import { courseBlogPath } from "@/lib/blog";
 import { Clock, BarChart3, Award, Globe, ListChecks, BookOpen, Info } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { CourseHeader } from "@/components/courses/CourseHeader";
@@ -290,6 +292,9 @@ async function CourseDetailView({ course, country }: { course: Course; country: 
             {course.shortDescription && (
               <p className="mt-2 text-sm text-ink-body sm:text-base">{course.shortDescription}</p>
             )}
+            <Link href={courseBlogPath(course.slug)} className="mt-2 inline-block text-sm font-medium text-cyan-deep hover:underline">
+              📖 Read our full course review →
+            </Link>
 
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
               {showRating && (

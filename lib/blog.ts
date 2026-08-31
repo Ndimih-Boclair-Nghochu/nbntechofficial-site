@@ -81,6 +81,95 @@ export function blogIntro(categoryName: string, blurb: string, count: number): s
   return `${lead}${many} in ${categoryName.toLowerCase()} for ${currentYear()}. Every pick below links straight to the retailer with its live price, rating and availability for your country — so you can compare honestly and buy with confidence. Prices update automatically, and we only earn a commission if you choose to buy, at no extra cost to you.`;
 }
 
+/* ------------------------------------------------------------------ *
+ * Per-product & per-course articles — one auto-generated blog post for every
+ * item, created the moment it's added (rendered live from its own data; the
+ * sitemap lists them all so search engines discover each one).
+ * ------------------------------------------------------------------ */
+
+export function productBlogPath(slug: string): string {
+  return `/nbnmarket/blog/product/${slug}`;
+}
+export function courseBlogPath(slug: string): string {
+  return `/nbnmarket/blog/course/${slug}`;
+}
+export function productBlogUrl(slug: string): string {
+  return marketplaceUrl(`/blog/product/${slug}`);
+}
+export function courseBlogUrl(slug: string): string {
+  return marketplaceUrl(`/blog/course/${slug}`);
+}
+
+function uniq(a: (string | null | undefined)[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const x of a) {
+    const s = (x || "").trim();
+    if (s && !seen.has(s.toLowerCase())) {
+      seen.add(s.toLowerCase());
+      out.push(s);
+    }
+  }
+  return out;
+}
+
+export function productBlogTitle(name: string): string {
+  return `${name} — Review, Features & Where to Buy (${currentYear()})`;
+}
+export function productBlogDescription(name: string, categoryName: string): string {
+  return `Full ${name} review for ${currentYear()}: key features, live price and where to buy. Compare it with the best ${categoryName.toLowerCase()} on NBN MARKET before you buy.`;
+}
+/** Likely search keywords a shopper would type — woven into meta + copy. */
+export function productBlogKeywords(p: {
+  name: string;
+  brand?: string | null;
+  category?: string | null;
+  tags?: string[];
+}): string[] {
+  const catName = categoryLabel(p.category) || "";
+  return uniq([
+    p.name,
+    `${p.name} review`,
+    `${p.name} price`,
+    `buy ${p.name}`,
+    `${p.name} deal`,
+    `is ${p.name} worth it`,
+    p.brand || "",
+    catName ? `best ${catName.toLowerCase()}` : "",
+    catName ? `${catName.toLowerCase()} ${currentYear()}` : "",
+    ...(p.tags || []),
+  ]).slice(0, 16);
+}
+
+export function courseBlogTitle(title: string): string {
+  return `${title} — Review: What You'll Learn & Is It Worth It (${currentYear()})`;
+}
+export function courseBlogDescription(title: string, provider: string): string {
+  return `Is the ${title} course on ${provider} worth it in ${currentYear()}? Read what you'll learn, who it's for, the price and our honest take, then enrol through NBN MARKET.`;
+}
+export function courseBlogKeywords(c: {
+  title: string;
+  provider?: string | null;
+  category?: string | null;
+  instructor?: string | null;
+  tags?: string[];
+}): string[] {
+  const catName = categoryLabel(c.category) || "";
+  return uniq([
+    c.title,
+    `${c.title} review`,
+    `${c.title} ${currentYear()}`,
+    `is ${c.title} worth it`,
+    `${c.title} free`,
+    c.provider ? `${c.title} ${c.provider}` : "",
+    catName ? `best ${catName.toLowerCase()} course` : "",
+    catName ? `learn ${catName.toLowerCase()}` : "",
+    catName ? `${catName.toLowerCase()} course online` : "",
+    c.instructor || "",
+    ...(c.tags || []),
+  ]).slice(0, 16);
+}
+
 /** Honest, category-agnostic buying tips (never fabricated product claims). */
 export const BLOG_BUYING_TIPS: string[] = [
   "Compare the live price across retailers — the cheapest listing isn't always the best value once ratings and shipping are factored in.",
