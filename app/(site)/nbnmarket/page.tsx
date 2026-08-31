@@ -9,6 +9,7 @@ import { ProductRail, RailItem } from "@/components/marketplace/ProductRail";
 import { CategoryMenu } from "@/components/marketplace/CategoryMenu";
 import { JsonLd } from "@/components/marketplace/JsonLd";
 import { CourseCard } from "@/components/courses/CourseCard";
+import { TelegramJoinBanner } from "@/components/marketplace/TelegramJoin";
 import { getAllProducts, getAvailableCategories } from "@/lib/marketplace-data";
 import { getCourses } from "@/lib/courses-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
@@ -162,6 +163,9 @@ export default async function MarketplaceHome() {
             <p className="text-sm text-ink-muted">Browse everything available on NBN MARKET right now.</p>
           </div>
         )}
+
+        {/* Telegram deal-alerts banner — secondary to the shopping CTAs */}
+        <TelegramJoinBanner start="market_home" />
 
         <Rail title="Featured products" products={featured} country={country} />
         <Rail title="Trending now" products={trending} country={country} />

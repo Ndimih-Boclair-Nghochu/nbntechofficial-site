@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { CountrySelect } from "./CountrySelect";
 import { MarketLogo } from "./MarketLogo";
 import { MarketNav } from "./MarketNav";
+import { TelegramJoinButton } from "./TelegramJoin";
 import { getAvailableCategories } from "@/lib/marketplace-data";
 
 /**
@@ -50,6 +51,8 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
           </span>
         </Link>
 
+        <div className="flex shrink-0 items-center gap-2">
+        <TelegramJoinButton start="market_header" label="Get Deals" />
         <a
           href="https://wa.me/237652859412?text=Hi%20NBN%20MARKET"
           target="_blank"
@@ -62,6 +65,7 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
           </svg>
           <span className="hidden sm:inline">Chat</span>
         </a>
+        </div>
       </Container>
 
       {/* Tools row — hamburger (categories) · search · country */}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { telegramBotUrl } from "@/lib/telegram-links";
 import { Container } from "@/components/ui/Container";
 import { CountryProvider } from "@/components/marketplace/CountryProvider";
 import { getRequestCountry } from "@/lib/marketplace-server";
@@ -32,6 +33,14 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
               . Independent platform.
             </p>
             <nav className="flex flex-wrap items-center gap-4">
+              <a
+                href={telegramBotUrl("market_footer")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-cyan-deep hover:underline"
+              >
+                📣 Join on Telegram
+              </a>
               <Link href="/nbnmarket/amazon" className="hover:text-cyan-deep">Search Amazon</Link>
               <Link href="/nbnmarket/about" className="hover:text-cyan-deep">About</Link>
               <Link href="/nbnmarket/guides" className="hover:text-cyan-deep">Guides</Link>

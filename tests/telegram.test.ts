@@ -84,6 +84,12 @@ test("shareIntentUrl builds a Telegram share link to the bot", () => {
   assert.ok(u.includes(encodeURIComponent("https://t.me/NbnMarketBot")));
 });
 
+test("telegramBotUrl appends per-placement start params for tracking", async () => {
+  const { telegramBotUrl } = await import("../lib/telegram-links");
+  assert.equal(telegramBotUrl(), "https://t.me/NbnMarketBot");
+  assert.equal(telegramBotUrl("market_header"), "https://t.me/NbnMarketBot?start=market_header");
+});
+
 test("pageNavKeyboard shows a Show-more button only when items remain", () => {
   const withMore = pageNavKeyboard("pgall:6", 12, "https://t.me/share/url?url=x");
   assert.ok(withMore.inline_keyboard[0][0].text.includes("Show more"));

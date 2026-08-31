@@ -19,6 +19,7 @@ import {
   COUNTRY_MAP,
 } from "@/lib/marketplace";
 import { resolveCourseUrl, courseCtaLabel, courseDiscountPercent } from "@/lib/courses";
+import { ensureRates, convert, roundPrice } from "@/lib/currency";
 import { siteUrl } from "@/lib/utils";
 import { DEFAULT_BOT_COUNTRY, getBotUsername } from "./config";
 import { sendMessage, sendPhoto, sendChatAction, answerCallbackQuery } from "./api";
@@ -73,12 +74,29 @@ async function getOrCreateUser(chatId: string, from?: TgUser, startPayload?: str
 /* --------------------------- card construction -------------------------- */
 type Card = { image: string | null; caption: string; keyboard: InlineKeyboard };
 
+/**
+ * Localize a price to the user's country currency — identical logic to the
+ * website's product card (convert via live FX, round, format). Requires
+ * ensureRates() to have run first (we call it once per update).
+ */
+function localizedMoney(amount: number | null, from: string | null, country: string): string | null {
+  if (amount == null) return null;
+  const src = from || "EUR";
+  const target = COUNTRY_MAP[country]?.currency;
+  if (target && target !== src) {
+    const c = convert(amount, src, target);
+    if (c != null) return money(roundPrice(c), target);
+  }
+  return money(amount, src);
+}
+
 function productBuy(product: MarketProduct, country: string) {
   const av = availabilityFor(product, country);
   const buy = av.hasLink ? av : primaryOffer(product);
   const priceText =
+    localizedMoney(product.price, product.currency, country) ||
     (buy?.priceLabel && buy.priceLabel) ||
-    (product.price != null ? money(product.price, product.currency || "EUR") : "See price on store");
+    "See price on store";
   return { buyUrl: buy?.url || null, buyLabel: buy ? ctaLabel(buy) || "🛒 Buy now" : null, source: buy?.platform || null, priceText };
 }
 
@@ -112,9 +130,8 @@ function productCard(product: MarketProduct, country: string): Card {
   };
 }
 
-function courseCard(course: Course): Card {
+function courseCard(course: Course, country: string): Card {
   const pct = courseDiscountPercent(course);
-  const cur = course.currency || "USD";
   return {
     image: course.image,
     caption: productCaption({
@@ -122,8 +139,8 @@ function courseCard(course: Course): Card {
       brand: course.instructor || course.provider,
       rating: ratingLine(course.rating, course.reviewCount),
       blurb: blurbOf(course.shortDescription),
-      priceText: course.price != null ? money(course.price, cur) : "See price",
-      wasText: pct && course.originalPrice != null ? money(course.originalPrice, cur) : null,
+      priceText: localizedMoney(course.price, course.currency, country) || "See price",
+      wasText: pct ? localizedMoney(course.originalPrice, course.currency, country) : null,
       discountText: pct ? `🔥 ${pct}% OFF` : null,
       source: `🎓 ${course.provider}`,
       note: "Price may change — tap to view on the provider.",
@@ -157,10 +174,10 @@ async function sendProductPage(chatId: string, all: MarketProduct[], offset: num
   );
 }
 
-async function sendCoursePage(chatId: string, all: Course[], offset: number, moreKind: string) {
+async function sendCoursePage(chatId: string, all: Course[], offset: number, country: string, moreKind: string) {
   const slice = all.slice(offset, offset + PAGE);
   for (const c of slice) {
-    await sendCard(chatId, courseCard(c));
+    await sendCard(chatId, courseCard(c, country));
     await sleep(250);
   }
   const shown = offset + slice.length;
@@ -265,18 +282,18 @@ async function showSearch(chatId: string, q: string, country: string) {
   if (courses.length) {
     await sendMessage(chatId, `🎓 <b>Courses</b> for “${escapeHtml(q)}”`);
     for (const c of courses.slice(0, 6)) {
-      await sendCard(chatId, courseCard(c));
+      await sendCard(chatId, courseCard(c, country));
       await sleep(250);
     }
   }
   await sendMessage(chatId, "Not quite it? Try /categories or 🛍️ /start.", { reply_markup: pageNavKeyboard(null, 0, shareUrl()) });
 }
 
-async function showCourses(chatId: string, offset = 0) {
+async function showCourses(chatId: string, country: string, offset = 0) {
   const all = await getAllCourses();
   if (!all.length) return sendMessage(chatId, "Courses are being added — check back soon.");
   if (offset === 0) await sendMessage(chatId, `🎓 <b>Online Courses</b> — ${all.length} available`);
-  await sendCoursePage(chatId, all, offset, "pgcrs");
+  await sendCoursePage(chatId, all, offset, country, "pgcrs");
 }
 
 async function showAll(chatId: string, offset: number, country: string) {
@@ -315,7 +332,7 @@ async function handleMessage(msg: TgMessage) {
       return showSearch(chatId, cmd.args, user.country);
     case "course":
     case "courses":
-      return showCourses(chatId, 0);
+      return showCourses(chatId, user.country, 0);
     case "country":
       return showCountry(chatId, user.country);
     case "help":
@@ -335,11 +352,11 @@ async function handleCallback(cb: TgCallback) {
   if (data === "menu:all") return showAll(chatId, 0, user.country);
   if (data === "menu:deals") return showDeals(chatId, user.country);
   if (data === "menu:categories") return sendCategoryMenu(chatId);
-  if (data === "menu:courses") return showCourses(chatId, 0);
+  if (data === "menu:courses") return showCourses(chatId, user.country, 0);
   if (data === "menu:country") return showCountry(chatId, user.country);
   if (data.startsWith("cat:")) return showCategory(chatId, data.slice(4), user.country);
   if (data.startsWith("pgall:")) return showAll(chatId, Number(data.split(":")[1]) || 0, user.country);
-  if (data.startsWith("pgcrs:")) return showCourses(chatId, Number(data.split(":")[1]) || 0);
+  if (data.startsWith("pgcrs:")) return showCourses(chatId, user.country, Number(data.split(":")[1]) || 0);
   if (data.startsWith("pgcat:")) {
     const [, slug, off] = data.split(":");
     const items = await getProducts({ category: slug });
@@ -357,6 +374,7 @@ async function handleCallback(cb: TgCallback) {
 /** Entry point for the webhook. Never throws (Telegram would retry-storm). */
 export async function handleUpdate(update: TgUpdate): Promise<void> {
   try {
+    await ensureRates(); // load FX rates once so prices localize to the user's currency
     if (update.message) await handleMessage(update.message);
     else if (update.callback_query) await handleCallback(update.callback_query);
   } catch (err) {
