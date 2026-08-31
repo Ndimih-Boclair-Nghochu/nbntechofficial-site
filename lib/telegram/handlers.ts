@@ -20,6 +20,7 @@ import {
 } from "@/lib/marketplace";
 import { resolveCourseUrl, courseCtaLabel, courseDiscountPercent } from "@/lib/courses";
 import { ensureRates, convert, roundPrice } from "@/lib/currency";
+import { whatsappUrl, whatsappHelpText } from "@/lib/contact";
 import { siteUrl } from "@/lib/utils";
 import { DEFAULT_BOT_COUNTRY, getBotUsername } from "./config";
 import { sendMessage, sendPhoto, sendChatAction, answerCallbackQuery } from "./api";
@@ -270,7 +271,25 @@ async function showSearch(chatId: string, q: string, country: string) {
 
   const prod = products.slice(0, 8);
   if (!prod.length && !courses.length) {
-    return sendMessage(chatId, `No matches for “${escapeHtml(q)}”. Try different words, or tap /categories.`);
+    const wa = whatsappUrl(whatsappHelpText(q));
+    const text =
+      `🔎 We couldn't find "<b>${escapeHtml(q)}</b>" on NBN MARKET yet.\n\n` +
+      `🛡️ <b>Please don't risk getting scammed online.</b>\n` +
+      `Message our team directly and we'll connect you with a <b>trusted, verified seller</b> for this product.\n\n` +
+      `✅ Sellers we personally vet\n` +
+      `✅ No upfront payments to strangers\n` +
+      `✅ A real person replies, fast`;
+    return sendMessage(chatId, text, {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "💬 Message our team on WhatsApp", url: wa }],
+          [
+            { text: "🗂️ Browse categories", callback_data: "menu:categories" },
+            { text: "📣 Share", url: shareUrl() },
+          ],
+        ],
+      },
+    });
   }
   if (prod.length) {
     await sendMessage(chatId, `🔎 <b>Products</b> for “${escapeHtml(q)}”`);
