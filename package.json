@@ -16,7 +16,7 @@
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:marketplace": "tsx prisma/seed-marketplace-run.ts",
-    "test": "node --import tsx --test tests/affiliate.test.ts tests/udemy.test.ts tests/awin.test.ts tests/telegram.test.ts",
+    "test": "node --import tsx --test tests/affiliate.test.ts tests/udemy.test.ts tests/awin.test.ts tests/awin-stores.test.ts tests/telegram.test.ts",
     "hash": "tsx scripts/hash-password.ts"
   },
   "prisma": {

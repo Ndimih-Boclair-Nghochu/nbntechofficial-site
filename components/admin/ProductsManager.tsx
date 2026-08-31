@@ -93,6 +93,7 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
   const [seeding, setSeeding] = useState(false);
   const [seedingSelar, setSeedingSelar] = useState(false);
   const [seedingAmazon, setSeedingAmazon] = useState(false);
+  const [seedingStores, setSeedingStores] = useState(false);
   const { show, toastNode } = useToast();
 
   async function loadDemo() {
@@ -146,6 +147,24 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
       show("Network error.", "error");
     } finally {
       setSeedingAmazon(false);
+    }
+  }
+
+  async function loadAwinStores() {
+    setSeedingStores(true);
+    try {
+      const res = await fetch("/api/marketplace/sync-awin-stores", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) {
+        show(json.error || "Could not import Awin stores.", "error");
+        return;
+      }
+      const d = json.data as { inserted: number; updated: number };
+      show(`Awin stores imported: +${d.inserted} new, ${d.updated} updated. Refresh to see them.`);
+    } catch {
+      show("Network error.", "error");
+    } finally {
+      setSeedingStores(false);
     }
   }
 
@@ -487,6 +506,15 @@ export function ProductsManager({ initial }: { initial: MarketProduct[] }) {
             >
               {seedingAmazon ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
               Add Amazon products
+            </button>
+            <button
+              type="button"
+              onClick={loadAwinStores}
+              disabled={seedingStores}
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-500/15 disabled:opacity-60"
+            >
+              {seedingStores ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+              Import Awin stores
             </button>
             <button
               type="button"

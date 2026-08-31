@@ -8,6 +8,10 @@
     {
       "path": "/api/marketplace/sync-awin",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/marketplace/sync-awin-stores",
+      "schedule": "0 5 * * *"
     }
   ]
 }
