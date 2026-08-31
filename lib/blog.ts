@@ -67,6 +67,12 @@ export function currentYear(): number {
   return new Date().getFullYear();
 }
 
+/** Rough reading time in minutes (~200 wpm), min 1. */
+export function readingTime(...parts: (string | null | undefined)[]): number {
+  const words = parts.join(" ").trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
 export function blogTitle(categoryName: string): string {
   return `Best ${categoryName} in ${currentYear()}: Top Picks, Prices & Deals`;
 }

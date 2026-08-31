@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
 
 /**
  * NBN TECH design tokens.
@@ -92,15 +93,53 @@ const config: Config = {
         "pulse-soft": "pulse-soft 2.4s ease-in-out infinite",
       },
       typography: {
-        DEFAULT: {
+        DEFAULT: { css: { maxWidth: "68ch" } },
+        // On-brand article typography — used as `prose prose-nbn`.
+        nbn: {
           css: {
+            "--tw-prose-body": "#464B63",
+            "--tw-prose-headings": "#111633",
+            "--tw-prose-lead": "#464B63",
+            "--tw-prose-links": "#1F8E7A",
+            "--tw-prose-bold": "#111633",
+            "--tw-prose-counters": "#6B7192",
+            "--tw-prose-bullets": "#2FB49A",
+            "--tw-prose-hr": "#E4E7F2",
+            "--tw-prose-quotes": "#111633",
+            "--tw-prose-quote-borders": "#2FB49A",
+            "--tw-prose-captions": "#6B7192",
+            "--tw-prose-code": "#111633",
+            "--tw-prose-pre-code": "#E7EDF8",
+            "--tw-prose-pre-bg": "#030A3B",
+            "--tw-prose-th-borders": "#E4E7F2",
+            "--tw-prose-td-borders": "#E4E7F2",
             maxWidth: "68ch",
+            lineHeight: "1.75",
+            "h1, h2, h3, h4": {
+              fontFamily: "var(--font-poppins), system-ui, sans-serif",
+              letterSpacing: "-0.015em",
+              fontWeight: "700",
+            },
+            h2: { marginTop: "2.4em", marginBottom: "0.8em", fontSize: "1.6em" },
+            h3: { marginTop: "1.8em", fontSize: "1.25em" },
+            a: { fontWeight: "600", textDecoration: "none" },
+            "a:hover": { textDecoration: "underline" },
+            blockquote: {
+              fontStyle: "normal",
+              fontWeight: "500",
+              borderLeftWidth: "3px",
+              paddingLeft: "1.1em",
+              color: "#111633",
+            },
+            img: { borderRadius: "0.85rem" },
+            "ul > li::marker": { color: "#2FB49A" },
+            strong: { fontWeight: "700" },
           },
         },
       },
     },
   },
-  plugins: [],
+  plugins: [typography],
 };
 
 export default config;
