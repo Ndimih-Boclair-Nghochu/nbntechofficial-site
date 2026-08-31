@@ -4,6 +4,8 @@ import { handleUpdate, type TgUpdate } from "@/lib/telegram/handlers";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// A /start reply sends several cards; give it headroom (capped by the Vercel plan).
+export const maxDuration = 60;
 
 /**
  * Telegram webhook. Telegram POSTs one update here per event. We verify the

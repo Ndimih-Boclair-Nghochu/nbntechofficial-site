@@ -9,6 +9,8 @@ import {
   categoriesKeyboard,
   countryKeyboard,
   productKeyboard,
+  shareIntentUrl,
+  pageNavKeyboard,
 } from "../lib/telegram/format";
 
 test("escapeHtml neutralizes HTML-significant chars", () => {
@@ -64,7 +66,27 @@ test("productKeyboard exposes the real affiliate URL as a URL button", () => {
 
 test("productKeyboard omits buy button when there is no link", () => {
   const kb = productKeyboard({ buyUrl: null, siteUrl: "https://s/p/1" });
-  // only the Details button remains
+  // only the Details button remains on the top row
   assert.equal(kb.inline_keyboard[0].length, 1);
   assert.equal(kb.inline_keyboard[0][0].text, "🔎 Details");
+});
+
+test("productKeyboard adds a Share-the-bot row when shareUrl is given", () => {
+  const kb = productKeyboard({ buyUrl: "https://amzn.to/x", siteUrl: "https://s/p/1", shareUrl: "https://t.me/share/url?url=x" });
+  const share = kb.inline_keyboard[1][0];
+  assert.ok(share.text.includes("Share"));
+  assert.ok("url" in share && share.url.startsWith("https://t.me/share/url"));
+});
+
+test("shareIntentUrl builds a Telegram share link to the bot", () => {
+  const u = shareIntentUrl("NbnMarketBot", "Deals!");
+  assert.ok(u.startsWith("https://t.me/share/url?url="));
+  assert.ok(u.includes(encodeURIComponent("https://t.me/NbnMarketBot")));
+});
+
+test("pageNavKeyboard shows a Show-more button only when items remain", () => {
+  const withMore = pageNavKeyboard("pgall:6", 12, "https://t.me/share/url?url=x");
+  assert.ok(withMore.inline_keyboard[0][0].text.includes("Show more"));
+  const noMore = pageNavKeyboard(null, 0, "https://t.me/share/url?url=x");
+  assert.ok(!JSON.stringify(noMore).includes("Show more"));
 });

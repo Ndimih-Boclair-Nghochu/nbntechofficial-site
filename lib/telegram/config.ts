@@ -28,5 +28,10 @@ export function isBotConfigured(): boolean {
   return !!getBotToken();
 }
 
+/** Bot @username (without @) — used to build share/deep links. */
+export function getBotUsername(): string {
+  return (process.env.TELEGRAM_BOT_USERNAME || "NbnMarketBot").trim().replace(/^@/, "");
+}
+
 /** Default delivery country for a brand-new bot user (matches the site default). */
 export const DEFAULT_BOT_COUNTRY = "DE";
