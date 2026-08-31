@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllProjectSlugs } from "@/lib/data";
 import { getAllProductSlugs } from "@/lib/marketplace-data";
 import { CATEGORIES, GUIDES } from "@/lib/marketplace";
+import { BLOG_POSTS } from "@/lib/blog";
 import { getAllCourseSlugs, getAvailableCourseCategories } from "@/lib/courses-data";
 import { siteUrl } from "@/lib/utils";
 
@@ -51,6 +52,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  const blogRoutes = [
+    { url: `${base}/nbnmarket/blog`, lastModified: now, changeFrequency: "daily" as const, priority: 0.7 },
+    ...BLOG_POSTS.map((p) => ({
+      url: `${base}/nbnmarket/blog/${p.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
+  ];
+
   const productSlugs = await getAllProductSlugs();
   const productRoutes = productSlugs.map((slug) => ({
     url: `${base}/nbnmarket/product/${slug}`,
@@ -84,6 +95,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...marketplaceHubs,
     ...categoryRoutes,
     ...guideRoutes,
+    ...blogRoutes,
     ...productRoutes,
     ...coursesHub,
     ...courseCategoryRoutes,
