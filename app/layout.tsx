@@ -42,6 +42,8 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: url },
     verification: {
       google: "4T3wr-CcOy_a12yG0pPccDCUhszu5kXZGHuq9_KpddI",
+      // Pinterest domain verification (renders <meta name="p:domain_verify" ...>).
+      other: { "p:domain_verify": "0cd7ff182368669f6fccc467b68fc9a0" },
     },
     // Favicon + apple icon are auto-detected from app/icon.png and
     // app/apple-icon.png (Next.js file-based metadata).
