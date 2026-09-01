@@ -21,8 +21,9 @@ import {
 import { resolveCourseUrl, courseCtaLabel, courseDiscountPercent } from "@/lib/courses";
 import { ensureRates, convert, roundPrice } from "@/lib/currency";
 import { whatsappUrl, whatsappHelpText } from "@/lib/contact";
+import { trackedUrl } from "@/lib/tracking";
 import { siteUrl } from "@/lib/utils";
-import { DEFAULT_BOT_COUNTRY, getBotUsername } from "./config";
+import { DEFAULT_BOT_COUNTRY, getBotUsername, isTelegramAdmin } from "./config";
 import { sendMessage, sendPhoto, sendChatAction, answerCallbackQuery } from "./api";
 import {
   parseCommand,
@@ -98,7 +99,17 @@ function productBuy(product: MarketProduct, country: string) {
     localizedMoney(product.price, product.currency, country) ||
     (buy?.priceLabel && buy.priceLabel) ||
     "See price on store";
-  return { buyUrl: buy?.url || null, buyLabel: buy ? ctaLabel(buy) || "🛒 Buy now" : null, source: buy?.platform || null, priceText };
+  const buyUrl = buy?.url
+    ? trackedUrl({
+        url: buy.url,
+        source: (buy.platform || "").toLowerCase() || undefined,
+        product: product.slug,
+        category: product.category || undefined,
+        placement: "bot",
+        country,
+      })
+    : null;
+  return { buyUrl, buyLabel: buy ? ctaLabel(buy) || "🛒 Buy now" : null, source: buy?.platform || null, priceText };
 }
 
 function ratingLine(rating: number | null, reviews: number | null): string | null {
@@ -147,7 +158,16 @@ function courseCard(course: Course, country: string): Card {
       note: "Price may change — tap to view on the provider.",
     }),
     keyboard: productKeyboard({
-      buyUrl: resolveCourseUrl(course),
+      buyUrl: resolveCourseUrl(course)
+        ? trackedUrl({
+            url: resolveCourseUrl(course) as string,
+            source: (course.provider || "udemy").toLowerCase(),
+            product: course.slug,
+            category: course.category || undefined,
+            placement: "bot",
+            country,
+          })
+        : null,
       buyLabel: courseCtaLabel(course, "card"),
       siteUrl: `${siteUrl()}/courses/${course.slug}`,
       shareUrl: shareUrl(),
@@ -329,6 +349,33 @@ async function showCountry(chatId: string, current: string) {
   });
 }
 
+/** Admin-only click report (last 7 days), reading the shared analytics table. */
+async function showStats(chatId: string) {
+  const since = new Date(Date.now() - 7 * 24 * 3600 * 1000);
+  const where = { type: "buy_click", createdAt: { gte: since } };
+  const [total, byProduct, byCategory, byProvider, byPlacement] = await Promise.all([
+    prisma.analyticsEvent.count({ where }),
+    prisma.analyticsEvent.groupBy({ by: ["productSlug"], where: { ...where, productSlug: { not: null } }, _count: { _all: true }, orderBy: { _count: { productSlug: "desc" } }, take: 8 }),
+    prisma.analyticsEvent.groupBy({ by: ["category"], where: { ...where, category: { not: null } }, _count: { _all: true }, orderBy: { _count: { category: "desc" } }, take: 6 }),
+    prisma.analyticsEvent.groupBy({ by: ["provider"], where: { ...where, provider: { not: null } }, _count: { _all: true }, orderBy: { _count: { provider: "desc" } }, take: 6 }),
+    prisma.analyticsEvent.groupBy({ by: ["path"], where: { ...where, path: { not: null } }, _count: { _all: true }, orderBy: { _count: { path: "desc" } }, take: 6 }),
+  ]);
+
+  const line = (label: string, n: number) => `• ${escapeHtml(label)} — <b>${n}</b>`;
+  const block = (title: string, rows: { key: string | null; _count: { _all: number } }[]) =>
+    rows.length ? `\n\n${title}\n` + rows.map((r) => line(r.key || "—", r._count._all)).join("\n") : "";
+
+  const msg =
+    `📊 <b>NBN MARKET — clicks (last 7 days)</b>\n` +
+    `Total buy clicks: <b>${total}</b>` +
+    block("🏆 <b>Top products</b>", byProduct.map((r) => ({ key: r.productSlug, _count: r._count }))) +
+    block("🗂️ <b>Top categories</b>", byCategory.map((r) => ({ key: r.category, _count: r._count }))) +
+    block("🔗 <b>By source</b>", byProvider.map((r) => ({ key: r.provider, _count: r._count }))) +
+    block("📍 <b>By placement</b>", byPlacement.map((r) => ({ key: r.path, _count: r._count })));
+
+  return sendMessage(chatId, total === 0 ? "📊 No buy clicks recorded in the last 7 days yet." : msg);
+}
+
 /* ------------------------------ dispatchers ----------------------------- */
 async function handleMessage(msg: TgMessage) {
   const chatId = String(msg.chat.id);
@@ -354,6 +401,9 @@ async function handleMessage(msg: TgMessage) {
       return showCourses(chatId, user.country, 0);
     case "country":
       return showCountry(chatId, user.country);
+    case "stats":
+      if (!isTelegramAdmin(chatId)) return sendMessage(chatId, "This command is for the admin only.");
+      return showStats(chatId);
     case "help":
       return showWelcome(chatId, user.firstName, user.country);
     default:

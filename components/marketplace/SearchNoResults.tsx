@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShieldCheck, X } from "lucide-react";
 import { whatsappUrl, whatsappHelpText } from "@/lib/contact";
 
@@ -52,7 +52,18 @@ function Body({ query, big }: { query: string; big?: boolean }) {
  * available on the results page.
  */
 export function SearchNoResults({ query }: { query: string }) {
-  const [open, setOpen] = useState(true);
+  // Auto-open the popup only once per browsing session (the inline card always shows).
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    try {
+      if (!sessionStorage.getItem("nbn_noresult_seen")) {
+        setOpen(true);
+        sessionStorage.setItem("nbn_noresult_seen", "1");
+      }
+    } catch {
+      /* private mode / storage blocked — just skip the popup */
+    }
+  }, []);
 
   return (
     <div className="mt-6">
