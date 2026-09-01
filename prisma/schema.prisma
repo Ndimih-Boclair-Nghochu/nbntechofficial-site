@@ -288,6 +288,27 @@ model TelegramUser {
   @@index([country])
 }
 
+/// A published (or attempted) Pinterest pin. Prevents duplicate pins of the same
+/// item and powers the Pinterest report. Unique per (itemType, itemSlug) so each
+/// product/course is pinned once; re-pins rotate the image variant.
+model PinLog {
+  id        String   @id @default(cuid())
+  itemType  String // product | course
+  itemSlug  String
+  variant   Int      @default(1)
+  boardId   String?
+  pinId     String?
+  imageUrl  String?
+  link      String?
+  status    String // success | error
+  error     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([itemType, itemSlug])
+  @@index([status, createdAt])
+}
+
 model AnalyticsEvent {
   id          String   @id @default(cuid())
   /// product_view | category_view | guide_view | comparison_view |
