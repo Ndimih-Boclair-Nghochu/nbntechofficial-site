@@ -24,7 +24,7 @@ export function CardGallery({ images, alt, href }: { images: string[]; alt: stri
           loading="lazy"
           width={320}
           height={320}
-          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+          className="h-full w-full object-contain p-2 transition-transform duration-300 hover:scale-105"
         />
       </Link>
 

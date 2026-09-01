@@ -16,6 +16,30 @@ function logDbIssue(where: string, err: unknown) {
 
 const publishedWhere = { published: true } as const;
 
+/**
+ * Demand signal per category — how many tracked analytics events (product/
+ * category views, buy clicks, searches) each category has drawn over the last
+ * `days`. Used to order the home-page category sections by real activity, so the
+ * most-clicked / most-demanded categories rise to the top. Degrades to {} if the
+ * analytics table is empty or unreachable.
+ */
+export async function getCategoryActivity(days = 30): Promise<Record<string, number>> {
+  try {
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const rows = await prisma.analyticsEvent.groupBy({
+      by: ["category"],
+      where: { category: { not: null }, createdAt: { gte: since } },
+      _count: { _all: true },
+    });
+    const out: Record<string, number> = {};
+    for (const r of rows) if (r.category) out[r.category] = r._count._all;
+    return out;
+  } catch (err) {
+    logDbIssue("getCategoryActivity", err);
+    return {};
+  }
+}
+
 export async function getProducts(opts?: {
   category?: string;
   subcategory?: string;

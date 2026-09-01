@@ -6,11 +6,12 @@ import { Container } from "@/components/ui/Container";
 import { MarketHeader } from "@/components/marketplace/MarketHeader";
 import { ProductCard, ProductGrid } from "@/components/marketplace/ProductCard";
 import { ProductRail, RailItem } from "@/components/marketplace/ProductRail";
+import { ShowcaseRail } from "@/components/marketplace/ShowcaseRail";
 import { CategoryMenu } from "@/components/marketplace/CategoryMenu";
 import { JsonLd } from "@/components/marketplace/JsonLd";
 import { CourseCard } from "@/components/courses/CourseCard";
 import { TelegramJoinBanner } from "@/components/marketplace/TelegramJoin";
-import { getAllProducts, getAvailableCategories } from "@/lib/marketplace-data";
+import { getAllProducts, getAvailableCategories, getCategoryActivity } from "@/lib/marketplace-data";
 import { getCourses } from "@/lib/courses-data";
 import { getRequestCountry } from "@/lib/marketplace-server";
 import { BRAND, TAGLINE, marketplaceUrl, sortByAvailability, interleaveByCategory } from "@/lib/marketplace";
@@ -107,16 +108,18 @@ export default async function MarketplaceHome() {
   const country = getRequestCountry();
   await ensureRates();
 
-  const [all, categories, courses] = await Promise.all([
+  const [all, categories, courses, activity] = await Promise.all([
     getAllProducts(),
     getAvailableCategories(),
     // Top courses for the "Udemy Courses" rail — featured first, then highest-rated.
     getCourses({ sort: "rating", take: 12 }),
+    // Real demand signal per category (clicks/views/searches, last 30 days).
+    getCategoryActivity(30),
   ]);
 
-  // Mix categories in the cross-category rails so they don't clump in the order
-  // products were added (available items still come first via sortByAvailability).
-  const featured = interleaveByCategory(sortByAvailability(all.filter((p) => p.featured), country)).slice(0, 12);
+  // The first "Featured" band mixes products from EVERY category (round-robin so
+  // consecutive cards differ), then rotates continuously in a marquee.
+  const showcase = interleaveByCategory(sortByAvailability(all, country)).slice(0, 50);
   const trending = interleaveByCategory(sortByAvailability(all.filter((p) => p.trending), country)).slice(0, 12);
 
   const byCat = new Map<string, MarketProduct[]>();
@@ -126,6 +129,14 @@ export default async function MarketplaceHome() {
     arr.push(p);
     byCat.set(p.category, arr);
   }
+
+  // Order category sections by demand: most analytics activity first, then by
+  // how many products the category has (so busy categories rise to the top).
+  const orderedCategories = [...categories].sort((a, b) => {
+    const diff = (activity[b.slug] || 0) - (activity[a.slug] || 0);
+    if (diff !== 0) return diff;
+    return (byCat.get(b.slug)?.length || 0) - (byCat.get(a.slug)?.length || 0);
+  });
 
   const websiteJsonLd = {
     "@context": "https://schema.org",
@@ -183,7 +194,21 @@ export default async function MarketplaceHome() {
         {/* Telegram deal-alerts banner — secondary to the shopping CTAs */}
         <TelegramJoinBanner start="market_home" />
 
-        <Rail title="Featured products" products={featured} country={country} />
+        {/* Featured — a continuously-rotating mix of products from every category */}
+        {showcase.length > 0 && (
+          <section className="rounded-2xl border border-ink-line bg-surface p-4 shadow-card sm:p-5">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="text-lg font-bold tracking-tight text-ink">Featured — from every category</h2>
+              <span className="hidden text-xs text-ink-muted sm:inline">auto-rotating · hover to pause</span>
+            </div>
+            <ShowcaseRail>
+              {showcase.map((p) => (
+                <ProductCard key={p.id} product={p} country={country} />
+              ))}
+            </ShowcaseRail>
+          </section>
+        )}
+
         <Rail title="Trending now" products={trending} country={country} />
 
         {/* Udemy Courses — a sideways rail linking into the Online Courses section */}
@@ -212,8 +237,8 @@ export default async function MarketplaceHome() {
           </section>
         )}
 
-        {/* Partitioned, per-category rails (courses, laptops, …) */}
-        {categories.map((c) => (
+        {/* Per-category rails, ordered by demand (most active first) */}
+        {orderedCategories.map((c) => (
           <Rail
             key={c.slug}
             title={c.name}
