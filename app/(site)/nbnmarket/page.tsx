@@ -65,14 +65,18 @@ function Rail({
   if (!products.length) return null;
   return (
     <section className="rounded-2xl border border-ink-line bg-surface p-4 shadow-card sm:p-5">
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-ink">
           {title}
+          <span className="rounded-full bg-sand-soft px-2 py-0.5 text-xs font-semibold text-ink-muted">{products.length}</span>
           <span className="text-xs font-normal text-ink-muted sm:hidden">· swipe →</span>
         </h2>
         {href && (
-          <Link href={href} className="shrink-0 text-sm font-semibold text-cyan-deep hover:underline">
-            See all
+          <Link
+            href={href}
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-cyan/40 bg-cyan/10 px-3.5 py-1.5 text-sm font-bold text-cyan-deep transition hover:bg-cyan/20"
+          >
+            View all <span aria-hidden>→</span>
           </Link>
         )}
       </div>
@@ -82,6 +86,18 @@ function Rail({
             <ProductCard product={p} country={country} />
           </RailItem>
         ))}
+        {href && (
+          <RailItem>
+            <Link
+              href={href}
+              className="flex h-full min-h-[200px] flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-cyan/50 bg-cyan/5 p-4 text-center font-bold text-cyan-deep transition hover:bg-cyan/10"
+            >
+              <span className="text-3xl">→</span>
+              View all {products.length}
+              <span className="text-xs font-medium text-ink-muted">{title}</span>
+            </Link>
+          </RailItem>
+        )}
       </ProductRail>
     </section>
   );
@@ -202,7 +218,7 @@ export default async function MarketplaceHome() {
             key={c.slug}
             title={c.name}
             href={`/nbnmarket/category/${c.slug}`}
-            products={sortByAvailability(byCat.get(c.slug) || [], country).slice(0, 12)}
+            products={sortByAvailability(byCat.get(c.slug) || [], country)}
             country={country}
           />
         ))}

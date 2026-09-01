@@ -13,8 +13,12 @@ export type StoreConfig = {
   host: string;
   awinmid: string;
   brand: string;
+  /** Site category slug all this store's products map to. */
   category: string;
   currency: string;
+  /** Optional Shopify collection handle — scope the sync to one collection
+   *  (e.g. "mens-chinos") instead of the whole catalogue. */
+  collection?: string;
 };
 
 export type ShopifyVariant = { price?: string; available?: boolean };
@@ -72,7 +76,9 @@ export function normalizeShopifyProduct(p: ShopifyProduct, store: StoreConfig, a
     currency: store.currency,
     image: p.images?.[0]?.src || null,
     description: stripHtml(p.body_html).slice(0, 500) || null,
-    category: p.product_type ? slugify(p.product_type).slice(0, 60) || store.category : store.category,
+    // Map the whole store to one clean site category (Shopify product_type is
+    // often the brand/vendor, which would fragment categories).
+    category: store.category,
     productUrl,
     deepLink: awinDeepLink(productUrl, store.awinmid, affid),
     inStock: variants.length === 0 ? true : variants.some((v) => v.available !== false),

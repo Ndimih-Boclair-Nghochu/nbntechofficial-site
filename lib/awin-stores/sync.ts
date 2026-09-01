@@ -47,8 +47,12 @@ async function fetchJson(url: string): Promise<unknown> {
 /** Fetch a store's whole catalogue via Shopify products.json (bounded pages). */
 async function fetchStoreProducts(store: StoreConfig, affid: string, maxPages: number): Promise<StoreProduct[]> {
   const out: StoreProduct[] = [];
+  // Scope to a single collection when configured, else the whole catalogue.
+  const basePath = store.collection
+    ? `https://${store.host}/collections/${store.collection}/products.json`
+    : `https://${store.host}/products.json`;
   for (let page = 1; page <= maxPages; page++) {
-    const body = (await fetchJson(`https://${store.host}/products.json?limit=250&page=${page}`)) as { products?: ShopifyProduct[] };
+    const body = (await fetchJson(`${basePath}?limit=250&page=${page}`)) as { products?: ShopifyProduct[] };
     const products = body?.products || [];
     if (products.length === 0) break;
     for (const p of products) {

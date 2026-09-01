@@ -14,6 +14,7 @@ import type { StoreConfig } from "./shopify";
 export const AWIN_STORES: StoreConfig[] = [
   { host: "brickzonehub.co.uk", awinmid: "121692", brand: "BrickZone Hub", category: "home-office", currency: "GBP" },
   { host: "lochelectronics.com", awinmid: "56203", brand: "Loch Electronics", category: "home-kitchen", currency: "GBP" },
+  { host: "brianoak.com", awinmid: "123260", brand: "Brian Oak", category: "fashion", currency: "GBP", collection: "mens-chinos" },
 ];
 
 /** Publisher (affiliate) id — from env, falling back to the account in use. */
