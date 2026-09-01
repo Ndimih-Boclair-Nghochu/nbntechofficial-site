@@ -45,6 +45,7 @@ export default function MarketplaceLayout({ children }: { children: React.ReactN
               <Link href="/nbnmarket/blog" className="hover:text-cyan-deep">Blog</Link>
               <Link href="/nbnmarket/about" className="hover:text-cyan-deep">About</Link>
               <Link href="/nbnmarket/returns" className="hover:text-cyan-deep">Returns</Link>
+              <Link href="/nbnmarket/privacy" className="hover:text-cyan-deep">Privacy</Link>
               <Link href="/nbnmarket/guides" className="hover:text-cyan-deep">Guides</Link>
               <Link href="/contact" className="hover:text-cyan-deep">Contact</Link>
               <Link href="/" className="font-semibold text-ink hover:text-cyan-deep">By NBN TECH ↗</Link>

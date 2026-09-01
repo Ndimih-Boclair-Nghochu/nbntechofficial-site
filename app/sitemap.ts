@@ -36,6 +36,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/nbnmarket/guides", priority: 0.7, freq: "weekly" as const },
     { path: "/nbnmarket/about", priority: 0.4, freq: "monthly" as const },
     { path: "/nbnmarket/disclosure", priority: 0.3, freq: "yearly" as const },
+    { path: "/nbnmarket/privacy", priority: 0.3, freq: "yearly" as const },
+    { path: "/nbnmarket/returns", priority: 0.3, freq: "yearly" as const },
   ].map((r) => ({ url: `${base}${r.path}`, lastModified: now, changeFrequency: r.freq, priority: r.priority }));
 
   const categoryRoutes = CATEGORIES.map((c) => ({
