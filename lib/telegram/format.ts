@@ -76,17 +76,16 @@ export function countryKeyboard(countries: { code: string; name: string; flag?: 
 }
 
 /** Main menu shown by /start. */
-export function mainMenuKeyboard(shareUrl: string): InlineKeyboard {
+export function mainMenuKeyboard(shareUrl: string, coursesEnabled = true): InlineKeyboard {
+  const row2: InlineButton[] = [{ text: "🗂️ Categories", callback_data: "menu:categories" }];
+  if (coursesEnabled) row2.push({ text: "🎓 Online Courses", callback_data: "menu:courses" });
   return {
     inline_keyboard: [
       [
         { text: "🛍️ All products", callback_data: "menu:all" },
         { text: "🔥 Today's Deals", callback_data: "menu:deals" },
       ],
-      [
-        { text: "🗂️ Categories", callback_data: "menu:categories" },
-        { text: "🎓 Online Courses", callback_data: "menu:courses" },
-      ],
+      row2,
       [
         { text: "🌍 Delivery country", callback_data: "menu:country" },
         { text: "📣 Share NBN MARKET", url: shareUrl },

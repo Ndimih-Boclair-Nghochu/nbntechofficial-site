@@ -3,6 +3,7 @@ import { getAllProjectSlugs } from "@/lib/data";
 import { getAllProductSlugs } from "@/lib/marketplace-data";
 import { CATEGORIES, GUIDES } from "@/lib/marketplace";
 import { BLOG_POSTS } from "@/lib/blog";
+import { COURSES_ENABLED } from "@/lib/features";
 import { getAllCourseSlugs, getAvailableCourseCategories } from "@/lib/courses-data";
 import { siteUrl } from "@/lib/utils";
 
@@ -80,10 +81,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  // --- Online Courses ---
-  const coursesHub = [{ url: `${base}/courses`, lastModified: now, changeFrequency: "daily" as const, priority: 0.9 }];
+  // --- Online Courses (only when the public section is enabled) ---
+  const coursesHub = COURSES_ENABLED
+    ? [{ url: `${base}/courses`, lastModified: now, changeFrequency: "daily" as const, priority: 0.9 }]
+    : [];
 
-  const courseCategories = await getAvailableCourseCategories();
+  const courseCategories = COURSES_ENABLED ? await getAvailableCourseCategories() : [];
   const courseCategoryRoutes = courseCategories.map((c) => ({
     url: `${base}/courses/${c.slug}`,
     lastModified: now,
@@ -91,7 +94,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const courseSlugs = await getAllCourseSlugs();
+  const courseSlugs = COURSES_ENABLED ? await getAllCourseSlugs() : [];
   const courseRoutes = courseSlugs.map((slug) => ({
     url: `${base}/courses/${slug}`,
     lastModified: now,

@@ -13,6 +13,7 @@ import { CourseCard } from "@/components/courses/CourseCard";
 import { TelegramJoinBanner } from "@/components/marketplace/TelegramJoin";
 import { getAllProducts, getAvailableCategories, getCategoryActivity } from "@/lib/marketplace-data";
 import { getCourses } from "@/lib/courses-data";
+import { COURSES_ENABLED } from "@/lib/features";
 import { getRequestCountry } from "@/lib/marketplace-server";
 import { BRAND, TAGLINE, marketplaceUrl, sortByAvailability, interleaveByCategory } from "@/lib/marketplace";
 import { ensureRates } from "@/lib/currency";
@@ -212,7 +213,7 @@ export default async function MarketplaceHome() {
         <Rail title="Trending now" products={trending} country={country} />
 
         {/* Udemy Courses — a sideways rail linking into the Online Courses section */}
-        {courses.length > 0 && (
+        {COURSES_ENABLED && courses.length > 0 && (
           <section className="rounded-2xl border border-ink-line bg-surface p-4 shadow-card sm:p-5">
             <div className="mb-4 flex items-baseline justify-between gap-3">
               <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-ink">

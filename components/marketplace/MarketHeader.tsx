@@ -6,6 +6,7 @@ import { CountrySelect } from "./CountrySelect";
 import { MarketLogo } from "./MarketLogo";
 import { MarketNav } from "./MarketNav";
 import { TelegramJoinButton } from "./TelegramJoin";
+import { COURSES_ENABLED } from "@/lib/features";
 import { getAvailableCategories } from "@/lib/marketplace-data";
 
 /**
@@ -86,12 +87,14 @@ export async function MarketHeader({ activeCategory, query }: { activeCategory?:
         <Container>
           <nav aria-label="Product categories" className="hide-scrollbar flex gap-1 overflow-x-auto py-1">
             {/* Online Courses — first-class link within the marketplace nav */}
-            <Link
-              href="/courses"
-              className="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 border-transparent px-3 py-2 text-sm font-bold text-cyan transition-colors hover:text-white"
-            >
-              🎓 Online Courses
-            </Link>
+            {COURSES_ENABLED && (
+              <Link
+                href="/courses"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap border-b-2 border-transparent px-3 py-2 text-sm font-bold text-cyan transition-colors hover:text-white"
+              >
+                🎓 Online Courses
+              </Link>
+            )}
             {categories.slice(0, 10).map((c) => {
                 const active = activeCategory === c.slug;
                 return (

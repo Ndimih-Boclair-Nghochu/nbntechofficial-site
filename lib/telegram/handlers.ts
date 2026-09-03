@@ -22,6 +22,7 @@ import { resolveCourseUrl, courseCtaLabel, courseDiscountPercent } from "@/lib/c
 import { ensureRates, convert, roundPrice } from "@/lib/currency";
 import { whatsappUrl, whatsappHelpText } from "@/lib/contact";
 import { trackedUrl } from "@/lib/tracking";
+import { COURSES_ENABLED } from "@/lib/features";
 import { siteUrl } from "@/lib/utils";
 import { DEFAULT_BOT_COUNTRY, getBotUsername, isTelegramAdmin } from "./config";
 import { sendMessage, sendPhoto, sendChatAction, answerCallbackQuery } from "./api";
@@ -231,10 +232,14 @@ function aboutText(hi: string): string {
 
 async function sendCategoryMenu(chatId: string) {
   const cats = await getAvailableCategories();
-  const extra = [[
-    { text: "🎓 Online Courses", callback_data: "menu:courses" },
-    { text: "🛍️ All products", callback_data: "menu:all" },
-  ]];
+  const extra = [
+    COURSES_ENABLED
+      ? [
+          { text: "🎓 Online Courses", callback_data: "menu:courses" },
+          { text: "🛍️ All products", callback_data: "menu:all" },
+        ]
+      : [{ text: "🛍️ All products", callback_data: "menu:all" }],
+  ];
   const kb = cats.length
     ? categoriesKeyboard(cats.map((c) => ({ slug: c.slug, name: c.name, icon: c.icon })), extra)
     : { inline_keyboard: extra };
@@ -243,7 +248,7 @@ async function sendCategoryMenu(chatId: string) {
 
 async function showWelcome(chatId: string, name: string | null, country: string) {
   await sendMessage(chatId, aboutText(name ? `Hi ${escapeHtml(name)}! ` : ""), {
-    reply_markup: mainMenuKeyboard(shareUrl()),
+    reply_markup: mainMenuKeyboard(shareUrl(), COURSES_ENABLED),
   });
   await sendCategoryMenu(chatId);
   const feat = await getProducts({ featured: true, take: TASTER });
@@ -285,9 +290,12 @@ async function showCategory(chatId: string, slug: string, country: string) {
 async function showSearch(chatId: string, q: string, country: string) {
   if (!q) return sendMessage(chatId, "Type what you're looking for, e.g. <code>/search air fryer</code>");
   const isCoursey = /\bcourses?\b/i.test(q);
-  const [products, foundCourses] = await Promise.all([searchProducts(q), searchCourses(q)]);
+  const [products, foundCourses] = await Promise.all([
+    searchProducts(q),
+    COURSES_ENABLED ? searchCourses(q) : Promise.resolve([] as Course[]),
+  ]);
   let courses = foundCourses;
-  if (isCoursey && courses.length < 6) courses = (await getAllCourses()).slice(0, 8);
+  if (COURSES_ENABLED && isCoursey && courses.length < 6) courses = (await getAllCourses()).slice(0, 8);
 
   const prod = products.slice(0, 8);
   if (!prod.length && !courses.length) {
@@ -398,6 +406,7 @@ async function handleMessage(msg: TgMessage) {
       return showSearch(chatId, cmd.args, user.country);
     case "course":
     case "courses":
+      if (!COURSES_ENABLED) return sendMessage(chatId, "🎓 Online courses are coming soon.");
       return showCourses(chatId, user.country, 0);
     case "country":
       return showCountry(chatId, user.country);
@@ -421,11 +430,13 @@ async function handleCallback(cb: TgCallback) {
   if (data === "menu:all") return showAll(chatId, 0, user.country);
   if (data === "menu:deals") return showDeals(chatId, user.country);
   if (data === "menu:categories") return sendCategoryMenu(chatId);
-  if (data === "menu:courses") return showCourses(chatId, user.country, 0);
+  if (data === "menu:courses") {
+    return COURSES_ENABLED ? showCourses(chatId, user.country, 0) : sendMessage(chatId, "🎓 Online courses are coming soon.");
+  }
   if (data === "menu:country") return showCountry(chatId, user.country);
   if (data.startsWith("cat:")) return showCategory(chatId, data.slice(4), user.country);
   if (data.startsWith("pgall:")) return showAll(chatId, Number(data.split(":")[1]) || 0, user.country);
-  if (data.startsWith("pgcrs:")) return showCourses(chatId, user.country, Number(data.split(":")[1]) || 0);
+  if (data.startsWith("pgcrs:") && COURSES_ENABLED) return showCourses(chatId, user.country, Number(data.split(":")[1]) || 0);
   if (data.startsWith("pgcat:")) {
     const [, slug, off] = data.split(":");
     const items = await getProducts({ category: slug });
